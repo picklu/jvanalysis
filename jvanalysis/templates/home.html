@@ -8,8 +8,12 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <!-- Bootstrap css -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    
     <!-- Bokeh css resource -->
     {{ css_resources|safe }}
+    
+    <!-- custom css file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <h1>Hello, World!</h1>  
@@ -27,5 +31,8 @@
     
     <!-- https://github.com/adamwdraper/Numeral-js -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/numeral.js') }}"></script>
+    
+    <!-- custom js script -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
