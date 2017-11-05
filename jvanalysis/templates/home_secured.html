@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "home.html" %}
 
 {% block header %}
     <header class="header clearfix bg-dark fixed-top">
@@ -16,13 +16,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('about') }}">About</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('about') }}">Sign out</a>
+                        </li>
                     {% block signin %}
                     </ul>
-                    <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control form-control-sm mr-sm-2" type="email" placeholder="email" aria-label="Email">
-                        <input class="form-control form-control-sm mr-sm-2" type="password" placeholder="password" aria-label="Password">
-                        <input class="btn btn-sm btn-success my-sm-0" type="submit" value="Sign in">
-                    </form>
                     {% endblock %}
                 </div>
             </nav>
@@ -37,9 +35,6 @@
             <div class="container">
                 <h1 class="display-3">jV Analysis</h1>
                 <p class="lead">Analyze a current density - voltage (jV) data of a dye-sensitized solar cell (DSSC) within a minute. Upload your data and submit; it is that simple!</p>
-                <p class="lead"><a class="btn btn-info btn-jumbotron" href="#" role="button">Sign up to get full access</a></p>
-                <p class="lead">or</p>
-                <p class="lead"><a class="btn btn-info  btn-jumbotron" href="#" role="button">try as a guest</a></p>
             </div>
         </div>
         {% endblock %}
