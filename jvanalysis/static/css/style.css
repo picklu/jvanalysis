@@ -4,3 +4,7 @@
 .display-3 {
     margin-top:0.85rem;
 }
+.btn-jumbotron {
+    padding: 0.45rem 1.2rem !important;
+    font-size: 1.2rem !important;
+}
