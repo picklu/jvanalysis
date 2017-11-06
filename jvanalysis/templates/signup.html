@@ -1,7 +1,7 @@
 {% extends "home.html" %}
 
 {% block signin %}
-<form class="form-inline my-2 my-lg-0">
+<form class="form-inline my-2 my-lg-0" action="{{ url_for('signin') }}" method="get">
     <input class="btn btn-sm btn-success my-sm-0" type="submit" value="Sign in">
 </form>
 {% endblock %}
@@ -29,7 +29,7 @@
     </div>
     <div class="form-group">
         <div class="col-sm-12">
-            <input type="submit" value="Sign up" class="btn btn-primary btn-block">
+            <input type="submit" value="Sign up" class="btn btn-info btn-block">
         </div>
     </div>
 </form> <!-- /form -->
