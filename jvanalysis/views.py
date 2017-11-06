@@ -27,6 +27,10 @@ def analysis():
 def dashboard():
     return render_template("dashboard.html")
 
+@app.route("/signup")
+def signup():
+    return render_template("signup.html")
+
 @app.route("/signout")
 def signout():
     return index()
