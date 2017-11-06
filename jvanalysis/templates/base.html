@@ -19,14 +19,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    {% block header %}
     <header class="header clearfix bg-dark fixed-top">
         <div class="container">
             <nav class="navbar navbar-expand-md navbar-dark">
-                <h3><a class="navbar-brand text-muted" href="{{ url_for('home') }}">jVAnalysis</a></h3>
+                <h3><a class="navbar-brand text-muted" href="{{ url_for('index') }}">jVAnalysis</a></h3>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                {% block navbar %}
                 <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
@@ -46,13 +46,25 @@
                         </li>
                     </ul>
                 </div>
+                {% endblock %}
             </nav>
         </div>
     </header>
-    {% endblock %}
     
-    {% block container %}
-    {% endblock %}
+    <main role="main">
+        <div class="jumbotron">
+          <div class="container">
+            {% block jumbotron %}
+            {% endblock %}
+            </div>
+        </div>
+        <div class="container">
+            <div class="row marketing">
+            {% block content %}
+            {% endblock %}
+            </div>
+        </div>
+    </main>
     
     <footer class="footer">
         <div class="container">
