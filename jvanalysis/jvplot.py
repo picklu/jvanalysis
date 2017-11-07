@@ -18,8 +18,7 @@ def resources(width=400, height=400):
                     title="Current vs Voltage Curves of DSSCS", 
                     tools=TOOLS,
                     plot_width=width, 
-                    plot_height=height,
-                    responsive=False
+                    plot_height=height
                 )
     plot.line(data1[0], data1[1] * 1000 / 0.25, legend="D1_OCtoSC_SR500mVps", line_color="blue", line_width=2)
     plot.line(data2[0], data2[1] * 1000 / 0.25, legend="D1_SCtoOC_SR500mVps", line_color="red", line_width=2)    
