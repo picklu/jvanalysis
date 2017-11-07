@@ -11,3 +11,9 @@
     padding: 0.45rem 1.2rem !important;
     font-size: 1.2rem !important;
 }
+.col-center-block {
+    float: none;
+    display: block;
+    margin: 0 auto;
+    /*margin-left: auto; margin-right: auto; */
+}
