@@ -1,5 +1,11 @@
 {%extends "base.html" %}
 
+{% block bokeh_css_resource %}
+    <!-- Bokeh css resource -->
+    {{ bokehcss|safe }}
+{% endblock %}
+    
+
 {% block jumbotron %}
 <h1 class="display-4">Dashboard</h1>
 <div class="row">
@@ -18,4 +24,12 @@
     <h1 class="text-center">Dashboard2</h1>
          {{ div2|safe }}
 </div>
+{% endblock %}
+
+{% block bokeh_js_resources %}
+    <!-- Bokeh js resource -->
+    {{ bokeh_js|safe }}
+    {{ script|safe }}
+    {{ script1|safe }}
+    {{ script2|safe }}
 {% endblock %}

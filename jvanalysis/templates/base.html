@@ -11,10 +11,7 @@
     <!-- Bootstrap css -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/narrow-jumbotron.css') }}">
-    
-    <!-- Bokeh css resource -->
-    {{ bokehcss|safe }}
-    
+    {% block bokeh_css_resource %}{% endblock %}
     <!-- custom css file -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -75,8 +72,6 @@
         </div>
     </footer>
     
-    <!-- Bokeh js resource -->
-    {{ bokehjs|safe }}
     
     <!-- Bootstrap JS, Popper.js, and jQuery -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
@@ -90,10 +85,9 @@
     <!-- https://github.com/adamwdraper/Numeral-js -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/numeral.js') }}"></script>
     
+    {% block bokeh_js_resources %}{% endblock %}
+    
     <!-- custom js script -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
-    {{ script|safe }}
-    {{ script1|safe }}
-    {{ script2|safe }}
 </body>
 </html>
