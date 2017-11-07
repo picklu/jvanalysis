@@ -1,8 +1,8 @@
 {%extends "base.html" %}
 
-{% block bokeh_css_resource %}
+{% block bokeh_css %}
     <!-- Bokeh css resource -->
-    {{ bokehcss|safe }}
+    {{ bkcss|safe }}
 {% endblock %}
     
 
@@ -10,26 +10,22 @@
 <h1 class="display-4">Dashboard</h1>
 <div class="row">
     <div class="col-center-block">
-            {{ div|safe }}
+        {{ bkdiv|safe }}
     </div>
 </div>
 {% endblock %}
 
-{% block content %}
+{%+ block content %}
 <div class="col-lg-6">
     <h1 class="text-center">Dashboard1</h1>
-         {{ div1|safe }}
 </div>
 <div class="col-lg-6">
     <h1 class="text-center">Dashboard2</h1>
-         {{ div2|safe }}
 </div>
 {% endblock %}
 
-{% block bokeh_js_resources %}
-    <!-- Bokeh js resource -->
-    {{ bokeh_js|safe }}
-    {{ script|safe }}
-    {{ script1|safe }}
-    {{ script2|safe }}
+{% block bokeh_js %}
+    <!-- Bokeh js resources -->
+    {{ bkjs|safe }}
+    {{ bkscript|safe }}
 {% endblock %}

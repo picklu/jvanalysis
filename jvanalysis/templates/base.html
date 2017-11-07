@@ -11,7 +11,7 @@
     <!-- Bootstrap css -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/narrow-jumbotron.css') }}">
-    {% block bokeh_css_resource %}{% endblock %}
+    {%- block bokeh_css -%}{% endblock %}
     <!-- custom css file -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -54,13 +54,13 @@
     <main role="main">
         <div class="jumbotron">
           <div class="container">
-            {% block jumbotron %}
+            {%- block jumbotron -%}
             {% endblock %}
             </div>
         </div>
         <div class="container">
             <div class="row marketing">
-            {% block content %}
+            {%- block content -%}
             {% endblock %}
             </div>
         </div>
@@ -72,21 +72,17 @@
         </div>
     </footer>
     
-    
+    <!-- javascript resources -->
     <!-- Bootstrap JS, Popper.js, and jQuery -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"><\/script>')</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-    
     <!-- https://github.com/mholt/PapaParse -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/papaparse.min.js') }}"></script>
-    
     <!-- https://github.com/adamwdraper/Numeral-js -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/numeral.js') }}"></script>
-    
-    {% block bokeh_js_resources %}{% endblock %}
-    
+    {%- block bokeh_js -%}{% endblock %}
     <!-- custom js script -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
