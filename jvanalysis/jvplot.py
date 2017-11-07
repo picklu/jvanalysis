@@ -6,7 +6,7 @@ from bokeh.models import Range1d
 from bokeh.resources import INLINE
 
 DATA_FOLDER = "/home/ubuntu/workspace/jvanalysis/data"
-TOOLS = "pan,wheel_zoom,box_zoom,reset,save,box_select"
+TOOLS = "wheel_zoom,box_zoom,reset,save"
 
 def resources():
     """ return bokeh resources for plot
