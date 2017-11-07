@@ -2,6 +2,7 @@ from flask import render_template, request
 from flask import url_for
 
 from jvanalysis import app
+from jvanalysis.jvplot import resources
 
 @app.route("/")
 def index():
@@ -25,7 +26,10 @@ def analysis():
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html", title="Dashboard")
+    div, script, bkjs, bkcss = resources()
+    return render_template("dashboard.html", div=div,
+                            script=script, js_resources=bkjs,
+                            css_resources=bkcss, title="Dashboard")
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
