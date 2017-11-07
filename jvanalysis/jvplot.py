@@ -5,10 +5,11 @@ from bokeh.embed import components
 from bokeh.models import Range1d
 from bokeh.resources import INLINE
 
+
 DATA_FOLDER = "/home/ubuntu/workspace/jvanalysis/data"
 TOOLS = "wheel_zoom,box_zoom,reset,save"
 
-def resources():
+def resources(width=400, height=400):
     """ return bokeh resources for plot
     """
     data1 = np.transpose(np.loadtxt("/home/ubuntu/workspace/jvanalysis/data/D1_OCtoSC_SR500mVps.txt"))
@@ -16,8 +17,9 @@ def resources():
     plot = figure(
                     title="Current vs Voltage Curves of DSSCS", 
                     tools=TOOLS,
-                    plot_width=400, 
-                    plot_height=400
+                    plot_width=width, 
+                    plot_height=height,
+                    responsive=False
                 )
     plot.line(data1[0], data1[1] * 1000 / 0.25, legend="D1_OCtoSC_SR500mVps", line_color="blue", line_width=2)
     plot.line(data2[0], data2[1] * 1000 / 0.25, legend="D1_SCtoOC_SR500mVps", line_color="red", line_width=2)    
@@ -28,7 +30,5 @@ def resources():
     plot.yaxis.axis_label = r"Current Density (mA/cm^2)"
     
     script, div = components(plot)
-    bkjs=INLINE.render_js()
-    bkcss=INLINE.render_css()
     
-    return (div, script, bkjs, bkcss)
+    return (div, script)

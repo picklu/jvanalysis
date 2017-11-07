@@ -2,7 +2,7 @@ from flask import render_template, request
 from flask import url_for
 
 from jvanalysis import app
-from jvanalysis.jvplot import resources
+from jvanalysis.jvplot import INLINE, resources
 
 @app.route("/")
 def index():
@@ -26,10 +26,14 @@ def analysis():
 
 @app.route("/dashboard")
 def dashboard():
-    div, script, bkjs, bkcss = resources()
-    return render_template("dashboard.html", div=div,
-                            script=script, js_resources=bkjs,
-                            css_resources=bkcss, title="Dashboard")
+    bkjs = INLINE.render_js()
+    bkcss = INLINE.render_css()
+    div, script = resources()
+    div1, script1 = resources(300, 300)
+    div2, script2 = resources(300, 300)
+    return render_template("dashboard.html", div=div, div1=div1, div2=div2,
+                            script=script, script1=script1, script2=script2,
+                            bokehjs=bkjs, bokehcss=bkcss, title="Dashboard")
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():

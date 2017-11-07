@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/narrow-jumbotron.css') }}">
     
     <!-- Bokeh css resource -->
-    {{ css_resources|safe }}
+    {{ bokehcss|safe }}
     
     <!-- custom css file -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -76,7 +76,7 @@
     </footer>
     
     <!-- Bokeh js resource -->
-    {{ js_resources|safe }}
+    {{ bokehjs|safe }}
     
     <!-- Bootstrap JS, Popper.js, and jQuery -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
@@ -93,5 +93,7 @@
     <!-- custom js script -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
     {{ script|safe }}
+    {{ script1|safe }}
+    {{ script2|safe }}
 </body>
 </html>
