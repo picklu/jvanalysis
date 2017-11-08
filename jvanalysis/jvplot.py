@@ -9,16 +9,27 @@ from bokeh.resources import INLINE
 DATA_FOLDER = "/home/ubuntu/workspace/jvanalysis/data"
 TOOLS = "wheel_zoom,box_zoom,reset,save"
 
-def resources(width=400, height=400):
+def resources(width=140, height=100):
     """ return bokeh resources for plot
     """
-    data1 = np.transpose(np.loadtxt("/home/ubuntu/workspace/jvanalysis/data/D1_OCtoSC_SR500mVps.txt"))
-    data2 = np.transpose(np.loadtxt("/home/ubuntu/workspace/jvanalysis/data/D1_SCtoOC_SR500mVps.txt"))
+    data = np.transpose(np.loadtxt("/home/ubuntu/workspace/jvanalysis/data/D1_SCtoOC_SR500mVps.txt"))
+    label = ""
+    try:
+        jv = Analysis(data)
+        j = jv.calculate_jcell(jv.v_cell, jv._get_params())
+        label = "calculated"
+    except AnalysisError as e:
+        print(e.error)
+    except Exception as e:
+        label = e
+        print(e)
+    
     plot = figure(
                     title="Current vs Voltage Curves of DSSCS", 
                     tools=TOOLS,
                     plot_width=width, 
-                    plot_height=height
+                    plot_height=height,
+                    sizing_mode='scale_width'
                 )
     
     # Vertical line
@@ -27,9 +38,14 @@ def resources(width=400, height=400):
     hline = Span(location=0, dimension='width', line_color='gray', line_width=1)
     plot.renderers.extend([vline, hline])
     
-    # line plot
-    plot.line(data1[0], data1[1] * 1000 / 0.25, legend="OC_SC", line_color="blue", line_width=2)
-    plot.line(data2[0], data2[1] * 1000 / 0.25, legend="SC_OC", line_color="red", line_width=2)    
+    if label == "calculated":
+        # line plot
+        plot.circle(jv.v_cell, jv.j_cell*1000, legend="experimental", line_color="blue", line_width=2)
+        plot.line(jv.v_cell, j*1000, legend="calculated", line_color="red", line_width=2)    
+    else:
+        # line plot
+        plot.circle(data[0], data[1]*1000/0.25, legend="experimental", line_color="blue", line_width=2)
+        plot.line(data[0], data[1]*1000/0.25, legend="failed", line_color="blue", line_width=2)
     plot.x_range = Range1d(-0.6, 0.1)
     plot.y_range = Range1d(-5, 20)
     plot.legend.location = "top_left"
