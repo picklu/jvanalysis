@@ -7,18 +7,58 @@
     
 
 {% block jumbotron %}
-<h2 class="heading-jumbotron">Dashboard</h2>
-<div class="row col-center-block">
-    {{ bkdiv|safe }}
-</div>
+    <h3 class="heading-jumbotron">Current density vs voltage curves</h3>
+    <div class="row col-center-block">
+        {{ bkdiv|safe }}
+    </div>
 {% endblock %}
 
 {% block content %}
-<div class="col-lg-6">
-    <h1 class="text-center">Dashboard1</h1>
-</div>
-<div class="col-lg-6">
-    <h1 class="text-center">Dashboard2</h1>
+<div class="row">
+    <div class="col-md-5">
+        <h4>Photovoltaic parameters</h4>
+        <table class="table table-striped table-responsive text-center">
+            <thead>
+                <tr>
+                    <th><em>V</em><sub>oc</sub><br>(V)</th>
+                    <th><em>j</em><sub>sc</sub><br>(mA/cm<sup>2</sup>)</th>
+                    <th><em>ff</em><br>(%)</th>
+                    <th><em>PE</em><br>(%)</th>
+                </tr>
+            </thead>
+            <tobody>
+                <tr>
+                    <td>0.55</td>
+                    <td>12.5</td>
+                    <td>62.5</td>
+                    <td>4.0</td>
+                </tr>
+            </tobody>
+        </table>
+    </div>
+    <div class="col-md-7">
+        <h4>Model parameters</h4>
+        <table class="table table-striped table-responsive text-center">
+            <thead>
+                <tr>
+                    <th><em>j</em><sub>sc</sub><br>(mA/cm<sup>2</sup>)</th>
+                    <th><em>j</em><sub>0</sub><br>(mA/cm<sup>2</sup>)</th>
+                    <th><em>m</em><br>&nbsp;</th>
+                    <th><em>R</em><sub>s</sub><br>(&#x2126; cm<sup>2</sup>)</th>
+                    <th><em>R</em><sub>sh</sub><br>(&#x2126; cm<sup>2</sup>)</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>12.5</td>
+                <td>62.5e-8</td>
+                <td>1.5</td>
+                <td>7.8</td>
+                <td>3000</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
 
