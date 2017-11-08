@@ -7,16 +7,20 @@
 .display-4 {
     margin-top:2.5rem;
 }
+.content-jumbotron {
+    position: relative;
+    margin-top:2.5rem;
+}
 .btn-jumbotron {
     padding: 0.45rem 1.2rem !important;
     font-size: 1.2rem !important;
+}
+.heading-jumbotron {
+    margin:2.5rem 0rem !important;
 }
 .col-center-block {
     float: none;
     display: block;
     margin: 0 auto;
     /*margin-left: auto; margin-right: auto; */
-}
-.heading-jumbotron {
-    margin:2.5rem 0rem !important;
 }

@@ -7,10 +7,7 @@
 {% endblock %}
 
 {% block jumbotron %}
-{% endblock %}
-
-{% block content %}
-<div class="col-lg-12">
+<div class="content-jumbotron">
 <form class="form-horizontal form-signup" action="/register" method="POST">
     <div class="form-group">
         <div class="col-sm-12">
@@ -29,9 +26,12 @@
     </div>
     <div class="form-group">
         <div class="col-sm-12">
-            <input type="submit" value="Sign up" class="btn btn-info btn-block">
+            <input type="submit" value="Sign up" class="btn btn-jumbotron btn-info btn-block">
         </div>
     </div>
 </form> <!-- /form -->
 </div>
+{% endblock %}
+
+{% block content %}
 {% endblock %}
