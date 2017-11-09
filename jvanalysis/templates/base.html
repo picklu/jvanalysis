@@ -35,12 +35,8 @@
                         <li class="nav-item {{ "active" if title == "Analysis" }}">
                             <a class="nav-link" href="{{ url_for('analysis') }}">Analysis</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user or "Guest" }}</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdown01">
-                                <a class="dropdown-item" href="{{ url_for('account') }}">Account</a>
-                                <a class="dropdown-item" href="{{ url_for('dashboard') }}">Dashboard</a>
-                            </div>
+                        <li class="nav-item {{ "active" if title == "Account" }}">
+                            <a class="nav-link" href="{{ url_for('account') }}">Account</a>
                         </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0" action="{{ url_for('signout') }}" method="post">

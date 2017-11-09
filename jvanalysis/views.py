@@ -22,24 +22,19 @@ def about():
 
 @app.route("/account")
 def account():
-    return render_template("account.html", title="Account")
+    bkdiv, bkscript = resources()
+    return render_template(
+        "account.html",
+        bkjs=INLINE.render_js(),
+        bkcss= INLINE.render_css(),
+        bkdiv=bkdiv,
+        bkscript=bkscript,
+        title="Account")
 
 
 @app.route("/analysis")
 def analysis():
     return render_template("analysis.html", title="Analysis")
-
-
-@app.route("/dashboard")
-def dashboard():
-    bkdiv, bkscript = resources()
-    return render_template(
-        "dashboard.html",
-        bkjs=INLINE.render_js(),
-        bkcss= INLINE.render_css(),
-        bkdiv=bkdiv,
-        bkscript=bkscript,
-        title="Dashboard")
 
 
 @app.route("/signup", methods=["GET", "POST"])
