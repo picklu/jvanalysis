@@ -5,25 +5,69 @@
     {{ bkcss|safe }}
 {% endblock %}
     
-
-{% block jumbotron %}
-<div class="row">
-    <div class="col-md-8 col-center-block">
-        <form class="form-group heading-jumbotron">
-            <select id="data" class="form-control">
-                <option name="data" value="data-1">20171109-user001-data-01</option>
-                <option name="data" value="data-2">data-2</option>
-                <option name="data" value="data-3">data-3</option>
-                <option name="data" value="data-4">data-4</option>
-            </select>
-        </form>
-    </div>
-</div>
-{% endblock %}
-
 {% block content %}
 <div class="row">
-    <div class="col-md-10 col-center-block">
+    <div class="col-md-12 table-responsive">
+        <h5 class="content-jumbotron">Accont settings:</h5>
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th>
+                        Item
+                    </th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scorpe="row">Id</th>
+                    <td><button id="change" class="btn btn-sm btn-info my-sm-0" type="submit">Change</button></td>
+                </tr>
+                <tr>
+                    <th scope="row">Account</th>
+                    <td><button id="delete" class="btn btn-sm btn-danger my-sm-0" type="submit">Delete</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-12 table-responsive">
+        <h5>Uploaded data:</h5>
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th>
+                        Data
+                    </th>
+                    <th>Date</th>
+                    <th>Area</th>
+                    <th>Temperature</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <form class="form-inline">
+                            <select id="data" class="form-control">
+                                <option name="data" value="data-1">20171109-user001-data-01</option>
+                                <option name="data" value="data-2">data-2</option>
+                                <option name="data" value="data-3">data-3</option>
+                                <option name="data" value="data-4">data-4</option>
+                            </select>
+                        </form>
+                    </td>
+                    <td>2017.11.10</td>
+                    <td>0.25</td>
+                    <td>30</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8 col-center-block">
         {{ bkdiv|safe }}
     </div>
 </div>
@@ -31,9 +75,9 @@
     <hr>
 </div>
 <div class="row">
-    <div class="col-md-5">
-        <h4>Photovoltaic parameters</h4>
-        <table class="table table-striped table-responsive text-center">
+    <div class="col-md-5 table-responsive">
+        <label>Photovoltaic parameters</label>
+        <table class="table table-striped text-center">
             <thead>
                 <tr>
                     <th><em>V</em><sub>oc</sub><br>(V)</th>
@@ -52,9 +96,9 @@
             </tobody>
         </table>
     </div>
-    <div class="col-md-7">
-        <h4>Model parameters</h4>
-        <table class="table table-striped table-responsive text-center">
+    <div class="col-md-7 table-responsive ">
+        <label>Model parameters</label>
+        <table class="table table-striped text-center">
             <thead>
                 <tr>
                     <th><em>j</em><sub>sc</sub><br>(mA/cm<sup>2</sup>)</th>
