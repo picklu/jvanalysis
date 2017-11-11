@@ -7,24 +7,28 @@
 {% endblock %}
 
 {% block jumbotron %}
-<div class="content-jumbotron">
-<form class="form-horizontal form-signup" action="/register" method="POST">
-    <div class="form-group">
-        <div class="col-sm-12">
-            <input type="email" name="email" id="email" placeholder="Email address" class="form-control">
+<div class="jumbotron">
+    <div class="container">
+        <div class="content-jumbotron">
+            <form class="form-horizontal form-signup" action="/register" method="POST">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <input type="email" name="email" id="email" placeholder="Email address" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <input type="password" name="password" id="password" placeholder="Password" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <input type="submit" value="Sign in" class="btn btn-jumbotron btn-success btn-block">
+                    </div>
+                </div>
+            </form> <!-- /form -->
         </div>
     </div>
-    <div class="form-group">
-        <div class="col-sm-12">
-            <input type="password" name="password" id="password" placeholder="Password" class="form-control">
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-12">
-            <input type="submit" value="Sign in" class="btn btn-jumbotron btn-success btn-block">
-        </div>
-    </div>
-</form> <!-- /form -->
 </div>
 {% endblock %}
 
