@@ -7,30 +7,89 @@
     
 {% block content %}
 <div class="row">
-    <div class="col-md-12 table-responsive">
-        <h5 class="content-jumbotron">Upload data:</h5>
-        <table class="table table-striped text-center">
-            <thead>
-                <tr>
-                    <th>
-                        Data
-                    </th>
-                    <th>Date</th>
-                    <th>Area</th>
-                    <th>Temperature</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                       <input type="file" name="file"/>
-                    </td>
-                    <td><input type="date" name="date"/></td>
-                    <td><input type="float" name="area"/></td>
-                    <td><input type="number" name="temperature"/></td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="col-md-7">
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="content-jumbotron">File upload:</h5>
+            </div>
+        </div>
+        <form action="">
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <input type="file" id="file" class="form-control-file" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>Set data attributes:</h5>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-5">
+                    <label for="date">Date</label>
+                    <input id="date" class="form-control" type="date">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="area">Area/cm<sup>2</sup></label>
+                    <input id="area" class="form-control" type="Number" step="0.01" value=0.25>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="temperature">Temperature/<sup>o</sup>C</label>
+                    <input id="temperature" class="form-control" type="Number" value="25">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <input class="btn btn-primary" type="submit" value="Upload">
+                </div>
+            </div>   
+        </form>
+    </div>
+    <div class="col-md-5">
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="content-jumbotron">Data table:</h5>
+            </div>
+        </div>
+        <div class="row data-table">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">col-1</th>
+                        <th scope="col">col-2</th>
+                        <th scope="col">col-3</th>
+                    </tr>    
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>0.1</td>
+                        <td>0.012</td>
+                        <td>0.001</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>0.1</td>
+                        <td>0.012</td>
+                        <td>0.001</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>0.1</td>
+                        <td>0.012</td>
+                        <td>0.001</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">4</th>
+                        <td>0.1</td>
+                        <td>0.012</td>
+                        <td>0.001</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
     </div>
 </div>
 <div class="row">
