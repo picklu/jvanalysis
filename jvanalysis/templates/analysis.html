@@ -1,18 +1,97 @@
-{%extends "base.html" %}
+{% extends "base.html" %}
 
-{% block jumbotron %}
-<div class="content-jumbotron">
-    <h1>Analysis</h1>
+{% block bokeh_css %}
+    <!-- Bokeh css resource -->
+    {{ bkcss|safe }}
+{% endblock %}
+    
+{% block content %}
+<div class="row">
+    <div class="col-md-12 table-responsive">
+        <h5 class="content-jumbotron">Upload data:</h5>
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th>
+                        Data
+                    </th>
+                    <th>Date</th>
+                    <th>Area</th>
+                    <th>Temperature</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                       <input type="file" name="file"/>
+                    </td>
+                    <td><input type="date" name="date"/></td>
+                    <td><input type="float" name="area"/></td>
+                    <td><input type="number" name="temperature"/></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 col-center-block">
+        <h5 class="content-jumbotron">Analyze data:</h5>
+        {{ bkdiv|safe }}
+    </div>
+</div>
+<div class="row">
+    <hr>
+</div>
+<div class="row">
+    <div class="col-md-5 table-responsive">
+        <label>Photovoltaic parameters</label>
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th><em>V</em><sub>oc</sub><br>(V)</th>
+                    <th><em>j</em><sub>sc</sub><br>(mA/cm<sup>2</sup>)</th>
+                    <th><em>ff</em><br>(%)</th>
+                    <th><em>PE</em><br>(%)</th>
+                </tr>
+            </thead>
+            <tobody>
+                <tr>
+                    <td>0.55</td>
+                    <td>12.5</td>
+                    <td>62.5</td>
+                    <td>4.0</td>
+                </tr>
+            </tobody>
+        </table>
+    </div>
+    <div class="col-md-7 table-responsive ">
+        <label>Model parameters</label>
+        <table class="table table-striped text-center">
+            <thead>
+                <tr>
+                    <th><em>j</em><sub>sc</sub><br>(mA/cm<sup>2</sup>)</th>
+                    <th><em>j</em><sub>0</sub><br>(mA/cm<sup>2</sup>)</th>
+                    <th><em>m</em><br>&nbsp;</th>
+                    <th><em>R</em><sub>s</sub><br>(&#x2126; cm<sup>2</sup>)</th>
+                    <th><em>R</em><sub>sh</sub><br>(&#x2126; cm<sup>2</sup>)</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>12.5</td>
+                <td>62.5e-8</td>
+                <td>1.5</td>
+                <td>7.8</td>
+                <td>3000</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
 
-{% block content %}
-<div class="row">
-    <div class="col-lg-6">
-        <h5>Upload data &lt;will be updated soon&gt;</h5>
-    </div>
-    <div class="col-lg-6">
-        <h5>Analyze data  &lt;will be updated soon&gt;</h5>
-    </div>
-</div>
+{% block bokeh_js %}
+    <!-- Bokeh js resources -->
+    {{ bkjs|safe }}
+    {{ bkscript|safe }}
 {% endblock %}
