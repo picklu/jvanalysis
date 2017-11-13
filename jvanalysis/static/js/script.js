@@ -16,16 +16,8 @@ function readTextFile(event)
         }));
         var table = document.getElementById('raw-data');
         parsedData.forEach((row, i) => {
-            if (i == 0) {
-                var rowTable = document.createElement("tr");
-                rowTable.innerHTML = `<th>#</th>`;
-                row.forEach((col, j) => {
-                rowTable.innerHTML += `<th>Col#${j+1}</th>`;
-                });
-                table.append(rowTable);
-            }
             var rowTable = document.createElement("tr");
-            rowTable.innerHTML = `<th>${i+1}</th>`;
+            rowTable.innerHTML = `<th><input id="dt${i}" type="checkbox"> ${i+1}</th>`;
             row.forEach((col, j) => {
                 rowTable.innerHTML += `<td>${col}</td>`;
             });
