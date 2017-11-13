@@ -76,5 +76,7 @@
     {%- block bokeh_js -%}{% endblock %}
     <!-- custom js script -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {%- block customjs -%}
+    {% endblock %}
 </body>
 </html>

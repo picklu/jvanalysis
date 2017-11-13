@@ -52,44 +52,10 @@
             </div>
         </div>
         <div class="row data-table">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">col-1</th>
-                        <th scope="col">col-2</th>
-                        <th scope="col">col-3</th>
-                    </tr>    
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>0.1</td>
-                        <td>0.012</td>
-                        <td>0.001</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>0.1</td>
-                        <td>0.012</td>
-                        <td>0.001</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>0.1</td>
-                        <td>0.012</td>
-                        <td>0.001</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">4</th>
-                        <td>0.1</td>
-                        <td>0.012</td>
-                        <td>0.001</td>
-                    </tr>
-                </tbody>
+            <table id="raw-data" class="table table-striped">
+                
             </table>
         </div>
-        
     </div>
 </div>
 <div class="row">
@@ -153,4 +119,8 @@
     <!-- Bokeh js resources -->
     {{ bkjs|safe }}
     {{ bkscript|safe }}
+{% endblock %}
+
+{% block customjs %}
+    <script>document.getElementById("file").addEventListener("change", readTextFile, false);</script>
 {% endblock %}
