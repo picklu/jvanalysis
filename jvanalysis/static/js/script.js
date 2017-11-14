@@ -1,28 +1,40 @@
-var parsedData;
+function readTextFile() {
+    $('input[type=file]').parse({
+    	config: {
+    		complete: (results, file) => {
+    		    saveLocal(file, results.data);
+    			showData(results.data);
+    		}
+    	},
+    	complete: () => {
+    		console.log('Done!');
+    	}
+    });
+}
 
-function readTextFile(event) 
-{
-    document.getElementById('raw-data').innerHTML = null;
-    var file = event.target.files[0];
-    if (!file) { return;}
-    var reader = new FileReader();
-    reader.onload = (e) => {
-        var text = e.target.result;
-        parsedData = Papa.parse(text).data;
-        localStorage.setItem('file', JSON.stringify({
-            fname: file.name,
-            content: text,
-            jsonFile:  parsedData
-        }));
-        var table = document.getElementById('raw-data');
-        parsedData.forEach((row, i) => {
-            var rowTable = document.createElement("tr");
-            rowTable.innerHTML = `<th><input id="dt${i}" type="checkbox"> ${i+1}</th>`;
-            row.forEach((col, j) => {
-                rowTable.innerHTML += `<td>${col}</td>`;
+function showData(data) {
+    var $dt = $('#raw-data');
+    $dt.html('Loading data ...');
+    if (data.length) {
+        $dt.html(null);
+        $(data).each((i, row) => {
+            var $rowTable = $('<tr/>');
+            $rowTable.html(`<th><input id="dt${i}" type="checkbox"> ${i+1}</th>`);
+            $(row).each((j, col) => {
+                $rowTable.append(`<td>${col}</td>`);
             });
-            table.append(rowTable);
+            $dt.append($rowTable);
         });
-    };
-    reader.readAsText(file);
+    }
+    else {
+        $dt.html('No data found!');
+    }
+}
+
+function saveLocal(file, data) {
+    localStorage.setItem('file', JSON.stringify({
+        fname: file.name,
+        fSize: file.size,
+        data: data
+    }));
 }

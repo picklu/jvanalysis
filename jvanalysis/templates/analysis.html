@@ -124,5 +124,5 @@
 {% endblock %}
 
 {% block customjs %}
-    <script>document.getElementById("file").addEventListener("change", readTextFile, false);</script>
+    <script>$('#file').on('change', readTextFile);</script>
 {% endblock %}
