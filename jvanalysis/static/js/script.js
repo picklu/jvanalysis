@@ -19,7 +19,7 @@ function showData(data) {
         $dt.html(null);
         $(data).each((i, row) => {
             var $rowTable = $('<tr/>');
-            $rowTable.html(`<td><input id="data-${i}" type="button" class="btn btn-sm my-sm-0 btn-info" value="&#x270D;"></td>`);
+            $rowTable.html(`<td><button class="btn btn-sm my-sm-0 btn-warning">&#x274c;</button><input id="data-${i}" type="button" class="btn btn-sm my-sm-0 btn-info" value="&#x270D;"></td>`);
             $(row).each((j, col) => {
                 $rowTable.append(`<td><span class="data-${i}">${col}</span></td>`);
             });
@@ -56,5 +56,12 @@ function toggleEdit() {
             $dataSpan.attr('contenteditable', false)
                      .removeClass('lead');
         }
+    });
+}
+
+function deleteRow() {
+    $('td button').on("click", (event) => {
+        var $this = $(event.currentTarget);
+        $this.parents(':eq(1)').remove();
     });
 }
