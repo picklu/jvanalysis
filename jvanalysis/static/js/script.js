@@ -19,12 +19,13 @@ function showData(data) {
         $dt.html(null);
         $(data).each((i, row) => {
             var $rowTable = $('<tr/>');
-            $rowTable.html(`<td><input id="data-${i}" type="button" class="btn btn-sm my-sm-0 btn-primary editable" value="Edit"></td>`);
+            $rowTable.html(`<td><input id="data-${i}" type="button" class="btn btn-sm my-sm-0 btn-info" value="&#x270D;"></td>`);
             $(row).each((j, col) => {
                 $rowTable.append(`<td><span class="data-${i}">${col}</span></td>`);
             });
             $dt.append($rowTable);
         });
+        deleteRow();
         toggleEdit();
     }
     else {
@@ -45,17 +46,13 @@ function toggleEdit() {
         var $this = $(event.currentTarget);
         var $dataSpan = $(`.${$this.prop('id')}`);
         
-        if ($this.val() == 'Edit') {
-            $this.val('Done')
-                 .addClass('btn-info')
-                 .removeClass('btn-primary');
+        if ($this.val() == '\u270D') {
+            $this.val('	\u2714');
             $dataSpan.attr('contenteditable', true)
                      .addClass('lead');
         }
         else {
-            $this.val('Edit')
-                 .addClass('btn-primary')
-                 .removeClass('btn-info');
+            $this.val('\u270D');
             $dataSpan.attr('contenteditable', false)
                      .removeClass('lead');
         }
