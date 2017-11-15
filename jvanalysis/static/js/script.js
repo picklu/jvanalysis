@@ -21,7 +21,7 @@ function showData(data) {
             var $rowTable = $('<tr/>');
             $rowTable.html(`<td><button class="btn btn-sm my-sm-0 btn-warning">&#x274c;</button><input id="data-${i}" type="button" class="btn btn-sm my-sm-0 btn-info" value="&#x270D;"></td>`);
             $(row).each((j, col) => {
-                $rowTable.append(`<td><span class="data-${i}">${col}</span></td>`);
+                $rowTable.append(`<td><span>${col}</span></td>`);
             });
             $dt.append($rowTable);
         });
@@ -44,7 +44,7 @@ function saveLocal(file, data) {
 function toggleEdit() {
     $('td input[type="button"]').on("click", (event) => {
         var $this = $(event.currentTarget);
-        var $dataSpan = $(`.${$this.prop('id')}`);
+        var $dataSpan = $this.parents(':eq(1)').find('span');
         
         if ($this.val() == '\u270D') {
             $this.val('	\u2714');
