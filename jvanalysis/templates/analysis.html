@@ -7,56 +7,75 @@
     
 {% block content %}
 <div class="row">
-    <div class="col-md-5">
-        <div class="row">
-            <div class="col-md-12">
-                <h5 class="content-jumbotron">File upload:</h5>
-            </div>
-        </div>
-        <form action="">
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <input type="file" id="file" class="form-control-file" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h5>Set data attributes:</h5>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label for="date">Date</label>
-                    <input id="date" class="form-control" type="date">
-                </div>
-                <div class="form-row">
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="area">Area/cm<sup>2</sup></label>
-                    <input id="area" class="form-control" type="Number" step="0.01" value=0.25>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="temperature">Temperature/<sup>o</sup>C</label>
-                    <input id="temperature" class="form-control" type="Number" value="25">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <input class="btn btn-block btn-primary" type="submit" value="Upload">
-                </div>
-            </div>   
-        </form>
-    </div>
-    <div class="col-md-7">
+        <div class="col-md-12">
         <div class="row">
             <div class="col-md-12">
                 <h5 class="content-jumbotron">Data:</h5>
             </div>
         </div>
-        <div class="row data-table">
-            <table id="raw-data" class="table table-striped">
-                
-            </table>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-data">
+                    <table id="raw-data" class="table table-striped">
+                    </table>
+                </div>
+            </div> 
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="content-jumbotron">File upload:</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <form action="">
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label class="custom-file">
+                              <input type="file" id="data-file" class="custom-file-input">
+                              <span class="custom-file-control"></span>
+                            </label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <select id="delimiter" name="delimiter" class="form-control">
+                                <option name="delimiter" value="delimeter">Delimiter</option>
+                                <option name="delimiter" value="tab">Tab</option>
+                                <option name="delimiter" value="space">Space</option>
+                                <option name="delimiter" value="comma">Comma</option>
+                                <option name="delimiter" value="semicolon">Semicolon</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Set data attributes:</h5>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="date">Measured Date</sup></label>
+                            <input id="date" class="form-control" type="date">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="area">Area/cm<sup>2</sup></label>
+                            <input id="area" class="form-control" type="Number" step="0.01" value=0.25>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="temperature">Temperature/<sup>o</sup>C</label>
+                            <input id="temperature" class="form-control" type="Number" value="25">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <input class="btn btn-block btn-primary" type="submit" value="Upload">
+                        </div>
+                    </div>   
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -124,5 +143,5 @@
 {% endblock %}
 
 {% block customjs %}
-    <script>$('#file').on('change', readTextFile);</script>
+    <script>$('#data-file').on('change', readTextFile);</script>
 {% endblock %}

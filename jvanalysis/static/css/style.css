@@ -26,9 +26,12 @@
     margin: 0 auto;
     /*margin-left: auto; margin-right: auto; */
 }
-.data-table {  
+.table-data {  
     height: 14.75rem !important;
     overflow: auto;
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
+}
+.custom-file {
+    width: 100%;
 }

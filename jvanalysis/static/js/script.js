@@ -1,13 +1,11 @@
 function readTextFile() {
-    $('input[type=file]').parse({
+    $('#data-file').parse({
     	config: {
     		complete: (results, file) => {
+    		    $('.custom-file-control').html(file.name);
     		    saveLocal(file, results.data);
     			showData(results.data);
     		}
-    	},
-    	complete: () => {
-    		console.log('Done!');
     	}
     });
 }
