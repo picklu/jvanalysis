@@ -1,13 +1,23 @@
-function readTextFile() {
-    $('#data-file').parse({
-    	config: {
-    		complete: (results, file) => {
-    		    $('.custom-file-control').html(file.name);
-    		    saveLocal(file, results.data);
-    			showData(results.data);
-    		}
-    	}
-    });
+var rawData;
+var parsedData;
+
+function uploadFile() {
+    var file = document.getElementById('data-file').files[0];
+    var reader = new FileReader();
+    
+    // update file control text area
+    $('.custom-file-control').text(file.name);
+    
+    reader.onload = (e) => {
+        rawData = e.target.result;
+        parseDataFile(rawData);
+    };
+    reader.readAsText(file);
+}
+
+function parseDataFile(csvData) {
+    parsedData = Papa.parse(csvData).data;
+    showData(parsedData);
 }
 
 function showData(data) {

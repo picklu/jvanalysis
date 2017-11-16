@@ -14,11 +14,11 @@
     margin-top:4.5rem;
 }
 .btn-jumbotron {
-    padding: 0.45rem 1.2rem !important;
-    font-size: 1.2rem !important;
+    padding: 0.45rem 1.2rem;
+    font-size: 1.2rem;
 }
 .heading-jumbotron {
-    margin:2.5rem 0rem !important;
+    margin:2.5rem 0rem;
 }
 .col-center-block {
     float: none;
@@ -27,11 +27,14 @@
     /*margin-left: auto; margin-right: auto; */
 }
 .table-data {  
-    height: 14.75rem !important;
+    height: 14.75rem;
     overflow: auto;
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
 }
 .custom-file {
     width: 100%;
+}
+.custom-file .custom-file-control:lang(en)::before {
+  content: "Browse File";
 }
