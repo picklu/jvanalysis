@@ -2,22 +2,47 @@ var rawData;
 var parsedData;
 
 function uploadFile() {
-    var file = document.getElementById('data-file').files[0];
-    var reader = new FileReader();
-    
-    // update file control text area
-    $('.custom-file-control').text(file.name);
-    
-    reader.onload = (e) => {
-        rawData = e.target.result;
-        parseDataFile(rawData);
-    };
-    reader.readAsText(file);
+    var fileObject = $('#data-file').prop('files');
+    if (fileObject.length) {
+        var file = fileObject[0];
+        var reader = new FileReader();
+        // update file control text area
+        $('.custom-file-control').text(file.name);
+        reader.onload = (e) => {
+            var delimiter = $('#delimiter').val();
+            rawData = e.target.result;
+            parseDataFile(rawData, delimiter);
+        };
+        reader.readAsText(file);
+    }
 }
 
-function parseDataFile(csvData) {
-    parsedData = Papa.parse(csvData).data;
+function parseDataFile(csvData, delimiter) {
+    var config = {delimiter: ''};
+    switch(delimiter) {
+        case 'tab':
+            config.delimiter = '\t';
+            break;
+        case 'space':
+            config.delimiter = ' ';
+            break;
+        case 'comma':
+            config.delimiter = ',';
+            break;
+        case 'semicolon':
+            config.delimiter = ';';
+            break;
+    }
+    parsedData = Papa.parse(csvData, config).data;
     showData(parsedData);
+}
+
+function reParse() {
+    var fileObject = $('#data-file').prop('files');
+    if (fileObject.length && rawData) {
+        var delimiter = $('#delimiter').val();
+        parseDataFile(rawData, delimiter);
+    }
 }
 
 function showData(data) {

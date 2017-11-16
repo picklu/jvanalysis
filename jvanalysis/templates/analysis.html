@@ -34,7 +34,7 @@
             </div>
             <div class="form-group col-md-4">
                 <select id="delimiter" name="delimiter" class="form-control">
-                    <option name="delimiter" value="delimeter">Delimiter</option>
+                    <option name="delimiter" value="auto">Delimiter</option>
                     <option name="delimiter" value="tab">Tab</option>
                     <option name="delimiter" value="space">Space</option>
                     <option name="delimiter" value="comma">Comma</option>
@@ -135,4 +135,5 @@
 
 {% block customjs %}
     <script>$('#data-file').on('change', uploadFile);</script>
+    <script>$('#delimiter').on('change', reParse);</script>
 {% endblock %}
