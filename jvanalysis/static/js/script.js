@@ -79,6 +79,7 @@ function showData(data) {
         toggleEdit();
         headerAction();
         toggleSelection();
+        updateDataInfo();
     }
     else {
         $dt.html('No data found!');
@@ -115,6 +116,7 @@ function deleteRow() {
     $('td button').on("click", (event) => {
         var $this = $(event.currentTarget);
         $this.parents(':eq(1)').remove();
+        updateDataInfo();
     });
 }
 
@@ -147,4 +149,10 @@ function toggleSelection() {
           }
         });
     });
+}
+
+function updateDataInfo() {
+    var numRws = $('#raw-data').find('tr').length - 1;
+    var numCols = $('#raw-data').find('th').length - 1;
+    $('#data-info').text(`${numRws} row(s) and ${numCols} header column(s)`);
 }
