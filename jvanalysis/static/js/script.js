@@ -58,7 +58,7 @@ function showData(data) {
                 $rowTable.html('<th class="table-fit"><span class="form-control">Header</span></th>');
                 $(row).each((j, col) => {
                     var $tHeader = $('<th/>');
-                    var $tSelect = $(`<select id="cv${j}" class="form-control" name="cv${j}"></select>`);
+                    var $tSelect = $(`<select id="cv${j}" class="form-control text-capitalize" name="cv${j}"></select>`);
                     $(options).each((k, opt) => {
                         var selected = (j == k) ? "selected" : "";
                         $tSelect.append(`<option name="cv${j}" value="${opt}" ${selected}>${opt}</option>`);
@@ -121,11 +121,12 @@ function headerAction() {
     $('th.table-fit span').hover((event) => {
         var $this = $(event.currentTarget);
         var $dataSelect = $this.parents(':eq(1)').find('select');
-        $dataSelect.addClass('text-uppercase');
+        $this.addClass('text-uppercase');
+        $dataSelect.addClass('font-weight-bold');
     }, (event) => {
         var $this = $(event.currentTarget);
         var $dataSelect = $this.parents(':eq(1)').find('select');
-        $dataSelect.removeClass("text-uppercase"); 
-        
+        $this.removeClass('text-uppercase');
+        $dataSelect.removeClass('font-weight-bold'); 
     });
 }
