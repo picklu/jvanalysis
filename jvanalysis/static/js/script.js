@@ -53,15 +53,24 @@ function showData(data) {
         $(data).each((i, row) => {
             if (i == 0) {
                 var $rowTable = $('<tr/>');
-                $rowTable.html('<th>Delete|Edit</th>');
+                var availableOptions = ["voltage", "current", "unknown", "unknonw1","unknonw2"];
+                var options = availableOptions.slice(0, row.length);
+                $rowTable.html('<th class="table-fit"><span class="form-control">Header</span></th>');
                 $(row).each((j, col) => {
-                    $rowTable.append(`<th><select id="cv${j}" class="form-control" name="cv${j}"><option name="cv${j}" value="voltage">Voltage</option><option name="cv${j}" value="current">Current</option></select></th>`);
+                    var $tHeader = $('<th/>');
+                    var $tSelect = $(`<select id="cv${j}" class="form-control" name="cv${j}"></select>`);
+                    $(options).each((k, opt) => {
+                        var selected = (j == k) ? "selected" : "";
+                        $tSelect.append(`<option name="cv${j}" value="${opt}" ${selected}>${opt}</option>`);
+                    });
+                    $tHeader.append($tSelect);
+                    $rowTable.append($tHeader);
                 });
                 $dt.append($rowTable);
             }
             var $rowTable = $('<tr/>');
-            $rowTable.html(`<td><button class="btn btn-sm my-sm-0 btn-warning">&#x274c;</button>&nbsp;<input id="data-${i}" type="button" class="btn btn-sm my-sm-0 btn-info" value="&#x270D;"></td>`);
-            $(row).each((k, col) => {
+            $rowTable.html(`<td class="table-fit"><button class="btn btn-sm my-sm-0 btn-warning">&#x274c;</button>&nbsp;<input id="data-${i}" type="button" class="btn btn-sm my-sm-0 btn-info" value="&#x270D;"></td>`);
+            $(row).each((l, col) => {
                 $rowTable.append(`<td><span>${col}</span></td>`);
             });
             $dt.append($rowTable);

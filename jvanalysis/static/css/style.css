@@ -36,5 +36,8 @@
     width: 100%;
 }
 .custom-file .custom-file-control:lang(en)::before {
-  content: "Browse File";
+    content: "Browse File";
+}
+.table-fit {
+    width: 1%;
 }
