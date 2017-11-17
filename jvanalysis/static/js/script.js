@@ -77,6 +77,7 @@ function showData(data) {
         });
         deleteRow();
         toggleEdit();
+        headerAction();
     }
     else {
         $dt.html('No data found!');
@@ -113,5 +114,18 @@ function deleteRow() {
     $('td button').on("click", (event) => {
         var $this = $(event.currentTarget);
         $this.parents(':eq(1)').remove();
+    });
+}
+
+function headerAction() {
+    $('th.table-fit span').hover((event) => {
+        var $this = $(event.currentTarget);
+        var $dataSelect = $this.parents(':eq(1)').find('select');
+        $dataSelect.addClass('text-uppercase');
+    }, (event) => {
+        var $this = $(event.currentTarget);
+        var $dataSelect = $this.parents(':eq(1)').find('select');
+        $dataSelect.removeClass("text-uppercase"); 
+        
     });
 }
