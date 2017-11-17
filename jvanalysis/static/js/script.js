@@ -78,6 +78,7 @@ function showData(data) {
         deleteRow();
         toggleEdit();
         headerAction();
+        toggleSelection();
     }
     else {
         $dt.html('No data found!');
@@ -128,5 +129,22 @@ function headerAction() {
         var $dataSelect = $this.parents(':eq(1)').find('select');
         $this.removeClass('text-uppercase');
         $dataSelect.removeClass('font-weight-bold'); 
+    });
+}
+
+function toggleSelection() {
+    var previous;
+    $('th select').on('focus', (e) => {
+        previous = $(e.target).val();
+    }).change((e) => {
+        var $this = $(e.target);
+        var current = $this.val();
+        $('th select').each((i, sl) => {
+          if ($this.attr('id') != $(sl).attr('id') && 
+            current == $(sl).val()) {
+              $(sl).val(previous);
+              previous = current;
+          }
+        });
     });
 }
