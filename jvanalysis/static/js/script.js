@@ -51,9 +51,17 @@ function showData(data) {
     if (data.length) {
         $dt.html(null);
         $(data).each((i, row) => {
+            if (i == 0) {
+                var $rowTable = $('<tr/>');
+                $rowTable.html('<th>Delete|Edit</th>');
+                $(row).each((j, col) => {
+                    $rowTable.append(`<th><select id="cv${j}" class="form-control" name="cv${j}"><option name="cv${j}" value="voltage">Voltage</option><option name="cv${j}" value="current">Current</option></select></th>`);
+                });
+                $dt.append($rowTable);
+            }
             var $rowTable = $('<tr/>');
-            $rowTable.html(`<td><button class="btn btn-sm my-sm-0 btn-warning">&#x274c;</button><input id="data-${i}" type="button" class="btn btn-sm my-sm-0 btn-info" value="&#x270D;"></td>`);
-            $(row).each((j, col) => {
+            $rowTable.html(`<td><button class="btn btn-sm my-sm-0 btn-warning">&#x274c;</button>&nbsp;<input id="data-${i}" type="button" class="btn btn-sm my-sm-0 btn-info" value="&#x270D;"></td>`);
+            $(row).each((k, col) => {
                 $rowTable.append(`<td><span>${col}</span></td>`);
             });
             $dt.append($rowTable);
