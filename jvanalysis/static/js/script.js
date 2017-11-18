@@ -71,8 +71,36 @@ function reParseData() {
 * invoked from parseData
 ***************************/
 function showData(data) {
-    var $dataTable = $('#raw-data');
-    $dataTable.html('Loading data ...');
+    var $rowDataTable = $('#row-table-data');
+    var $dataTable = $('<table/>', {
+        id: 'raw-data',
+        class: 'table table-bordered'
+    });
+    
+    $rowDataTable.append($('<div/>', {
+        class: 'row',
+        html: $('<div/>', {
+            class: 'col-md-12',
+            html: $('<h5/>', {
+                html: $('<span/>', {
+                text: 'Data: '
+            })
+        }).append($('<span/>', {
+                id: 'data-info'
+            }))
+        })
+    }));
+    
+    $('<div/>', {
+        class: 'row',
+        html: $('<div/>', {
+            class: 'col-md-12',
+            html: $('<div/>', {
+                class: 'table-data',
+                html: $dataTable
+            })
+        })
+    }).appendTo($rowDataTable);
     
     if (data.length) {
         // if there is data in the data
