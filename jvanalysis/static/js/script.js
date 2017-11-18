@@ -71,35 +71,75 @@ function reParseData() {
 * invoked from parseData
 ***************************/
 function showData(data) {
-    var $dt = $('#raw-data');
-    $dt.html('Loading data ...');
+    var $dataTable = $('#raw-data');
+    $dataTable.html('Loading data ...');
+    
     if (data.length) {
-        $dt.html(null);
+        // if there is data in the data
+        // clear the data table
+        $dataTable.html(null);
         $(data).each(function(i, row) {
+            // create table header //
             if (i == 0) {
-                var $rowTable = $('<tr/>');
-                var availableOptions = ["voltage", "current", "other", "other1", "other2", "other3", "other4", "other5"];
+                var availableOptions = ["voltage", "current", "other", 
+                        "other1", "other2", "other3", "other4", "other5"];
                 var options = availableOptions.slice(0, row.length);
-                $rowTable.html('<th class="table-fit"><span class="form-control">Header</span></th>');
+                var $tableHeader = $('<tr/>', {
+                    html: $('<th/>', {
+                        class: 'table-fit',
+                        html: $('<span/>', {
+                            class: 'form-control',
+                            text: 'Header'
+                        })
+                    })
+                });
                 $(row).each(function(j, col) {
                     var $tHeader = $('<th/>');
-                    var $tSelect = $('<select id="cv' + j + '" class="form-control text-capitalize" name="cv' + j + '"></select>');
-                    $(options).each(function(k, opt) {
-                        var selected = (j == k) ? "selected" : "";
-                        $tSelect.append('<option name="cv' + j + '" value="' + opt +'" ' + selected + '>' + opt + '</option>');
+                    var $tSelect = $('<select/>', {
+                        id: 'cv' + j,
+                        class: 'form-control text-capitalize',
+                        name: 'cv' + j
                     });
-                    $tHeader.append($tSelect);
-                    $rowTable.append($tHeader);
+                    $(options).each(function(k, opt) {
+                        var $selectOption = $('<option/>', {
+                            name:'cv' + j,
+                            value: opt,
+                            selected: (j == k),
+                            text: opt
+                        });
+                        $tSelect.append($selectOption);
+                    });
+                    $tHeader.append($tSelect).appendTo($tableHeader);
                 });
-                $dt.append($rowTable);
+                $dataTable.append($tableHeader);
             }
+            // create table body //
             var $rowTable = $('<tr/>');
-            $rowTable.html('<td class="table-fit"><button class="btn btn-sm my-sm-0 btn-warning">&#x274c;</button>&nbsp;<input id="data-' + i + '" type="button" class="btn btn-sm my-sm-0 btn-info" value="&#x270D;"></td>');
+            // buttons for each row
+            $('<td/>', {
+                class: 'table-fit',
+                html: $('<button/>', {
+                    class: 'btn btn-sm my-sm-0 btn-warning',
+                    text: '\u274C'
+                })
+            }).append('&nbsp;').append($('<input/>', {
+                id: 'data-' + i,
+                type: 'button', 
+                class: 'btn btn-sm my-sm-0 btn-info',
+                value: '\u270D'
+                })
+            ).appendTo($rowTable);
+            // data for each row
             $(row).each(function(l, col) {
-                $rowTable.append('<td><span>' + col + '</span></td>');
+                $('<td/>', {
+                    html: $('<span/>', {
+                        text: col
+                    })
+                }).appendTo($rowTable);
             });
-            $dt.append($rowTable);
+            $dataTable.append($rowTable);
         });
+        // invoke event handlers for table
         deleteRow();
         toggleEdit();
         headerAction();
@@ -107,7 +147,8 @@ function showData(data) {
         updateDataInfo();
     }
     else {
-        $dt.html('No data found!');
+        // there was no data
+        $dataTable.html('No data found!');
     }
 }
 
@@ -132,7 +173,7 @@ function toggleEdit() {
         var $dataSpan = $this.parents(':eq(1)').find('span');
         
         if ($this.val() == '\u270D') {
-            $this.val('	\u2714');
+            $this.val('\u2714');
             $dataSpan.attr('contenteditable', true)
                      .addClass('lead');
         }
