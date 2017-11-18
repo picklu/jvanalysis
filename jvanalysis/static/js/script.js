@@ -11,13 +11,13 @@ function uploadFile() {
         reader.onload = function(e) {
             var delimiter = $('#delimiter').val();
             rawData = e.target.result;
-            parseDataFile(rawData, delimiter);
+            parseData(rawData, delimiter);
         };
         reader.readAsText(file);
     }
 }
 
-function parseDataFile(csvData, delimiter) {
+function parseData(csvData, delimiter) {
     var config = {delimiter: ''};
     switch(delimiter) {
         case 'tab':
@@ -37,11 +37,12 @@ function parseDataFile(csvData, delimiter) {
     showData(parsedData);
 }
 
-function reParse() {
+function reParseData() {
+    console.log('reParseData() is triggered!');
     var fileObject = $('#data-file').prop('files');
     if (fileObject.length && rawData) {
         var delimiter = $('#delimiter').val();
-        parseDataFile(rawData, delimiter);
+        parseData(rawData, delimiter);
     }
 }
 
@@ -58,10 +59,10 @@ function showData(data) {
                 $rowTable.html('<th class="table-fit"><span class="form-control">Header</span></th>');
                 $(row).each(function(j, col) {
                     var $tHeader = $('<th/>');
-                    var $tSelect = $(`<select id="cv${j}" class="form-control text-capitalize" name="cv${j}"></select>`);
+                    var $tSelect = $('<select id="cv' + j + '" class="form-control text-capitalize" name="cv' + j + '"></select>');
                     $(options).each(function(k, opt) {
                         var selected = (j == k) ? "selected" : "";
-                        $tSelect.append(`<option name="cv${j}" value="${opt}" ${selected}>${opt}</option>`);
+                        $tSelect.append('<option name="cv' + j + '" value="' + opt +'" ' + selected + '>' + opt + '</option>');
                     });
                     $tHeader.append($tSelect);
                     $rowTable.append($tHeader);
@@ -69,9 +70,9 @@ function showData(data) {
                 $dt.append($rowTable);
             }
             var $rowTable = $('<tr/>');
-            $rowTable.html(`<td class="table-fit"><button class="btn btn-sm my-sm-0 btn-warning">&#x274c;</button>&nbsp;<input id="data-${i}" type="button" class="btn btn-sm my-sm-0 btn-info" value="&#x270D;"></td>`);
+            $rowTable.html('<td class="table-fit"><button class="btn btn-sm my-sm-0 btn-warning">&#x274c;</button>&nbsp;<input id="data-' + i + '" type="button" class="btn btn-sm my-sm-0 btn-info" value="&#x270D;"></td>');
             $(row).each(function(l, col) {
-                $rowTable.append(`<td><span>${col}</span></td>`);
+                $rowTable.append('<td><span>' + col + '</span></td>');
             });
             $dt.append($rowTable);
         });
@@ -154,5 +155,5 @@ function toggleSelection() {
 function updateDataInfo() {
     var numRws = $('#raw-data').find('tr').length - 1;
     var numCols = $('#raw-data').find('th').length - 1;
-    $('#data-info').text(`${numRws} row(s) and ${numCols} header column(s)`);
+    $('#data-info').text(numRws + ' row(s) and '+ numCols + ' header column(s)');
 }
