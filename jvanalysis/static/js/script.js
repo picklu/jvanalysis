@@ -1,13 +1,21 @@
 var rawData;
 var parsedData;
 
+/*********************************
+* Upload text or csv file
+* triggered when a file is slected
+**********************************/
 function uploadFile() {
     var fileObject = $('#data-file').prop('files');
+    
     if (fileObject.length) {
         var file = fileObject[0];
         var reader = new FileReader();
+        
         // update file control text area
         $('.custom-file-control').text(file.name);
+        
+        // read file, save rawData, and parse the rawData
         reader.onload = function(e) {
             var delimiter = $('#delimiter').val();
             rawData = e.target.result;
@@ -17,8 +25,13 @@ function uploadFile() {
     }
 }
 
+/**********************************
+* Parse csv data with Papa parse
+***********************************/
 function parseData(csvData, delimiter) {
     var config = {delimiter: ''};
+    
+    // re configure according to delimiter
     switch(delimiter) {
         case 'tab':
             config.delimiter = '\t';
@@ -33,12 +46,19 @@ function parseData(csvData, delimiter) {
             config.delimiter = ';';
             break;
     }
+    
+    // parse data with Papa parse
     parsedData = Papa.parse(csvData, config).data;
+    
+    // show data in a table
     showData(parsedData);
 }
 
+/**********************************
+* Reparse csv data with parseData
+* triggered when delimiter is changed
+***********************************/
 function reParseData() {
-    console.log('reParseData() is triggered!');
     var fileObject = $('#data-file').prop('files');
     if (fileObject.length && rawData) {
         var delimiter = $('#delimiter').val();
@@ -46,6 +66,10 @@ function reParseData() {
     }
 }
 
+/**************************
+* Display data in a table
+* invoked from parseData
+***************************/
 function showData(data) {
     var $dt = $('#raw-data');
     $dt.html('Loading data ...');
@@ -87,6 +111,9 @@ function showData(data) {
     }
 }
 
+/**********************************
+* Save data in localStorage
+***********************************/
 function saveLocal(file, data) {
     localStorage.setItem('file', JSON.stringify({
         fname: file.name,
@@ -95,6 +122,10 @@ function saveLocal(file, data) {
     }));
 }
 
+/**********************************
+* Toggle edit button in data table
+* invoked from showData
+***********************************/
 function toggleEdit() {
     $('td input[type="button"]').on("click", function(event) {
         var $this = $(event.currentTarget);
@@ -113,6 +144,10 @@ function toggleEdit() {
     });
 }
 
+/**********************************
+* Delete a row in the data table
+* invoked from showData
+***********************************/
 function deleteRow() {
     $('td button').on("click", function(event) {
         var $this = $(event.currentTarget);
@@ -121,6 +156,10 @@ function deleteRow() {
     });
 }
 
+/**********************************
+* Triggered by mouse over/out
+* invoked from showData
+***********************************/
 function headerAction() {
     $('th.table-fit span').hover(function(event) {
         var $this = $(event.currentTarget);
@@ -135,6 +174,10 @@ function headerAction() {
     });
 }
 
+/**********************************
+* Trigered by header selection change
+* invoked from showData
+***********************************/
 function toggleSelection() {
     var previous;
     $('th select').on('focus', function(e) {
@@ -152,6 +195,11 @@ function toggleSelection() {
     });
 }
 
+/**********************************
+* Show number of columns and rows in 
+* the data table
+* invoked from showData and deleteRow
+***********************************/
 function updateDataInfo() {
     var numRws = $('#raw-data').find('tr').length - 1;
     var numCols = $('#raw-data').find('th').length - 1;
