@@ -8,7 +8,7 @@ function uploadFile() {
         var reader = new FileReader();
         // update file control text area
         $('.custom-file-control').text(file.name);
-        reader.onload = (e) => {
+        reader.onload = function(e) {
             var delimiter = $('#delimiter').val();
             rawData = e.target.result;
             parseDataFile(rawData, delimiter);
@@ -50,16 +50,16 @@ function showData(data) {
     $dt.html('Loading data ...');
     if (data.length) {
         $dt.html(null);
-        $(data).each((i, row) => {
+        $(data).each(function(i, row) {
             if (i == 0) {
                 var $rowTable = $('<tr/>');
                 var availableOptions = ["voltage", "current", "unknown", "unknonw1","unknonw2"];
                 var options = availableOptions.slice(0, row.length);
                 $rowTable.html('<th class="table-fit"><span class="form-control">Header</span></th>');
-                $(row).each((j, col) => {
+                $(row).each(function(j, col) {
                     var $tHeader = $('<th/>');
                     var $tSelect = $(`<select id="cv${j}" class="form-control text-capitalize" name="cv${j}"></select>`);
-                    $(options).each((k, opt) => {
+                    $(options).each(function(k, opt) {
                         var selected = (j == k) ? "selected" : "";
                         $tSelect.append(`<option name="cv${j}" value="${opt}" ${selected}>${opt}</option>`);
                     });
@@ -70,7 +70,7 @@ function showData(data) {
             }
             var $rowTable = $('<tr/>');
             $rowTable.html(`<td class="table-fit"><button class="btn btn-sm my-sm-0 btn-warning">&#x274c;</button>&nbsp;<input id="data-${i}" type="button" class="btn btn-sm my-sm-0 btn-info" value="&#x270D;"></td>`);
-            $(row).each((l, col) => {
+            $(row).each(function(l, col) {
                 $rowTable.append(`<td><span>${col}</span></td>`);
             });
             $dt.append($rowTable);
@@ -95,7 +95,7 @@ function saveLocal(file, data) {
 }
 
 function toggleEdit() {
-    $('td input[type="button"]').on("click", (event) => {
+    $('td input[type="button"]').on("click", function(event) {
         var $this = $(event.currentTarget);
         var $dataSpan = $this.parents(':eq(1)').find('span');
         
@@ -113,7 +113,7 @@ function toggleEdit() {
 }
 
 function deleteRow() {
-    $('td button').on("click", (event) => {
+    $('td button').on("click", function(event) {
         var $this = $(event.currentTarget);
         $this.parents(':eq(1)').remove();
         updateDataInfo();
@@ -121,12 +121,12 @@ function deleteRow() {
 }
 
 function headerAction() {
-    $('th.table-fit span').hover((event) => {
+    $('th.table-fit span').hover(function(event) {
         var $this = $(event.currentTarget);
         var $dataSelect = $this.parents(':eq(1)').find('select');
         $this.addClass('text-uppercase');
         $dataSelect.addClass('font-weight-bold');
-    }, (event) => {
+    }, function(event) {
         var $this = $(event.currentTarget);
         var $dataSelect = $this.parents(':eq(1)').find('select');
         $this.removeClass('text-uppercase');
@@ -136,12 +136,12 @@ function headerAction() {
 
 function toggleSelection() {
     var previous;
-    $('th select').on('focus', (e) => {
+    $('th select').on('focus', function(e) {
         previous = $(e.target).val();
-    }).change((e) => {
+    }).change(function(e) {
         var $this = $(e.target);
         var current = $this.val();
-        $('th select').each((i, sl) => {
+        $('th select').each(function(i, sl) {
           if ($this.attr('id') != $(sl).attr('id') && 
             current == $(sl).val()) {
               $(sl).val(previous);
