@@ -78,7 +78,7 @@ function showData(data) {
         $(data).each(function(i, row) {
             if (i == 0) {
                 var $rowTable = $('<tr/>');
-                var availableOptions = ["voltage", "current", "unknown", "unknonw1","unknonw2"];
+                var availableOptions = ["voltage", "current", "other", "other1", "other2", "other3", "other4", "other5"];
                 var options = availableOptions.slice(0, row.length);
                 $rowTable.html('<th class="table-fit"><span class="form-control">Header</span></th>');
                 $(row).each(function(j, col) {
