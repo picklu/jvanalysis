@@ -292,5 +292,5 @@ function toggleSelection() {
 function updateDataInfo() {
     var numRws = $('#raw-data').find('tr').length - 1;
     var numCols = $('#raw-data').find('th').length - 1;
-    $('#data-info').text(numRws + ' row(s) and '+ numCols + ' header column(s).');
+    $('#data-info').text('There are total ' + numRws + ' row(s) and '+ numCols + ' column(s) (based on first row) in the data.');
 }
