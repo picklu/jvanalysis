@@ -50,6 +50,7 @@ function parseData(csvData, delimiter) {
     // parse data with Papa parse
     parsedData = Papa.parse(csvData, config).data;
     
+    // if there is no table then create one
     if ($('#raw-data').length == 0) {
         createTable();
     }
@@ -293,7 +294,7 @@ function toggleSelection() {
 * invoked from showData and deleteRow
 ***********************************/
 function updateDataInfo() {
-    var numRws = $('#raw-data').find('tr').length - 1;
-    var numCols = $('#raw-data').find('th').length - 1;
+    var numRws = parsedData.length;
+    var numCols = parsedData[0].length;
     $('#data-info').text('There are total ' + numRws + ' row(s) and '+ numCols + ' column(s) (based on first row) in the data.');
 }
