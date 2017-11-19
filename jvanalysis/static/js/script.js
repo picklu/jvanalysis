@@ -50,6 +50,10 @@ function parseData(csvData, delimiter) {
     // parse data with Papa parse
     parsedData = Papa.parse(csvData, config).data;
     
+    if ($('#raw-data').length == 0) {
+        createTable();
+    }
+    
     // show data in a table
     showData(parsedData);
 }
@@ -66,41 +70,57 @@ function reParseData() {
     }
 }
 
+/**********************************
+* Create table when file is loaded 
+* for the first time
+* invoked from parseData
+***********************************/
+function createTable() {
+    var $tableContainer = $('#table-container') ;
+    var $dataTable = $('<div/>', {
+        class: 'table-data',
+        html: $('<table/>', {
+            id: 'raw-data',
+            class: 'table table-bordered'
+        })
+    });
+    
+    // create div for data info inside info container
+    $('<div/>', {
+        class: 'alert alert-info',
+        html: $('<span/>', {
+            text: 'Data: '
+        })
+    }).append($('<span/>', {
+        id: 'data-info'
+    })).append('&nbsp;').append($('<strong/>', {
+        id: 'table-show-hide',
+        text: 'Hide table'
+    })).appendTo($('#table-info-container'));
+    
+    // create table inside table container
+    $tableContainer.append($dataTable);
+    
+    // click event handler for button
+    $('#table-show-hide').on('click', function() {
+        var $this = $(this) ;
+        if ($this.text() == 'Hide table') {
+            $this.text('Show table');
+            $dataTable.hide();
+        }
+        else {
+            $this.text('Hide table');
+            $dataTable.show();
+        }
+    });
+}
+
 /**************************
 * Display data in a table
 * invoked from parseData
 ***************************/
 function showData(data) {
-    var $rowDataTable = $('#row-table-data');
-    var $dataTable = $('<table/>', {
-        id: 'raw-data',
-        class: 'table table-bordered'
-    });
-    
-    $rowDataTable.append($('<div/>', {
-        class: 'row',
-        html: $('<div/>', {
-            class: 'col-md-12',
-            html: $('<h5/>', {
-                html: $('<span/>', {
-                text: 'Data: '
-            })
-        }).append($('<span/>', {
-                id: 'data-info'
-            }))
-        })
-    }));
-    
-    $('<div/>', {
-        class: 'row',
-        html: $('<div/>', {
-            class: 'col-md-12',
-            html: $('<div/>', {
-                class: 'table-data',
-                html: $dataTable
-            })
-        })
-    }).appendTo($rowDataTable);
+    var $dataTable = $('#raw-data');
     
     if (data.length) {
         // if there is data in the data
@@ -272,5 +292,5 @@ function toggleSelection() {
 function updateDataInfo() {
     var numRws = $('#raw-data').find('tr').length - 1;
     var numCols = $('#raw-data').find('th').length - 1;
-    $('#data-info').text(numRws + ' row(s) and '+ numCols + ' header column(s)');
+    $('#data-info').text(numRws + ' row(s) and '+ numCols + ' header column(s).');
 }
