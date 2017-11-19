@@ -89,11 +89,9 @@ function createTable() {
     $('<div/>', {
         class: 'alert alert-info',
         html: $('<span/>', {
-            text: 'Data: '
+            id: 'data-info'
         })
-    }).append($('<span/>', {
-        id: 'data-info'
-    })).append('&nbsp;').append($('<strong/>', {
+    }).append('&nbsp;').append($('<strong/>', {
         id: 'table-show-hide',
         text: 'Hide table'
     })).appendTo($('#table-info-container'));
