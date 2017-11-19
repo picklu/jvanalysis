@@ -101,9 +101,14 @@ function createTable() {
     // create table inside table container
     $tableContainer.append($dataTable);
     
-    // click event handler for button
-    $('#table-show-hide').on('click', function() {
-        var $this = $(this) ;
+    // hover and click event handler for #table-show-hide
+    $('#table-show-hide').hover(function() {
+        $(this).addClass('text-success');
+    }, function() {
+        var $this = $(this);
+        $(this).removeClass('text-success');
+    }).on('click', function() {
+        var $this = $(this);
         if ($this.text() == 'Hide table') {
             $this.text('Show table');
             $dataTable.hide();
