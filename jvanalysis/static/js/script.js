@@ -171,13 +171,13 @@ function showData(data) {
             $('<td/>', {
                 class: 'table-fit',
                 html: $('<button/>', {
-                    class: 'btn btn-sm my-sm-0 btn-warning',
+                    class: 'crossout btn btn-sm my-sm-0 btn-warning',
                     text: '\u274C'
                 })
             }).append('&nbsp;').append($('<input/>', {
                 id: 'data-' + i,
                 type: 'button', 
-                class: 'btn btn-sm my-sm-0 btn-info',
+                class: 'btn btn-sm btn-info',
                 value: '\u270D'
                 })
             ).appendTo($rowTable);
@@ -185,8 +185,11 @@ function showData(data) {
             $(row).each(function(l, col) {
                 $('<td/>', {
                     html: $('<span/>', {
-                        text: col
-                    })
+                        text: (col == '') ? 'NaN' : col
+                    }).append('&nbsp;').append($('<button/>', {
+                        class: 'crossout btn btn-sm',
+                        text: '\u274C'
+                    }))
                 }).appendTo($rowTable);
             });
             $dataTable.append($rowTable);
@@ -220,7 +223,7 @@ function saveLocal(file, data) {
 * invoked from showData
 ***********************************/
 function toggleEdit() {
-    $('td input[type="button"]').on("click", function(event) {
+    $('td input[type=button]').on('click', function(event) {
         var $this = $(event.currentTarget);
         var $dataSpan = $this.parents(':eq(1)').find('span');
         
@@ -242,8 +245,8 @@ function toggleEdit() {
 * invoked from showData
 ***********************************/
 function deleteRow() {
-    $('td button').on("click", function(event) {
-        var $this = $(event.currentTarget);
+    $('.crossout').on('click', function() {
+        var $this = $(this);
         $this.parents(':eq(1)').remove();
         updateDataInfo();
     });
