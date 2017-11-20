@@ -93,12 +93,12 @@ function reParseData() {
 * invoked from showData
 ***********************************/
 function createTable() {
+    var $tHead = $('<thead/>');
+    var $tBody = $('<tbody/>');
     var $table = $('<table/>', {
             id: 'raw-data',
             class: 'table table-bordered'
-    });
-    var $tHead = $('<thead/>');
-    var $tBody = $('<tbody/>');
+        });
     var $tableDiv = $('<div/>', {
         class: 'table-data',
         html: $table
@@ -360,20 +360,22 @@ function alertTable(message, alertType) {
                  .append('&nbsp;').append($tableShowHide);
         
         // hover and click event handler for show/hide
-        $('#table-show-hide').hover(function() {
+        $tableShowHide.hover(function() {
             $(this).addClass('text-success');
         }, function() {
             var $this = $(this);
             $(this).removeClass('text-success');
         }).on('click', function() {
             var $this = $(this);
+            var $tableContainer = $('#table-container');
+            
             if ($this.text() == 'Hide table') {
                 $this.text('Show table');
-                $dataTable.hide();
+                $tableContainer.hide();
             }
             else {
                 $this.text('Hide table');
-                $dataTable.show();
+                $tableContainer.show();
             }
         });
         
