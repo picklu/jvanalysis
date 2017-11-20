@@ -171,13 +171,13 @@ function showData(data) {
             $('<td/>', {
                 class: 'table-fit',
                 html: $('<button/>', {
-                    class: 'crossout btn btn-sm my-sm-0 btn-warning',
+                    class: 'crossout btn btn-xs btn-warning',
                     text: '\u274C'
                 })
             }).append('&nbsp;').append($('<input/>', {
                 id: 'data-' + i,
                 type: 'button', 
-                class: 'btn btn-sm btn-info',
+                class: 'btn btn-xs btn-info',
                 value: '\u270D'
                 })
             ).appendTo($rowTable);
@@ -187,7 +187,7 @@ function showData(data) {
                     html: $('<span/>', {
                         text: (col == '') ? 'NaN' : col
                     }).append('&nbsp;').append($('<button/>', {
-                        class: 'crossout btn btn-sm',
+                        class: 'crossout btn btn-xs',
                         text: '\u274C'
                     }))
                 }).appendTo($rowTable);
