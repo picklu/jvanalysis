@@ -16,9 +16,9 @@ function uploadFile() {
         $('.custom-file-control').text(file.name);
         
         // read file, save rawData, and parse the rawData
-        reader.onload = function(e) {
+        reader.onload = function() {
             var delimiter = $('#delimiter').val();
-            rawData = e.target.result;
+            rawData = this.result;
             parseData(rawData, delimiter);
         };
         reader.readAsText(file);
@@ -186,11 +186,11 @@ function showData(data) {
                 $('<td/>', {
                     html: $('<span/>', {
                         text: (col == '') ? 'NaN' : col
-                    }).append('&nbsp;').append($('<button/>', {
+                    }).append('&nbsp;&nbsp;')
+                }).append($('<button/>', {
                         class: 'crossout btn btn-xs',
                         text: '\u274C'
-                    }))
-                }).appendTo($rowTable);
+                    })).appendTo($rowTable);
             });
             $dataTable.append($rowTable);
         });
@@ -223,8 +223,8 @@ function saveLocal(file, data) {
 * invoked from showData
 ***********************************/
 function toggleEdit() {
-    $('td input[type=button]').on('click', function(event) {
-        var $this = $(event.currentTarget);
+    $('td input[type=button]').on('click', function() {
+        var $this = $(this);
         var $dataSpan = $this.parents(':eq(1)').find('span');
         
         if ($this.val() == '\u270D') {
@@ -257,13 +257,13 @@ function deleteRow() {
 * invoked from showData
 ***********************************/
 function headerAction() {
-    $('th.table-fit span').hover(function(event) {
-        var $this = $(event.currentTarget);
+    $('th.table-fit span').hover(function() {
+        var $this = $(this);
         var $dataSelect = $this.parents(':eq(1)').find('select');
         $this.addClass('text-uppercase');
         $dataSelect.addClass('font-weight-bold');
-    }, function(event) {
-        var $this = $(event.currentTarget);
+    }, function() {
+        var $this = $(this);
         var $dataSelect = $this.parents(':eq(1)').find('select');
         $this.removeClass('text-uppercase');
         $dataSelect.removeClass('font-weight-bold'); 
@@ -276,17 +276,17 @@ function headerAction() {
 ***********************************/
 function toggleSelection() {
     var previous;
-    $('th select').on('focus', function(e) {
-        previous = $(e.target).val();
-    }).change(function(e) {
-        var $this = $(e.target);
+    $('th select').on('focus', function() {
+        previous = $(this).val();
+    }).change(function() {
+        var $this = $(this);
         var current = $this.val();
         $('th select').each(function(i, sl) {
           if ($this.attr('id') != $(sl).attr('id') && 
             current == $(sl).val()) {
               $(sl).val(previous);
               previous = current;
-          }
+            }
         });
     });
 }
