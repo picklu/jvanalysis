@@ -69,7 +69,7 @@ function reParseData() {
 /**********************************
 * Create table when file is loaded 
 * for the first time
-* invoked from parseData
+* invoked from showData
 ***********************************/
 function createTable() {
     var $table = $('<table/>', {
@@ -96,6 +96,82 @@ function createTable() {
     };
 }
 
+/**********************************
+* Create table header for row
+* invoked from showData
+***********************************/
+function createTableHeader(row) {
+    var availableOptions = ["voltage", "current", "other", 
+            "other1", "other2", "other3", "other4", "other5"];
+    var options = availableOptions.slice(0, row.length);
+    var $tableHeader = $('<tr/>', {
+        html: $('<th/>', {
+            class: 'table-fit',
+            html: $('<span/>', {
+                class: 'form-control',
+                text: 'Header'
+            })
+        })
+    });
+    $(row).each(function(i, col) {
+        var $tHeader = $('<th/>');
+        var $tSelect = $('<select/>', {
+            id: 'cv' + i,
+            class: 'form-control text-capitalize',
+            name: 'cv' + i
+        });
+        $(options).each(function(j, opt) {
+            var $selectOption = $('<option/>', {
+                name:'cv' + i,
+                value: opt,
+                selected: (i == j),
+                text: opt
+            });
+            $tSelect.append($selectOption);
+        });
+        $tHeader.append($tSelect).appendTo($tableHeader);
+    });
+    
+    return $tableHeader;
+}
+
+/************************************
+* Create table row with the data row 
+* invoked from showData
+*************************************/
+function createTableRow(row, idx) {
+    var $tableRow = $('<tr/>');
+    
+    // button for each row
+    $('<td/>', {
+        class: 'table-fit',
+        html: $('<button/>', {
+            class: 'crossout btn btn-xs btn-warning',
+            text: '\u274C'
+        })
+    }).append('&nbsp;').append($('<input/>', {
+        id: 'data-' + idx,
+        type: 'button', 
+        class: 'btn btn-xs btn-info',
+        value: '\u270D'
+        })
+    ).appendTo($tableRow);
+    
+    // data for each row
+    $(row).each(function(i, col) {
+        $('<td/>', {
+            html: $('<span/>', {
+                text: (col == '') ? 'NaN' : col
+            }).append('&nbsp;&nbsp;')
+        }).append($('<button/>', {
+            class: 'crossout btn btn-xs',
+            text: '\u274C'
+        })).appendTo($tableRow);
+    });
+    
+    return $tableRow;
+}
+
 /**************************
 * Display data in a table
 * invoked from parseData
@@ -110,66 +186,12 @@ function showData(data) {
         $(data).each(function(i, row) {
             // create table header //
             if (i == 0) {
-                var availableOptions = ["voltage", "current", "other", 
-                        "other1", "other2", "other3", "other4", "other5"];
-                var options = availableOptions.slice(0, row.length);
-                var $tableHeader = $('<tr/>', {
-                    html: $('<th/>', {
-                        class: 'table-fit',
-                        html: $('<span/>', {
-                            class: 'form-control',
-                            text: 'Header'
-                        })
-                    })
-                });
-                $(row).each(function(j, col) {
-                    var $tHeader = $('<th/>');
-                    var $tSelect = $('<select/>', {
-                        id: 'cv' + j,
-                        class: 'form-control text-capitalize',
-                        name: 'cv' + j
-                    });
-                    $(options).each(function(k, opt) {
-                        var $selectOption = $('<option/>', {
-                            name:'cv' + j,
-                            value: opt,
-                            selected: (j == k),
-                            text: opt
-                        });
-                        $tSelect.append($selectOption);
-                    });
-                    $tHeader.append($tSelect).appendTo($tableHeader);
-                });
+                var $tableHeader = createTableHeader(row);
                 $table.thead.append($tableHeader);
             }
             // create table body //
-            var $rowTable = $('<tr/>');
-            // buttons for each row
-            $('<td/>', {
-                class: 'table-fit',
-                html: $('<button/>', {
-                    class: 'crossout btn btn-xs btn-warning',
-                    text: '\u274C'
-                })
-            }).append('&nbsp;').append($('<input/>', {
-                id: 'data-' + i,
-                type: 'button', 
-                class: 'btn btn-xs btn-info',
-                value: '\u270D'
-                })
-            ).appendTo($rowTable);
-            // data for each row
-            $(row).each(function(l, col) {
-                $('<td/>', {
-                    html: $('<span/>', {
-                        text: (col == '') ? 'NaN' : col
-                    }).append('&nbsp;&nbsp;')
-                }).append($('<button/>', {
-                        class: 'crossout btn btn-xs',
-                        text: '\u274C'
-                    })).appendTo($rowTable);
-            });
-            $table.tbody.append($rowTable);
+            var $tableBodyRow = createTableRow(row, i);
+            $table.tbody.append($tableBodyRow);
         });
         
         // show success alert
