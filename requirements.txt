@@ -1,6 +1,7 @@
 bokeh==0.12.10
 click==6.7
 Flask==0.12.2
+Flask-JSGlue==0.3.1
 htmlmin==0.1.11
 itsdangerous==0.24
 Jinja2==2.9.6
@@ -13,3 +14,4 @@ six==1.11.0
 tabulate==0.8.1
 tornado==4.5.2
 Werkzeug==0.12.2
+yapf==0.19.0

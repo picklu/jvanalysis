@@ -41,3 +41,14 @@
 .table-fit {
     width: 1%;
 }
+.ajax-loader-container {
+    position: relative;
+}
+.ajax-loader {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}

@@ -73,6 +73,8 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/papaparse.min.js') }}"></script>
     <!-- https://github.com/adamwdraper/Numeral-js -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/numeral.js') }}"></script>
+    <!-- http://stewartjpark.com/Flask-JSGlue/ -->
+    {{ JSGlue.include() }}
     {%- block bokeh_js -%}{% endblock %}
     <!-- custom js script -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>

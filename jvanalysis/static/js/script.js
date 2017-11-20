@@ -9,6 +9,9 @@ function uploadFile() {
     var fileObject = $('#data-file').prop('files');
     
     if (fileObject.length) {
+        var $ajaxLoader = getAjaxLoader();
+        $('#table-container').html($ajaxLoader);
+        
         var file = fileObject[0];
         var reader = new FileReader();
         
@@ -23,6 +26,24 @@ function uploadFile() {
         };
         reader.readAsText(file);
     }
+}
+
+/*********************************
+* Return a div with class table-data
+* and image ajax laoder gif file
+* triggered when a file is slected
+**********************************/
+function getAjaxLoader() {
+    var $ajaxLoader = $('<div/>', {
+        class: 'table-data ajax-loader-container',
+        html: $('<img/>', {
+            class: 'ajax-loader',
+            alt: 'loading file',
+            src: Flask.url_for('static', {'filename': 'images/ajax-loader.gif'})
+        })
+    });
+    
+    return $ajaxLoader;
 }
 
 /**********************************
