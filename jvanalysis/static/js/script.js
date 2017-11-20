@@ -167,7 +167,7 @@ function createTableRow(row, idx) {
     $('<td/>', {
         class: 'table-fit',
         html: $('<button/>', {
-            class: 'crossout btn btn-xs btn-warning',
+            class: 'row-crossout btn btn-xs btn-warning',
             text: '\u274C'
         })
     }).append('&nbsp;').append($('<input/>', {
@@ -185,7 +185,7 @@ function createTableRow(row, idx) {
                 text: (col == '') ? 'NaN' : col
             }).append('&nbsp;&nbsp;')
         }).append($('<button/>', {
-            class: 'crossout btn btn-xs',
+            class: 'cell-crossout btn btn-xs',
             text: '\u274C'
         })).appendTo($tableRow);
     });
@@ -221,6 +221,7 @@ function showData(data) {
          
         // invoke event handlers for table
         deleteRow();
+        deleteCell();
         toggleEdit();
         headerAction();
         toggleSelection();
@@ -268,14 +269,28 @@ function toggleEdit() {
 }
 
 /**********************************
+* Delete a cell in the data table
+* invoked from showData
+***********************************/
+function deleteCell() {
+    $('.cell-crossout').on('click', function() {
+        var $this = $(this);
+        var message = updateDataInfo();
+        
+        $this.parent().remove();
+        alertTable(message, 'success');
+    });
+}
+
+/**********************************
 * Delete a row in the data table
 * invoked from showData
 ***********************************/
 function deleteRow() {
-    $('.crossout').on('click', function() {
+    $('.row-crossout').on('click', function() {
         var $this = $(this);
         var message = updateDataInfo();
-        
+
         $this.parents(':eq(1)').remove();
         alertTable(message, 'success');
     });
