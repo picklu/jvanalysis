@@ -76,15 +76,24 @@ function createTable() {
             id: 'raw-data',
             class: 'table table-bordered'
     });
+    var $tHead = $('<thead/>');
+    var $tBody = $('<tbody/>');
     var $tableDiv = $('<div/>', {
         class: 'table-data',
         html: $table
     });
+    
+    // append thead and tbody to the table
+    $table.append($tHead).append($tBody);
+    
         
     // add table to table container
     $('#table-container').html($tableDiv);
     
-    return $table;
+    return {
+        thead: $tHead, 
+        tbody: $tBody
+    };
 }
 
 /**************************
@@ -131,7 +140,7 @@ function showData(data) {
                     });
                     $tHeader.append($tSelect).appendTo($tableHeader);
                 });
-                $table.append($tableHeader);
+                $table.thead.append($tableHeader);
             }
             // create table body //
             var $rowTable = $('<tr/>');
@@ -160,7 +169,7 @@ function showData(data) {
                         text: '\u274C'
                     })).appendTo($rowTable);
             });
-            $table.append($rowTable);
+            $table.tbody.append($rowTable);
         });
         
         // show success alert
