@@ -161,7 +161,9 @@ function createTableHeader(row) {
 * invoked from showData
 *************************************/
 function createTableRow(row, idx) {
-    var $tableRow = $('<tr/>');
+    var $tableRow = $('<tr/>', {
+        row: idx
+    });
     
     // button for each row
     $('<td/>', {
@@ -171,7 +173,6 @@ function createTableRow(row, idx) {
             text: '\u274C'
         })
     }).append('&nbsp;').append($('<input/>', {
-        id: 'data-' + idx,
         type: 'button', 
         class: 'btn btn-xs btn-info',
         value: '\u270D'
@@ -181,10 +182,14 @@ function createTableRow(row, idx) {
     // data for each row
     $(row).each(function(i, col) {
         $('<td/>', {
+            col: i,
             html: $('<span/>', {
+                class: 'data-cell',
                 text: (col == '') ? 'NaN' : col
-            }).append('&nbsp;&nbsp;')
-        }).append($('<button/>', {
+            })
+        }).append($('<span/>', {
+            text: '\xa0\xa0'
+        })).append($('<button/>', {
             class: 'cell-crossout btn btn-xs',
             text: '\u274C'
         })).appendTo($tableRow);
@@ -253,7 +258,7 @@ function saveLocal(file, data) {
 function toggleEdit() {
     $('td input[type=button]').on('click', function() {
         var $this = $(this);
-        var $dataSpan = $this.parents(':eq(1)').find('span');
+        var $dataSpan = $this.parents(':eq(1)').find('span.data-cell');
         
         if ($this.val() == '\u270D') {
             $this.val('\u2714');
