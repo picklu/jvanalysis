@@ -182,6 +182,7 @@ function createTableRow(row, idx) {
     // data for each row
     $(row).each(function(i, col) {
         $('<td/>', {
+            row: idx,
             col: i,
             html: $('<span/>', {
                 class: 'data-cell',
@@ -279,10 +280,18 @@ function toggleEdit() {
 ***********************************/
 function deleteCell() {
     $('.cell-crossout').on('click', function() {
-        var $this = $(this);
+        var $cell = $(this).parent();
+        var rowIndex = $cell.attr('row');
+        var colIndex = $cell.attr('col');
         var message = updateDataInfo();
         
-        $this.parent().remove();
+        // update parsed data 
+        parsedData[rowIndex].splice(colIndex, 1);
+        
+        // remove the cell
+        $cell.remove();
+        
+        // display message
         alertTable(message, 'success');
     });
 }
@@ -293,11 +302,18 @@ function deleteCell() {
 ***********************************/
 function deleteRow() {
     $('.row-crossout').on('click', function() {
-        var $this = $(this);
+        var $row = $(this).parents(':eq(1)');
+        var rowIndex = $row.attr('row');
         var message = updateDataInfo();
-
-        $this.parents(':eq(1)').remove();
-        alertTable(message, 'success');
+        
+        // update parsed data
+        parsedData.splice(rowIndex, 1);
+        
+        // remove the row
+        $row.remove();
+        
+        // show data in a table
+        showData(parsedData);
     });
 }
 
