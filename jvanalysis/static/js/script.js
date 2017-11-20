@@ -50,11 +50,6 @@ function parseData(csvData, delimiter) {
     // parse data with Papa parse
     parsedData = Papa.parse(csvData, config).data;
     
-    // if there is no table then create one
-    if ($('#raw-data').length == 0) {
-        createTable();
-    }
-    
     // show data in a table
     showData(parsedData);
 }
@@ -77,46 +72,19 @@ function reParseData() {
 * invoked from parseData
 ***********************************/
 function createTable() {
-    var $tableContainer = $('#table-container') ;
-    var $dataTable = $('<div/>', {
-        class: 'table-data',
-        html: $('<table/>', {
+    var $table = $('<table/>', {
             id: 'raw-data',
             class: 'table table-bordered'
-        })
     });
-    
-    // create div for data info inside info container
-    $('<div/>', {
-        class: 'alert alert-info',
-        html: $('<span/>', {
-            id: 'data-info'
-        })
-    }).append('&nbsp;').append($('<strong/>', {
-        id: 'table-show-hide',
-        text: 'Hide table'
-    })).appendTo($('#table-info-container'));
-    
-    // create table inside table container
-    $tableContainer.append($dataTable);
-    
-    // hover and click event handler for #table-show-hide
-    $('#table-show-hide').hover(function() {
-        $(this).addClass('text-success');
-    }, function() {
-        var $this = $(this);
-        $(this).removeClass('text-success');
-    }).on('click', function() {
-        var $this = $(this);
-        if ($this.text() == 'Hide table') {
-            $this.text('Show table');
-            $dataTable.hide();
-        }
-        else {
-            $this.text('Hide table');
-            $dataTable.show();
-        }
+    var $tableDiv = $('<div/>', {
+        class: 'table-data',
+        html: $table
     });
+        
+    // add table to table container
+    $('#table-container').html($tableDiv);
+    
+    return $table;
 }
 
 /**************************
@@ -124,12 +92,12 @@ function createTable() {
 * invoked from parseData
 ***************************/
 function showData(data) {
-    var $dataTable = $('#raw-data');
+    var message;
     
     if (data.length) {
         // if there is data in the data
-        // clear the data table
-        $dataTable.html(null);
+        var $table = createTable();
+        
         $(data).each(function(i, row) {
             // create table header //
             if (i == 0) {
@@ -163,7 +131,7 @@ function showData(data) {
                     });
                     $tHeader.append($tSelect).appendTo($tableHeader);
                 });
-                $dataTable.append($tableHeader);
+                $table.append($tableHeader);
             }
             // create table body //
             var $rowTable = $('<tr/>');
@@ -192,8 +160,13 @@ function showData(data) {
                         text: '\u274C'
                     })).appendTo($rowTable);
             });
-            $dataTable.append($rowTable);
+            $table.append($rowTable);
         });
+        
+        // show success alert
+        message = updateDataInfo();
+        alertTable(message, 'success');
+         
         // invoke event handlers for table
         deleteRow();
         toggleEdit();
@@ -203,7 +176,9 @@ function showData(data) {
     }
     else {
         // there was no data
-        $dataTable.html('No data found!');
+        $('#table-container').html(null);
+        message = 'There is no data in the file!';
+        alertTable(message, 'fail');
     }
 }
 
@@ -247,8 +222,10 @@ function toggleEdit() {
 function deleteRow() {
     $('.crossout').on('click', function() {
         var $this = $(this);
+        var message = updateDataInfo();
+        
         $this.parents(':eq(1)').remove();
-        updateDataInfo();
+        alertTable(message, 'success');
     });
 }
 
@@ -276,6 +253,7 @@ function headerAction() {
 ***********************************/
 function toggleSelection() {
     var previous;
+    
     $('th select').on('focus', function() {
         previous = $(this).val();
     }).change(function() {
@@ -299,5 +277,61 @@ function toggleSelection() {
 function updateDataInfo() {
     var numRws = parsedData.length;
     var numCols = parsedData[0].length;
-    $('#data-info').text('There are total ' + numRws + ' row(s) and '+ numCols + ' column(s) (based on first row) in the data.');
+    
+    return 'There are total ' + numRws + 
+        ' row(s) and '+ numCols + 
+        ' column(s) (based on first row) in the data.';
+}
+
+/**********************************
+* Show alert message for the data table
+* invoked from showData
+***********************************/
+function alertTable(message, alertType) {
+    // create div for data info inside info container
+    var $alertDiv = $('<div/>', {
+        class: 'alert',
+        html: $('<span/>', {
+            id: 'data-info'
+        })
+    });
+    
+    if (alertType == 'success') {
+        // create show/hide button
+        var $tableShowHide = $('<strong/>', {
+                    id: 'table-show-hide',
+                    text: 'Hide table'
+        });
+        
+        // add appropriate class and add the show/hide button 
+        $alertDiv.addClass('alert-info')
+                 .append('&nbsp;').append($tableShowHide);
+        
+        // hover and click event handler for show/hide
+        $('#table-show-hide').hover(function() {
+            $(this).addClass('text-success');
+        }, function() {
+            var $this = $(this);
+            $(this).removeClass('text-success');
+        }).on('click', function() {
+            var $this = $(this);
+            if ($this.text() == 'Hide table') {
+                $this.text('Show table');
+                $dataTable.hide();
+            }
+            else {
+                $this.text('Hide table');
+                $dataTable.show();
+            }
+        });
+        
+    }
+    else if (alertType == 'fail') {
+        // add appropriate class
+        $alertDiv.addClass('alert-danger');
+    }
+    
+    // set the html of the table info container
+    $alertDiv.find('span').text(message);
+    $('#table-info-container').html($alertDiv);
 }
