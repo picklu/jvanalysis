@@ -72,7 +72,15 @@ function parseData(csvData, delimiter) {
     parsedData = Papa.parse(csvData, config).data;
     
     // show data in a table
-    showData(parsedData);
+    var alertType = showData(parsedData);
+    var message;
+    if (alertType == 'success') {
+        message = updateDataInfo();
+    }
+    else if (alertType == 'fail') {
+        message = 'There is no data!';
+    }
+    alertTable(message, alertType);
 }
 
 /**********************************
@@ -220,10 +228,6 @@ function showData(data) {
             var $tableBodyRow = createTableRow(row, i);
             $table.tbody.append($tableBodyRow);
         });
-        
-        // show success alert
-        message = updateDataInfo();
-        alertTable(message, 'success');
          
         // invoke event handlers for table
         deleteRow();
@@ -232,12 +236,14 @@ function showData(data) {
         headerAction();
         toggleSelection();
         updateDataInfo();
+        
+        return 'success';
     }
     else {
         // there was no data
         $('#table-container').html(null);
-        message = 'There is no data in the file!';
-        alertTable(message, 'fail');
+        
+        return 'fail';
     }
 }
 
@@ -283,7 +289,7 @@ function deleteCell() {
         var $cell = $(this).parent();
         var rowIndex = $cell.attr('row');
         var colIndex = $cell.attr('col');
-        var message = updateDataInfo();
+        var message;
         
         // update parsed data 
         parsedData[rowIndex].splice(colIndex, 1);
@@ -292,7 +298,10 @@ function deleteCell() {
         $cell.remove();
         
         // display message
-        alertTable(message, 'success');
+        message = updateDataInfo();
+        message = 'Table cell at row ' + rowIndex + ' and col ' + 
+            colIndex + ' has been deleted!. ' + message;
+        alertTable(message, 'warning');
     });
 }
 
@@ -302,9 +311,9 @@ function deleteCell() {
 ***********************************/
 function deleteRow() {
     $('.row-crossout').on('click', function() {
+        var message;
         var $row = $(this).parents(':eq(1)');
         var rowIndex = $row.attr('row');
-        var message = updateDataInfo();
         
         // update parsed data
         parsedData.splice(rowIndex, 1);
@@ -313,7 +322,19 @@ function deleteRow() {
         $row.remove();
         
         // show data in a table
-        showData(parsedData);
+        var alertType = showData(parsedData);
+        
+        if (alertType == 'success') {
+            message = updateDataInfo();
+            message = 'Table row at ' + rowIndex + ' has been deleted! ' + message;
+            alertType = 'warning';
+        }
+        else if (alertType == 'fail') {
+            message = 'There is no data!';
+        }
+        
+        alertTable(message, alertType);
+        
     });
 }
 
@@ -415,6 +436,10 @@ function alertTable(message, alertType) {
             }
         });
         
+    }
+    else if (alertType == 'warning') {
+        // add appropriate class
+        $alertDiv.addClass('alert-warning');
     }
     else if (alertType == 'fail') {
         // add appropriate class
