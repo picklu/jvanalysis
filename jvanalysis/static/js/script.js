@@ -1,11 +1,18 @@
+/*********************************
+* Global variables
+**********************************/
 var rawData;
 var parsedData;
+var isTableVisible = false;
 
 /*********************************
 * Upload text or csv file
 * triggered when a file is slected
 **********************************/
 function uploadFile() {
+    // empty table contaienr
+    $('#table-container').html(null);
+    
     var fileObject = $('#data-file').prop('files');
     
     if (fileObject.length) {
@@ -14,9 +21,6 @@ function uploadFile() {
         
         // update file control text area
         $('.custom-file-control').text(file.name);
-        
-        // empty table container
-        $('#table-container').html(null);
         
         // read file, save rawData, and parse the rawData
         reader.onload = function() {
@@ -31,7 +35,6 @@ function uploadFile() {
 /*********************************
 * Return a div with class table-data
 * and image ajax laoder gif file
-* triggered when a file is slected
 **********************************/
 function getAjaxLoader() {
     var $ajaxLoader = $('<div/>', {
@@ -88,18 +91,23 @@ function parseData(csvData, delimiter) {
 * triggered when delimiter is changed
 ***********************************/
 function reParseData() {
+    // empty table container
+    $('#table-container').html(null);
+    
+    // If there is already a data then reparse
     var fileObject = $('#data-file').prop('files');
-    if (fileObject.length && rawData) {
+    if (fileObject.length && rawData.length) {
         var delimiter = $('#delimiter').val();
         parseData(rawData, delimiter);
+        showData(parsedData);
     }
 }
 
-/**********************************
-* Create table when file is loaded 
-* for the first time
+/*******************************************
+* Create a table element inside a div 
+* return an object containing thead and tbody
 * invoked from showData
-***********************************/
+********************************************/
 function createTable() {
     var $tHead = $('<thead/>');
     var $tBody = $('<tbody/>');
@@ -207,10 +215,10 @@ function createTableRow(row, idx) {
     return $tableRow;
 }
 
-/**************************
+/********************************************************
 * Display data in a table
-* invoked from parseData
-***************************/
+* invoked from reParseData, deleteRow, and tableShowHide
+*********************************************************/
 function showData(data) {
     var $table = createTable();
     
@@ -309,19 +317,22 @@ function deleteRow() {
         $row.remove();
         
         // show data in a table
+        
         var alertType = parsedData.length ? 'success' : 'fail';
         
         if (alertType == 'success') {
+            showData(parsedData); 
             message = getDataInfo();
             message = 'Table row at ' + rowIndex + ' has been deleted! ' + message;
             alertType = 'warning';
         }
         else if (alertType == 'fail') {
+            isTableVisible = false;
+            $('#table-container').html(null);
             message = 'There is no data!';
         }
         
         alertTable(message, alertType);
-        
     });
 }
 
@@ -372,7 +383,7 @@ function toggleSelection() {
 ***********************************/
 function getDataInfo() {
     var numRws = parsedData.length;
-    var numCols = parsedData[0].length;
+    var numCols = numRws ? parsedData[0].length : 0;
     
     return 'There are total ' + numRws + 
         ' row(s) and '+ numCols + 
@@ -392,22 +403,24 @@ function alertTable(message, alertType) {
         })
     });
     
-    if (alertType == 'success') {
+    if (alertType == 'fail') {
+        // add appropriate class
+        $alertDiv.addClass('alert-danger');
+    }
+    else {
         // create show/hide button
         var $buttonShowHide = tableShowHide();
         
-        // add appropriate class and add the show/hide button 
-        $alertDiv.addClass('alert-info')
-                 .append('&nbsp;').append($buttonShowHide);
-    }
-    else if (alertType == 'warning') {
-        // add appropriate class
-        $alertDiv.addClass('alert-warning')
-                 .append('&nbsp;').append($buttonShowHide);
-    }
-    else if (alertType == 'fail') {
-        // add appropriate class
-        $alertDiv.addClass('alert-danger');
+        if (alertType == 'success') {
+            // add appropriate class and add the show/hide button 
+            $alertDiv.addClass('alert-info')
+                     .append('&nbsp;').append($buttonShowHide);
+        }
+        else if (alertType == 'warning') {
+            // add appropriate class
+            $alertDiv.addClass('alert-warning')
+                     .append('&nbsp;').append($buttonShowHide);
+        }
     }
     
     // set the html of the table info container
@@ -423,31 +436,30 @@ function tableShowHide() {
     // create show/hide button
     var $buttonShowHide = $('<strong/>', {
         id: 'table-show-hide',
-        text: 'Show table'
+        text: isTableVisible ? 'Hide table' : 'Show table'
     });
     
     // hover and click event handler for show/hide
     $buttonShowHide.hover(function() {
         $(this).addClass('text-success');
     }, function() {
-        var $this = $(this);
         $(this).removeClass('text-success');
     }).on('click', function() {
         var $this = $(this);
         var $tableContainer = $('#table-container');
         
-        if ($this.text() == 'Hide table') {
+        if (isTableVisible) {
+            isTableVisible = false;
             $this.text('Show table');
             $tableContainer.hide();
         }
-        else if ($this.text() == 'Show table') {
+        else {
+            isTableVisible = true;
             $this.text('Hide table');
-            if ($('#raw-data').length) {
-                $tableContainer.show();
-            }
-            else {
+            if (!$('#raw-data').length) {
                 showData(parsedData);
             }
+            $tableContainer.show();
         }
     });
     
