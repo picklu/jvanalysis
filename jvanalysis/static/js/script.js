@@ -15,8 +15,8 @@ function uploadFile() {
         // update file control text area
         $('.custom-file-control').text(file.name);
         
-        // show ajax-loader
-        $('#table-container').html(getAjaxLoader());
+        // empty table container
+        $('#table-container').html(null);
         
         // read file, save rawData, and parse the rawData
         reader.onload = function() {
@@ -72,7 +72,7 @@ function parseData(csvData, delimiter) {
     parsedData = Papa.parse(csvData, config).data;
     
     // show data in a table
-    var alertType = showData(parsedData);
+    var alertType = parsedData.length ? 'success' : 'fail';
     var message;
     if (alertType == 'success') {
         message = getDataInfo();
@@ -212,37 +212,26 @@ function createTableRow(row, idx) {
 * invoked from parseData
 ***************************/
 function showData(data) {
-    if (data.length) {
-        // if there is data in the data
-        var $table = createTable();
-        
-        $(data).each(function(i, row) {
-            // create table header //
-            if (i == 0) {
-                var $tableHeader = createTableHeader(row);
-                $table.thead.append($tableHeader);
-            }
-            // create table body //
-            var $tableBodyRow = createTableRow(row, i);
-            $table.tbody.append($tableBodyRow);
-        });
-         
-        // invoke event handlers for table
-        deleteRow();
-        deleteCell();
-        toggleEdit();
-        headerAction();
-        toggleSelection();
-        getDataInfo();
-        
-        return 'success';
-    }
-    else {
-        // there was no data
-        $('#table-container').html(null);
-        
-        return 'fail';
-    }
+    var $table = createTable();
+    
+    $(data).each(function(i, row) {
+        // create table header //
+        if (i == 0) {
+            var $tableHeader = createTableHeader(row);
+            $table.thead.append($tableHeader);
+        }
+        // create table body //
+        var $tableBodyRow = createTableRow(row, i);
+        $table.tbody.append($tableBodyRow);
+    });
+     
+    // invoke event handlers for table
+    deleteRow();
+    deleteCell();
+    toggleEdit();
+    headerAction();
+    toggleSelection();
+    getDataInfo();
 }
 
 /**********************************
@@ -320,7 +309,7 @@ function deleteRow() {
         $row.remove();
         
         // show data in a table
-        var alertType = showData(parsedData);
+        var alertType = parsedData.length ? 'success' : 'fail';
         
         if (alertType == 'success') {
             message = getDataInfo();
@@ -405,39 +394,16 @@ function alertTable(message, alertType) {
     
     if (alertType == 'success') {
         // create show/hide button
-        var $tableShowHide = $('<strong/>', {
-                    id: 'table-show-hide',
-                    text: 'Hide table'
-        });
+        var $buttonShowHide = tableShowHide();
         
         // add appropriate class and add the show/hide button 
         $alertDiv.addClass('alert-info')
-                 .append('&nbsp;').append($tableShowHide);
-        
-        // hover and click event handler for show/hide
-        $tableShowHide.hover(function() {
-            $(this).addClass('text-success');
-        }, function() {
-            var $this = $(this);
-            $(this).removeClass('text-success');
-        }).on('click', function() {
-            var $this = $(this);
-            var $tableContainer = $('#table-container');
-            
-            if ($this.text() == 'Hide table') {
-                $this.text('Show table');
-                $tableContainer.hide();
-            }
-            else {
-                $this.text('Hide table');
-                $tableContainer.show();
-            }
-        });
-        
+                 .append('&nbsp;').append($buttonShowHide);
     }
     else if (alertType == 'warning') {
         // add appropriate class
-        $alertDiv.addClass('alert-warning');
+        $alertDiv.addClass('alert-warning')
+                 .append('&nbsp;').append($buttonShowHide);
     }
     else if (alertType == 'fail') {
         // add appropriate class
@@ -447,4 +413,43 @@ function alertTable(message, alertType) {
     // set the html of the table info container
     $alertDiv.find('span').text(message);
     $('#table-info-container').html($alertDiv);
+}
+
+/**********************************
+* Create table show/hide button
+* invoked from alertTable
+***********************************/
+function tableShowHide() {
+    // create show/hide button
+    var $buttonShowHide = $('<strong/>', {
+        id: 'table-show-hide',
+        text: 'Show table'
+    });
+    
+    // hover and click event handler for show/hide
+    $buttonShowHide.hover(function() {
+        $(this).addClass('text-success');
+    }, function() {
+        var $this = $(this);
+        $(this).removeClass('text-success');
+    }).on('click', function() {
+        var $this = $(this);
+        var $tableContainer = $('#table-container');
+        
+        if ($this.text() == 'Hide table') {
+            $this.text('Show table');
+            $tableContainer.hide();
+        }
+        else if ($this.text() == 'Show table') {
+            $this.text('Hide table');
+            if ($('#raw-data').length) {
+                $tableContainer.show();
+            }
+            else {
+                showData(parsedData);
+            }
+        }
+    });
+    
+    return $buttonShowHide;
 }
