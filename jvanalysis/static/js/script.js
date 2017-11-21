@@ -9,14 +9,14 @@ function uploadFile() {
     var fileObject = $('#data-file').prop('files');
     
     if (fileObject.length) {
-        var $ajaxLoader = getAjaxLoader();
-        $('#table-container').html($ajaxLoader);
-        
         var file = fileObject[0];
         var reader = new FileReader();
         
         // update file control text area
         $('.custom-file-control').text(file.name);
+        
+        // show ajax-loader
+        $('#table-container').html(getAjaxLoader());
         
         // read file, save rawData, and parse the rawData
         reader.onload = function() {
@@ -75,7 +75,7 @@ function parseData(csvData, delimiter) {
     var alertType = showData(parsedData);
     var message;
     if (alertType == 'success') {
-        message = updateDataInfo();
+        message = getDataInfo();
     }
     else if (alertType == 'fail') {
         message = 'There is no data!';
@@ -212,8 +212,6 @@ function createTableRow(row, idx) {
 * invoked from parseData
 ***************************/
 function showData(data) {
-    var message;
-    
     if (data.length) {
         // if there is data in the data
         var $table = createTable();
@@ -235,7 +233,7 @@ function showData(data) {
         toggleEdit();
         headerAction();
         toggleSelection();
-        updateDataInfo();
+        getDataInfo();
         
         return 'success';
     }
@@ -298,7 +296,7 @@ function deleteCell() {
         $cell.remove();
         
         // display message
-        message = updateDataInfo();
+        message = getDataInfo();
         message = 'Table cell at row ' + rowIndex + ' and col ' + 
             colIndex + ' has been deleted!. ' + message;
         alertTable(message, 'warning');
@@ -325,7 +323,7 @@ function deleteRow() {
         var alertType = showData(parsedData);
         
         if (alertType == 'success') {
-            message = updateDataInfo();
+            message = getDataInfo();
             message = 'Table row at ' + rowIndex + ' has been deleted! ' + message;
             alertType = 'warning';
         }
@@ -383,7 +381,7 @@ function toggleSelection() {
 * the data table
 * invoked from showData and deleteRow
 ***********************************/
-function updateDataInfo() {
+function getDataInfo() {
     var numRws = parsedData.length;
     var numCols = parsedData[0].length;
     
