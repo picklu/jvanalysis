@@ -10,8 +10,11 @@ var isTableVisible = false;
 * triggered when a file is slected
 **********************************/
 function uploadFile() {
-    // empty table contaienr
+    // empty table container
     $('#table-container').html(null);
+    
+    // set table visibility to false
+    isTableVisible = false;
     
     var fileObject = $('#data-file').prop('files');
     
@@ -74,7 +77,7 @@ function parseData(csvData, delimiter) {
     // parse data with Papa parse
     parsedData = Papa.parse(csvData, config).data;
     
-    // show data in a table
+    // show table data info
     var alertType = parsedData.length ? 'success' : 'fail';
     var message;
     if (alertType == 'success') {
@@ -123,11 +126,8 @@ function createTable() {
     // append thead and tbody to the table
     $table.append($tHead).append($tBody);
     
-        
-    // add table to table container
-    $('#table-container').html($tableDiv);
-    
     return {
+        tmain: $tableDiv,
         thead: $tHead, 
         tbody: $tBody
     };
@@ -220,7 +220,12 @@ function createTableRow(row, idx) {
 * invoked from reParseData, deleteRow, and tableShowHide
 *********************************************************/
 function showData(data) {
+    var $tableContainer = $('#table-container');
     var $table = createTable();
+    var $ajaxLoader = getAjaxLoader();
+    
+    // show ajax loader
+    $tableContainer.html($ajaxLoader);
     
     $(data).each(function(i, row) {
         // create table header //
@@ -232,6 +237,9 @@ function showData(data) {
         var $tableBodyRow = createTableRow(row, i);
         $table.tbody.append($tableBodyRow);
     });
+    
+    // place table in the table container
+    $tableContainer.html($table.tmain);
      
     // invoke event handlers for table
     deleteRow();
@@ -327,9 +335,8 @@ function deleteRow() {
             alertType = 'warning';
         }
         else if (alertType == 'fail') {
-            isTableVisible = false;
             $('#table-container').html(null);
-            message = 'There is no data!';
+            message = 'There is no data in the table!';
         }
         
         alertTable(message, alertType);
@@ -410,16 +417,15 @@ function alertTable(message, alertType) {
     else {
         // create show/hide button
         var $buttonShowHide = tableShowHide();
+        $alertDiv.append('&nbsp;').append($buttonShowHide);
         
         if (alertType == 'success') {
             // add appropriate class and add the show/hide button 
-            $alertDiv.addClass('alert-info')
-                     .append('&nbsp;').append($buttonShowHide);
+            $alertDiv.addClass('alert-info');
         }
         else if (alertType == 'warning') {
             // add appropriate class
-            $alertDiv.addClass('alert-warning')
-                     .append('&nbsp;').append($buttonShowHide);
+            $alertDiv.addClass('alert-warning');
         }
     }
     
