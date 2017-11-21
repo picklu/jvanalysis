@@ -33,6 +33,14 @@ function uploadFile() {
         };
         reader.readAsText(file);
     }
+    else{
+        rawData = "";
+        parsedData = [];
+        // update file control text area and alert box
+        message = 'No file was selected!';
+        alertTable(message, 'fail');
+        $('.custom-file-control').text('Choose file ...');
+    }
 }
 
 /*********************************
@@ -404,20 +412,30 @@ function getDataInfo() {
 function alertTable(message, alertType) {
     // create div for data info inside info container
     var $alertDiv = $('<div/>', {
-        class: 'alert',
+        id: 'alert-table',
+        class: 'alert alert-dismissible fade show',
+        role: 'alert',
         html: $('<span/>', {
             id: 'data-info'
         })
     });
+    
+    // create alert close button
+    var $buttonClose = alertHide();
+    $alertDiv.prepend($buttonClose);
     
     if (alertType == 'fail') {
         // add appropriate class
         $alertDiv.addClass('alert-danger');
     }
     else {
+        // update visibility of close button
+         $buttonClose.hide();
+         
         // create show/hide button
         var $buttonShowHide = tableShowHide();
         $alertDiv.append('&nbsp;').append($buttonShowHide);
+        
         
         if (alertType == 'success') {
             // add appropriate class and add the show/hide button 
@@ -430,7 +448,7 @@ function alertTable(message, alertType) {
     }
     
     // set the html of the table info container
-    $alertDiv.find('span').text(message);
+    $alertDiv.find('#data-info').text(message);
     $('#table-info-container').html($alertDiv);
 }
 
@@ -452,22 +470,47 @@ function tableShowHide() {
         $(this).removeClass('text-success');
     }).on('click', function() {
         var $this = $(this);
+        var $buttonClose = $('#alert-close');
         var $tableContainer = $('#table-container');
         
         if (isTableVisible) {
             isTableVisible = false;
             $this.text('Show table');
             $tableContainer.hide(500);
+            $buttonClose.hide();
         }
         else {
             isTableVisible = true;
             $this.text('Hide table');
+            $buttonClose.show();
             if (!$('#raw-data').length) {
                 showData(parsedData);
             }
             $tableContainer.show();
+            
         }
     });
     
     return $buttonShowHide;
+}
+
+
+/**********************************
+* Create alert hide button
+* invoked from alertTable
+***********************************/
+function alertHide() {
+    var $buttonClose = $('<button/>', {
+        id: 'alert-close',
+        type: 'button',
+        class: 'close',
+        'data-dismiss': 'alert',
+        'aria-label': 'Close',
+        html: $('<span/>', {
+            'aria-hidden': 'true',
+            text: '\u274C'
+        })
+    });
+            
+    return $buttonClose;
 }
