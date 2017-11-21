@@ -457,7 +457,7 @@ function tableShowHide() {
         if (isTableVisible) {
             isTableVisible = false;
             $this.text('Show table');
-            $tableContainer.hide();
+            $tableContainer.hide(500);
         }
         else {
             isTableVisible = true;
