@@ -313,7 +313,7 @@ function deleteCell() {
         // display message
         message = getDataInfo();
         message = 'Table cell at row ' + rowIndex + ' and col ' + 
-            colIndex + ' has been deleted!. ' + message;
+            colIndex + ' has been deleted! ' + message;
         alertTable(message, 'warning');
     });
 }
@@ -414,7 +414,7 @@ function getDataInfo() {
 function alertTable(message, alertType) {
     // create div for data info inside info container
     var $alertInfo = $('<span/>', {
-        id: 'data-info'
+        id: 'alert-message'
     });
     var $alertDivInfo = $('<span/>', {
         id: 'alert-info-container',
@@ -473,7 +473,7 @@ function alertTable(message, alertType) {
     }
     
     // set the html of the table info container
-    $alertDiv.find('#data-info').text(message);
+    $alertDiv.find('#alert-message').text(message);
     $('#table-info-container').html($alertDiv);
 }
 
@@ -496,8 +496,21 @@ function tableShowHide() {
     }).on('click', function() {
         var $this = $(this);
         var $buttonClose = $('#alert-close');
+        var $alertDiv = $('#alert-table');
         var $tableContainer = $('#table-container');
         
+        // update alert div text
+        $alertDiv.find('#alert-type').text('');
+        $alertDiv.find('#alert-message').text('');
+        
+        // update alert class
+        if (!$alertDiv.hasClass('info')) {
+            $alertDiv.removeClass('alert-danger')
+                     .removeClass('alert-warning')
+                     .addClass('alert-info');
+        }
+        
+        // update visibility and button text
         if (isTableVisible) {
             isTableVisible = false;
             $this.text('Show table');
