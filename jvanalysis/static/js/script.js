@@ -110,7 +110,9 @@ function reParseData() {
     if (fileObject.length && rawData.length) {
         var delimiter = $('#delimiter').val();
         parseData(rawData, delimiter);
-        showData(parsedData);
+        if (isTableVisible) {
+            showData(parsedData);
+        }
     }
 }
 
