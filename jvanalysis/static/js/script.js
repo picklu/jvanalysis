@@ -413,37 +413,60 @@ function getDataInfo() {
 ***********************************/
 function alertTable(message, alertType) {
     // create div for data info inside info container
+    var $alertInfo = $('<span/>', {
+        id: 'data-info'
+    });
+    var $alertDivInfo = $('<span/>', {
+        id: 'alert-info-container',
+        html: $alertInfo
+    });
+    var $alertType = $('<h5/>', {
+        id: 'alert-type'
+    });
     var $alertDiv = $('<div/>', {
         id: 'alert-table',
         class: 'alert alert-dismissible fade show',
         role: 'alert',
-        html: $('<span/>', {
-            id: 'data-info'
-        })
+        html: $alertType
     });
     
+    $alertDiv.append($alertDivInfo);
+    
     // create alert close button
-    var $buttonClose = alertHide();
+    var $buttonClose = alertClose();
     $alertDiv.prepend($buttonClose);
     
     if (alertType == 'fail') {
+        // show alert type
+        $alertType.text('Fail:');
+        
         // add appropriate class
         $alertDiv.addClass('alert-danger');
     }
     else {
-        // update visibility of close button
-         $buttonClose.hide();
-         
-        // create show/hide button
+        // create table show/hide button
         var $buttonShowHide = tableShowHide();
-        $alertDiv.append('&nbsp;').append($buttonShowHide);
+        $alertDivInfo.append($('<span/>', {
+            text: '\xa0\xa0'
+        })).append($buttonShowHide);
         
         
         if (alertType == 'success') {
+            // show alert type
+            $alertType.text('Success:');
+        
             // add appropriate class and add the show/hide button 
             $alertDiv.addClass('alert-info');
+            
+            // update visibility of close button
+            if (!isTableVisible) {
+                $buttonClose.hide();
+            }
         }
         else if (alertType == 'warning') {
+            // show alert type
+            $alertType.text('Warning:');
+            
             // add appropriate class
             $alertDiv.addClass('alert-warning');
         }
@@ -501,7 +524,7 @@ function tableShowHide() {
 * Create alert hide button
 * invoked from alertTable
 ***********************************/
-function alertHide() {
+function alertClose() {
     var $buttonClose = $('<button/>', {
         id: 'alert-close',
         type: 'button',
