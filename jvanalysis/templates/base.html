@@ -12,7 +12,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/narrow-jumbotron.css') }}">
     {%- block bokeh_css -%}{% endblock %}
+    <!-- jquery ui css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.min.css') }}">
     <!-- custom css file -->
+    {%- block customcss -%}{% endblock %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -76,9 +79,10 @@
     <!-- http://stewartjpark.com/Flask-JSGlue/ -->
     {{ JSGlue.include() }}
     {%- block bokeh_js -%}{% endblock %}
+    <!-- jquery-ui.min.js -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
     <!-- custom js script -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
-    {%- block customjs -%}
-    {% endblock %}
+    {%- block customjs -%}{% endblock %}
 </body>
 </html>

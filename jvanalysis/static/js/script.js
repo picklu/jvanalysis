@@ -163,7 +163,7 @@ function createTableHeader(row) {
     $(row).each(function(i, col) {
         var $tHeader = $('<th/>');
         var $tSelect = $('<select/>', {
-            id: 'cv' + i,
+            col: i,
             class: 'form-control text-capitalize',
             name: 'cv' + i
         });
@@ -531,7 +531,6 @@ function tableShowHide() {
     
     return $buttonShowHide;
 }
-
 
 /**********************************
 * Create alert hide button
