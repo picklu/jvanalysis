@@ -126,7 +126,7 @@ function createTable() {
     var $tBody = $('<tbody/>');
     var $table = $('<table/>', {
             id: 'raw-data',
-            class: 'table table-bordered'
+            class: 'table table-stripped'
         });
     var $tableDiv = $('<div/>', {
         class: 'table-data',
@@ -155,8 +155,8 @@ function createTableHeader(row) {
         html: $('<th/>', {
             class: 'table-fit',
             html: $('<span/>', {
-                class: 'form-control',
-                text: 'Header'
+                class: 'form-control no-border',
+                text: '#'
             })
         })
     });
@@ -164,7 +164,7 @@ function createTableHeader(row) {
         var $tHeader = $('<th/>');
         var $tSelect = $('<select/>', {
             col: i,
-            class: 'form-control text-capitalize',
+            class: 'form-control no-border text-capitalize',
             name: 'cv' + i
         });
         $(options).each(function(j, opt) {
@@ -192,18 +192,15 @@ function createTableRow(row, idx) {
     });
     
     // button for each row
-    $('<td/>', {
+    $('<th/>', {
         class: 'table-fit',
-        html: $('<button/>', {
-            class: 'row-crossout btn btn-xs btn-warning',
+        html: $('<span/>', {
+            text: idx + 1
+        })
+    }).append($('<span/>', {
+            class: 'row-crossout cursor-pointer',
             text: '\u274C'
-        })
-    }).append('&nbsp;').append($('<input/>', {
-        type: 'button', 
-        class: 'btn btn-xs btn-info',
-        value: '\u270D'
-        })
-    ).appendTo($tableRow);
+        })).appendTo($tableRow);
     
     // data for each row
     $(row).each(function(i, col) {
@@ -216,10 +213,16 @@ function createTableRow(row, idx) {
             })
         }).append($('<span/>', {
             text: '\xa0\xa0'
-        })).append($('<button/>', {
-            class: 'cell-crossout btn btn-xs',
+            })
+        ).append($('<span/>', {
+            class: 'cell-edit cursor-pointer',
+            text: '\u270D'
+            })
+        ).append($('<span/>', {
+            class: 'cell-crossout cursor-pointer',
             text: '\u274C'
-        })).appendTo($tableRow);
+            })
+        ).appendTo($tableRow);
     });
     
     return $tableRow;
@@ -485,6 +488,7 @@ function tableShowHide() {
     // create show/hide button
     var $buttonShowHide = $('<strong/>', {
         id: 'table-show-hide',
+        class: 'cursor-pointer',
         text: isTableVisible ? 'Hide table' : 'Show table'
     });
     

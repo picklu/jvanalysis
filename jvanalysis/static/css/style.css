@@ -55,3 +55,10 @@
 .ui-datepicker {
     width: 15.5rem;
 }
+.no-border {
+    border: 0;
+    box-shadow: none;
+}
+.cursor-pointer {
+    cursor: pointer;
+}
