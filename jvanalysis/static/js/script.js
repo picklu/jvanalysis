@@ -4,6 +4,8 @@
 var rawData;
 var parsedData;
 var isTableVisible = false;
+var contentEditable = [];
+var dataTableHeader = [];
 
 /*********************************
 * Upload text or csv file
@@ -102,8 +104,9 @@ function parseData(csvData, delimiter) {
 * triggered when delimiter is changed
 ***********************************/
 function reParseData() {
+    var $tableContainer = $('#table-container');
     // empty table container
-    $('#table-container').html(null);
+    $tableContainer.html(null);
     
     // If there is already a data then reparse
     var fileObject = $('#data-file').prop('files');
@@ -111,6 +114,9 @@ function reParseData() {
         var delimiter = $('#delimiter').val();
         parseData(rawData, delimiter);
         if (isTableVisible) {
+            var $ajaxLoader = getAjaxLoader();
+            // show ajax loader
+            $tableContainer.html($ajaxLoader);
             showData(parsedData);
         }
     }
@@ -177,6 +183,9 @@ function createTableHeader(row) {
             $tSelect.append($selectOption);
         });
         $tHeader.append($tSelect).appendTo($tableHeader);
+        
+        // populated dataTableHeader
+        dataTableHeader.push(options[i]);
     });
     
     return $tableHeader;
@@ -235,10 +244,6 @@ function createTableRow(row, idx) {
 function showData(data) {
     var $tableContainer = $('#table-container');
     var $table = createTable();
-    var $ajaxLoader = getAjaxLoader();
-    
-    // show ajax loader
-    $tableContainer.html($ajaxLoader);
     
     $(data).each(function(i, row) {
         // create table header //
@@ -255,9 +260,6 @@ function showData(data) {
     $tableContainer.html($table.tmain);
      
     // invoke event handlers for table
-    deleteRow();
-    deleteCell();
-    toggleEdit();
     headerAction();
     toggleSelection();
     getDataInfo();
@@ -279,21 +281,83 @@ function saveLocal(file, data) {
 * invoked from showData
 ***********************************/
 function toggleEdit() {
-    $('td input[type=button]').on('click', function() {
+    $('#table-container').on('click', '.cell-edit', function() {
         var $this = $(this);
-        var $dataSpan = $this.parents(':eq(1)').find('span.data-cell');
+        var $dataContainer =  $this.parent();
+        var row = $dataContainer.attr('row');
+        var col = $dataContainer.attr('col');
+        var $dataSpan = $dataContainer.find('span.data-cell');
         
-        if ($this.val() == '\u270D') {
-            $this.val('\u2714');
-            $dataSpan.attr('contenteditable', true)
-                     .addClass('lead');
+        // current content
+        var currentContent = {
+            button: $this,
+            cell: $dataSpan,
+            row: row,
+            col: col
+        };
+        
+        var oldContent = contentEditable.pop();
+        
+        if (oldContent) {
+            if (oldContent.row != row || oldContent.col != col){
+                // save current content
+                saveContent(currentContent);
+            }
+            // update old content
+            updateContent(oldContent);
         }
         else {
-            $this.val('\u270D');
-            $dataSpan.attr('contenteditable', false)
-                     .removeClass('lead');
+            // save current content
+            saveContent(currentContent);
         }
     });
+}
+
+function saveContent(content) {
+    // store content
+    contentEditable.push(content);
+    
+    // update cell and button
+    content.button.text('\u2714');
+    content.cell.attr('contenteditable', true);
+    content.cell.addClass('lead');
+    return false;
+}
+
+/**********************************
+* Update a cell content in the data 
+* table and pasedData varialble
+* invoked from showData
+***********************************/
+function updateContent(content) {
+    content.button.text('\u270D');
+    var $cell = content.cell;
+    var row = content.row;
+    var col = content.col;
+    var oldVal = parsedData[row][col];
+    var newVal = $cell.text();
+    var message;
+    
+    // update cell attributes 
+    $cell.attr('contenteditable', false);
+    $cell.removeClass('lead');
+    
+    // update cell content if the text is changed
+    // and the text is a number
+    if ( oldVal != newVal) {
+        if (isNaN(newVal)) {
+            content.cell.text(oldVal);
+            message = 'Invalid data for "' + dataTableHeader[col] + 
+                '" at row# '+ parseInt(row + 1, 10)  + '! Continuing with old data.';
+            alertTable(message, 'fail');
+        }
+        else {
+            parsedData[row][col] = newVal;
+            message = '"' + dataTableHeader[col] + '" data at row# '+ parseInt(row + 1, 10) + 
+                ' has been updated. Previous value was ' + oldVal + '.';
+            alertTable(message, 'success');
+        }
+    }
 }
 
 /**********************************
@@ -301,7 +365,7 @@ function toggleEdit() {
 * invoked from showData
 ***********************************/
 function deleteCell() {
-    $('.cell-crossout').on('click', function() {
+    $('#table-container').on('click', '.cell-crossout', function() {
         var $cell = $(this).parent();
         var rowIndex = $cell.attr('row');
         var colIndex = $cell.attr('col');
@@ -315,7 +379,7 @@ function deleteCell() {
         
         // display message
         message = getDataInfo();
-        message = 'Table cell at row ' + rowIndex + ' and col ' + 
+        message = 'Table cell at row# ' + rowIndex + ' and column# ' + 
             colIndex + ' has been deleted! ' + message;
         alertTable(message, 'warning');
     });
@@ -326,7 +390,8 @@ function deleteCell() {
 * invoked from showData
 ***********************************/
 function deleteRow() {
-    $('.row-crossout').on('click', function() {
+    var $tableContainer = $('#table-container');
+    $tableContainer.on('click', '.row-crossout', function() {
         var message;
         var $row = $(this).parents(':eq(1)');
         var rowIndex = $row.attr('row');
@@ -342,6 +407,9 @@ function deleteRow() {
         var alertType = parsedData.length ? 'success' : 'fail';
         
         if (alertType == 'success') {
+            var $ajaxLoader = getAjaxLoader();
+            // show ajax loader
+            $tableContainer.html($ajaxLoader);
             showData(parsedData); 
             message = getDataInfo();
             message = 'Table row at ' + rowIndex + ' has been deleted! ' + message;
@@ -353,6 +421,7 @@ function deleteRow() {
         }
         
         alertTable(message, alertType);
+        return false;
     });
 }
 
@@ -387,12 +456,19 @@ function toggleSelection() {
         var $this = $(this);
         var current = $this.val();
         $('th select').each(function(i, sl) {
-          if ($this.attr('id') != $(sl).attr('id') && 
+          if ($this.attr('name') != $(sl).attr('name') && 
             current == $(sl).val()) {
-              $(sl).val(previous);
-              previous = current;
+                $(sl).val(previous);
+                previous = current;
             }
         });
+        updateDataTableHeader();
+    });
+}
+
+function updateDataTableHeader() {
+    $('th select').each(function(i, sl) {
+        dataTableHeader[i] = $(sl).val();
     });
 }
 
@@ -478,6 +554,7 @@ function alertTable(message, alertType) {
     // set the html of the table info container
     $alertDiv.find('#alert-message').text(message);
     $('#table-info-container').html($alertDiv);
+    return false;
 }
 
 /**********************************
@@ -526,6 +603,9 @@ function tableShowHide() {
             $this.text('Hide table');
             $buttonClose.show();
             if (!$('#raw-data').length) {
+                var $ajaxLoader = getAjaxLoader();
+                // show ajax loader
+                $tableContainer.html($ajaxLoader);
                 showData(parsedData);
             }
             $tableContainer.show();
