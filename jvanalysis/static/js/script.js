@@ -646,12 +646,12 @@ function alertClose() {
 ***********************************/
 function getJVData() {
     var data = {voltage: [], current: []};
-    var volt = dataTableHeader.indexOf('voltage');
-    var curr = dataTableHeader.indexOf('current');
+    var voltage = dataTableHeader.indexOf('voltage');
+    var current = dataTableHeader.indexOf('current');
     $(parsedData).each(function(i, row) {
         if (row.length >= 2) { 
-        data.voltage.push(Number(row[volt]));    
-        data.current.push(Number(row[curr]));
+        data.voltage.push(Number(row[voltage]));    
+        data.current.push(Number(row[current]));
         }
     });
     return data;
