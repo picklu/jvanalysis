@@ -217,15 +217,18 @@ function createTableRow(row, idx) {
             row: idx,
             col: i,
             html: $('<span/>', {
-                class: 'data-cell',
-                text: (col == '') ? 'NaN' : col
+            class: 'cell-edit cursor-pointer',
+            text: '\u270D'
             })
         }).append($('<span/>', {
             text: '\xa0\xa0'
             })
         ).append($('<span/>', {
-            class: 'cell-edit cursor-pointer',
-            text: '\u270D'
+                class: 'data-cell',
+                text: (col == '') ? 'NaN' : col
+            })
+        ).append($('<span/>', {
+            text: '\xa0\xa0'
             })
         ).append($('<span/>', {
             class: 'cell-crossout cursor-pointer',
@@ -404,7 +407,6 @@ function deleteRow() {
         $row.remove();
         
         // show data in a table
-        
         var alertType = parsedData.length ? 'success' : 'fail';
         
         if (alertType == 'success') {
