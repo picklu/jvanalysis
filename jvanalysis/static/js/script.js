@@ -379,8 +379,9 @@ function deleteCell() {
         
         // display message
         message = getDataInfo();
-        message = 'Table cell at row# ' + rowIndex + ' and column# ' + 
-            colIndex + ' has been deleted! ' + message;
+        message = 'Table cell at row# ' + parseInt(rowIndex + 1, 10) + 
+            ' and column# ' + parseInt(colIndex + 1, 10) +
+            ' has been deleted! ' + message;
         alertTable(message, 'warning');
     });
 }
@@ -412,7 +413,8 @@ function deleteRow() {
             $tableContainer.html($ajaxLoader);
             showData(parsedData); 
             message = getDataInfo();
-            message = 'Table row at ' + rowIndex + ' has been deleted! ' + message;
+            message = 'Table row at ' + parseInt(rowIndex + 1, 10) + 
+                ' has been deleted! ' + message;
             alertType = 'warning';
         }
         else if (alertType == 'fail') {
