@@ -332,8 +332,8 @@ function saveContent(content) {
 function updateContent(content) {
     content.button.text('\u270D');
     var $cell = content.cell;
-    var row = content.row;
-    var col = content.col;
+    var row = parseInt(content.row, 10);
+    var col = parseInt(content.col, 10);
     var oldVal = parsedData[row][col];
     var newVal = $cell.text();
     var message;
@@ -348,13 +348,13 @@ function updateContent(content) {
         if (isNaN(newVal)) {
             content.cell.text(oldVal);
             message = 'Invalid data for "' + dataTableHeader[col] + 
-                '" at row# '+ parseInt(row + 1, 10)  + '! Continuing with old data.';
+                '" at row# '+ (row + 1) + '! Continuing with old data.';
             alertTable(message, 'fail');
         }
         else {
             parsedData[row][col] = newVal;
-            message = '"' + dataTableHeader[col] + '" data at row# '+ parseInt(row + 1, 10) + 
-                ' has been updated. Previous value was ' + oldVal + '.';
+            message = '"' + dataTableHeader[col] + '" data at row# '+ (row + 1) + 
+                ' has been updated. Previous value was ' + oldVal + '.'; 
             alertTable(message, 'success');
         }
     }
@@ -367,8 +367,8 @@ function updateContent(content) {
 function deleteCell() {
     $('#table-container').on('click', '.cell-crossout', function() {
         var $cell = $(this).parent();
-        var rowIndex = $cell.attr('row');
-        var colIndex = $cell.attr('col');
+        var rowIndex = parseInt($cell.attr('row'), 10);
+        var colIndex = parseInt($cell.attr('col'), 10);
         var message;
         
         // update parsed data 
@@ -379,8 +379,8 @@ function deleteCell() {
         
         // display message
         message = getDataInfo();
-        message = 'Table cell at row# ' + parseInt(rowIndex + 1, 10) + 
-            ' and column# ' + parseInt(colIndex + 1, 10) +
+        message = 'Table cell at row# ' + (rowIndex + 1) + 
+            ' and column# ' + (colIndex + 1) +
             ' has been deleted! ' + message;
         alertTable(message, 'warning');
     });
@@ -395,7 +395,7 @@ function deleteRow() {
     $tableContainer.on('click', '.row-crossout', function() {
         var message;
         var $row = $(this).parents(':eq(1)');
-        var rowIndex = $row.attr('row');
+        var rowIndex = parseInt($row.attr('row'), 10);
         
         // update parsed data
         parsedData.splice(rowIndex, 1);
@@ -413,7 +413,7 @@ function deleteRow() {
             $tableContainer.html($ajaxLoader);
             showData(parsedData); 
             message = getDataInfo();
-            message = 'Table row at ' + parseInt(rowIndex + 1, 10) + 
+            message = 'Table row at ' + (rowIndex + 1) + 
                 ' has been deleted! ' + message;
             alertType = 'warning';
         }
