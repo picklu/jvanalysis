@@ -118,6 +118,8 @@
 
 {%- block customjs -%}
 <script>
-    $('#plot-container').load(Flask.url_for("plot", {"path": "myaccount"}));
+    // load jv plot
+    $('#plot-container').html(getAjaxLoader());
+    $('#plot-container').load(Flask.url_for("plot", {path: 'myaccount'}));
 </script>
 {% endblock %}

@@ -131,7 +131,10 @@
 
 {% block customjs %}
     <script>
-        $('#plot-container').load(Flask.url_for("plot", {"path": "jvanalysis"}));
+        // load jv plot
+        $('#plot-container').html(getAjaxLoader());
+        $('#plot-container').load(Flask.url_for("plot", {path: 'jvanalysis'}));
+        // event handlers for  data table
         $('#data-file').on('change', uploadFile);
         $('#delimiter').on('change', reParseData);
         $('#datepicker').val($.datepicker.formatDate('dd-mm-yy', new Date()))
