@@ -9,7 +9,7 @@ from bokeh.resources import INLINE
 DATA_FOLDER = "/home/ubuntu/workspace/jvanalysis/data"
 TOOLS = "wheel_zoom,box_zoom,reset,save"
 
-def resources(width=130, height=100):
+def resources(title, width=130, height=100):
     """ return bokeh resources for plot
     """
     data = np.transpose(np.loadtxt("/home/ubuntu/workspace/jvanalysis/data/D1_SCtoOC_SR500mVps.txt"))
@@ -24,7 +24,7 @@ def resources(width=130, height=100):
         label = e
         print(e)
     
-    plot = figure(title="jV Plot", tools=TOOLS, plot_width=width, 
+    plot = figure(title=title, tools=TOOLS, plot_width=width, 
                 plot_height=height,sizing_mode='scale_width')
     
     # Vertical line
