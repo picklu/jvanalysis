@@ -22,14 +22,25 @@ def about():
 
 @app.route("/account")
 def account():
-    bkdiv, bkscript = resources()
+    bkdiv, bkscript = resources("jV Plot")
     return render_template(
         "account.html",
         bkjs=INLINE.render_js(),
-        bkcss= INLINE.render_css(),
+        bkcss=INLINE.render_css(),
         bkdiv=bkdiv,
         bkscript=bkscript,
         title="Account")
+
+@app.route("/plot/<path:path>")
+def plot(path=""):
+    bkdiv, bkscript = resources("jV Plot of " + path)
+    return render_template(
+        "plot.html",
+        bkjs=INLINE.render_js(),
+        bkcss=INLINE.render_css(),
+        bkdiv=bkdiv,
+        bkscript=bkscript,
+        title="plot|" + path if path else "plot")
 
 
 @app.route("/analysis")
