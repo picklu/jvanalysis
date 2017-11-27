@@ -1,9 +1,4 @@
 {% extends "base.html" %}
-
-{% block bokeh_css %}
-    <!-- Bokeh css resource -->
-    {{ bkcss|safe }}
-{% endblock %}
     
 {% block content %}
 <div class="row">
@@ -70,7 +65,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-12 col-center-block">
+    <div class="col-md-8 col-center-block">
         <h5 class="content-jumbotron">Results:</h5>
         <div id="plot-container"></div>
     </div>
@@ -124,12 +119,6 @@
         </table>
     </div>
 </div>
-{% endblock %}
-
-{% block bokeh_js %}
-    <!-- Bokeh js resources -->
-    {{ bkjs|safe }}
-    {{ bkscript|safe }}
 {% endblock %}
 
 {% block customjs %}
