@@ -72,7 +72,7 @@
 <div class="row">
     <div class="col-md-12 col-center-block">
         <h5 class="content-jumbotron">Results:</h5>
-        <div id="jv-plot-container"></div>
+        <div id="plot-container"></div>
     </div>
 </div>
 <div class="row">
@@ -134,7 +134,7 @@
 
 {% block customjs %}
     <script>
-        $('#jv-plot-container').load('http://jvanalysis-picklu.c9users.io:8081/plot/two');
+        $('#plot-container').load('http://jvanalysis-picklu.c9users.io:8081/plot/two');
         $('#data-file').on('change', uploadFile);
         $('#delimiter').on('change', reParseData);
         $('#datepicker').val($.datepicker.formatDate('dd-mm-yy', new Date()))

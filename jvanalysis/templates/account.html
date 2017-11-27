@@ -1,10 +1,5 @@
 {% extends "base.html" %}
 
-{% block bokeh_css %}
-    <!-- Bokeh css resource -->
-    {{ bkcss|safe }}
-{% endblock %}
-    
 {% block content %}
 <div class="row">
     <div class="col-md-12 table-responsive">
@@ -67,8 +62,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-8 col-center-block">
-        {{ bkdiv|safe }}
+    <div id="plot-container" class="col-md-8 col-center-block">
     </div>
 </div>
 <div class="row">
@@ -122,8 +116,8 @@
 </div>
 {% endblock %}
 
-{% block bokeh_js %}
-    <!-- Bokeh js resources -->
-    {{ bkjs|safe }}
-    {{ bkscript|safe }}
+{%- block customjs -%}
+<script>
+    $('#plot-container').load('http://jvanalysis-picklu.c9users.io:8081/plot/two');
+</script>
 {% endblock %}
