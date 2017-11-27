@@ -118,6 +118,6 @@
 
 {%- block customjs -%}
 <script>
-    $('#plot-container').load('http://jvanalysis-picklu.c9users.io:8081/plot/two');
+    $('#plot-container').load(Flask.url_for("plot", {"path": "myaccount"}));
 </script>
 {% endblock %}
