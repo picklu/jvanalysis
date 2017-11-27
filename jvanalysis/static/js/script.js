@@ -12,28 +12,40 @@ var dataTableHeader = [];
 * triggered when a file is slected
 **********************************/
 function uploadFile() {
+    var message;
+    var fileObject = $('#data-file').prop('files');
+    
     // empty table container
     $('#table-container').html(null);
     
     // set table visibility to false
     isTableVisible = false;
     
-    var fileObject = $('#data-file').prop('files');
-    
     if (fileObject.length) {
         var file = fileObject[0];
-        var reader = new FileReader();
-        
-        // update file control text area
-        $('.custom-file-control').text(file.name);
-        
-        // read file, save rawData, and parse the rawData
-        reader.onload = function() {
-            var delimiter = $('#delimiter').val();
-            rawData = this.result;
-            parseData(rawData, delimiter);
-        };
-        reader.readAsText(file);
+        var fileName = file.name;
+
+        if (file.size <= 10240) {
+            var reader = new FileReader();
+            // update file control text area
+            $('.custom-file-control').text(fileName);
+            
+            // read file, save rawData, and parse the rawData
+            reader.onload = function() {
+                var delimiter = $('#delimiter').val();
+                rawData = this.result;
+                parseData(rawData, delimiter);
+            };
+            reader.readAsText(file);
+        }
+        else {
+            rawData = "";
+            parsedData = [];
+            // update file control text area and alert box
+            message = 'The size of the file "' + fileName + '" is larger than 10 kB!';
+            alertTable(message, 'fail');
+            $('.custom-file-control').text('Choose file ...');
+        }
     }
     else{
         rawData = "";
