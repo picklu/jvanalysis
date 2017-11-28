@@ -42,10 +42,8 @@ def plot(path=""):
 @app.route("/analyze", methods=["POST"])
 def analyze():
     data = request.form
-    jv = json.loads(data.get("jv"))
-    voltage = jv.get("voltage")
-    current = jv.get("current")
-    params = get_params([voltage, current])
+    jv_data = json.loads(data.get("jv"))
+    params = get_params(jv_data)
     return json.dumps(params)
 
 @app.route("/analysis")

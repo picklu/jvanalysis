@@ -657,16 +657,17 @@ function alertClose() {
 * invoked from alertTable
 ***********************************/
 function getJVData() {
-    var data = {voltage: [], current: []};
-    var voltage = dataTableHeader.indexOf('voltage');
-    var current = dataTableHeader.indexOf('current');
+    var voltage = [];
+    var current = [];
+    var voltageIndex = dataTableHeader.indexOf('voltage');
+    var currentIndex = dataTableHeader.indexOf('current');
     $(parsedData).each(function(i, row) {
         if (row.length >= 2) { 
-        data.voltage.push(Number(row[voltage]));    
-        data.current.push(Number(row[current]));
+        voltage.push(Number(row[voltageIndex]));    
+        current.push(Number(row[currentIndex]));
         }
     });
-    return data;
+    return [voltage, current];
 }
 
 function analyze() {
