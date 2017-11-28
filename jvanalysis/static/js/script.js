@@ -15,6 +15,12 @@ function uploadFile() {
     var message;
     var fileObject = $('#data-file').prop('files');
     
+    // hide analyze button
+    if ($('#analyze').attr('hidden') == 'hidden') {
+        $('#analyze').attr('hidden', false);
+    }
+    $('#analyze').hide();
+    
     // empty table container
     $('#table-container').html(null);
     
@@ -35,6 +41,7 @@ function uploadFile() {
                 var delimiter = $('#delimiter').val();
                 rawData = this.result;
                 parseData(rawData, delimiter);
+                $('#analyze').show();
             };
             reader.readAsText(file);
         }
@@ -659,6 +666,9 @@ function alertClose() {
 function getJVData() {
     var voltage = [];
     var current = [];
+    if ($('#table-container').find('#raw-data').length == 0) {
+        dataTableHeader = ['voltage', 'current'];
+    }
     var voltageIndex = dataTableHeader.indexOf('voltage');
     var currentIndex = dataTableHeader.indexOf('current');
     $(parsedData).each(function(i, row) {
