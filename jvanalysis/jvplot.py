@@ -56,6 +56,7 @@ def get_params(data):
     """
     jv_data = np.array(data)
     jv = Analysis(jv_data)
-    params = jv.get_model_params()
+    params = jv.get_pv_params()
+    params.update(jv.get_model_params())
     return params
     
