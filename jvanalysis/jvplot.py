@@ -52,11 +52,12 @@ def resources(title, width=130, height=100):
     return (div, script)
 
 def get_params(data):
-    """ return bokeh resources for plot
+    """ return a dictionary of all parameters 
+        of a solar cell after analyzing the data.
     """
     jv_data = np.array(data)
-    jv = Analysis(jv_data)
-    params = jv.get_pv_params()
-    params.update(jv.get_model_params())
+    jv_analyzed = Analysis(jv_data)
+    params = jv_analyzed.get_pv_params()
+    params.update(jv_analyzed.get_model_params())
     return params
     
