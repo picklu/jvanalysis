@@ -2,10 +2,35 @@
 * Global variables
 **********************************/
 var rawData;
-var parsedData;
+var parsedData = {};
 var isTableVisible = false;
 var contentEditable = [];
 var dataTableHeader = [];
+
+/**********************************************************************
+ * Calculate a 32 bit FNV-1a hash
+ * Found here: https://stackoverflow.com/questions/7616461/
+ * @param {string} str the input value
+ * @param {boolean} [asString=false] set to true to return the hash value as 
+ *     8-digit hex string instead of an integer
+ * @param {integer} [seed] optionally pass the hash of the previous chunk
+ * @returns {integer | string}
+ ************************************************************************/
+function hashFnv32a(str, asString, seed) {
+    /*jshint bitwise:false */
+    var i, l,
+        hval = (seed === undefined) ? 0x811c9dc5 : seed;
+
+    for (i = 0, l = str.length; i < l; i++) {
+        hval ^= str.charCodeAt(i);
+        hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
+    }
+    if( asString ){
+        // Convert to 8 digit hex string
+        return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
+    }
+    return hval >>> 0;
+}
 
 /*********************************
 * Upload text or csv file
@@ -41,13 +66,14 @@ function uploadFile() {
                 var delimiter = $('#delimiter').val();
                 rawData = this.result;
                 parseData(rawData, delimiter);
+                parsedData['name'] = fileName;
                 $('#analyze').show();
             };
             reader.readAsText(file);
         }
         else {
             rawData = "";
-            parsedData = [];
+            parsedData = {};
             // update file control text area and alert box
             message = 'The size of the file "' + fileName + '" is larger than 10 kB!';
             alertTable(message, 'fail');
@@ -56,7 +82,7 @@ function uploadFile() {
     }
     else{
         rawData = "";
-        parsedData = [];
+        parsedData = {};
         // update file control text area and alert box
         message = 'No file was selected!';
         alertTable(message, 'fail');
@@ -104,7 +130,7 @@ function parseData(csvData, delimiter) {
     }
     
     // parse data with Papa parse
-    parsedData = Papa.parse(csvData, config).data;
+    parsedData['jv'] = Papa.parse(csvData, config).data;
     
     // show table data info
     var alertType = parsedData.length ? 'success' : 'fail';
