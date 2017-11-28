@@ -23,7 +23,7 @@
         <div class="form-row">
             <div class="form-group col-md-8">
                 <label class="custom-file">
-                  <input type="file" id="data-file" class="custom-file-input">
+                  <input type="file" id="data-file" accept=".txt,.csv" class="custom-file-input">
                   <span class="custom-file-control"></span>
                 </label>
             </div>
@@ -42,23 +42,23 @@
                 <h5>Set data attributes:</h5>
             </div>
         </div>
-        <form action="">
+        <form id="analyze" action="">
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="datepicker">Measured Date</label>
-                    <input id="datepicker" class="form-control" type="text" readonly>
+                    <input id="datepicker" class="form-control" name="measured-date" type="text" readonly>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="area">Area/cm<sup>2</sup></label>
-                    <input id="area" class="form-control" type="Number" step="0.01" value=0.25>
+                    <input id="area" class="form-control" name="area" type="Number" step="0.01" value=0.25>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="temperature">Temperature/<sup>o</sup>C</label>
-                    <input id="temperature" class="form-control" type="Number" value="25">
+                    <input id="temperature" class="form-control" name="temperature" type="Number" value="25">
                 </div>
                 <div class="form-group col-md-2">
                      <label for="analyze">&nbsp;</label>
-                    <input id="analyze" class="btn btn-block btn-primary" type="submit" value="Analyze">
+                    <input class="btn btn-block btn-primary" type="submit" value="Analyze">
                 </div>
             </div>
         </form>
@@ -131,9 +131,9 @@
 
 {% block customjs %}
     <script>
-        // load jv plot
-        $('#plot-container').html(getAjaxLoader());
-        $('#plot-container').load(Flask.url_for("plot", {path: 'jvanalysis'}));
+        // analyze data
+        analyze();
+        
         // event handlers for  data table
         $('#data-file').on('change', uploadFile);
         $('#delimiter').on('change', reParseData);

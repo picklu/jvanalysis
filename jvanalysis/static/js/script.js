@@ -668,3 +668,28 @@ function getJVData() {
     });
     return data;
 }
+
+function analyze() {
+    $('#analyze').on('submit', function(e){
+        e.preventDefault();
+        var data = $(this).serializeArray();
+        var jv = getJVData();
+        data.push({
+            name: 'jv', 
+            value: JSON.stringify(jv)
+        });
+        
+        $.ajax({
+            type: "POST",
+            url: Flask.url_for("analyze"),
+            data: data,
+            dataType: "json",
+            success: function(data) {
+                console.log(data);
+            },
+            error: function (request, status, error) {
+                console.log(error, status, request.responseText);
+            }
+        });
+    });
+}

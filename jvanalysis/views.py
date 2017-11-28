@@ -1,9 +1,13 @@
-from flask import render_template, request
+from flask import render_template
+from flask import request
+from flask import json
 from flask import url_for
 
 from jvanalysis import app
-from jvanalysis.jvplot import INLINE, resources
+from jvanalysis.jvplot import INLINE, resources, get_params
 
+
+JVDATA = {}
 
 @app.route("/")
 def index():
@@ -35,6 +39,14 @@ def plot(path=""):
         bkscript=bkscript,
         title="plot|" + path if path else "plot")
 
+@app.route("/analyze", methods=["POST"])
+def analyze():
+    data = request.form
+    jv = json.loads(data.get("jv"))
+    voltage = jv.get("voltage")
+    current = jv.get("current")
+    params = get_params([voltage, current])
+    return json.dumps(params)
 
 @app.route("/analysis")
 def analysis():
