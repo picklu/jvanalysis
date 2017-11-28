@@ -16,7 +16,7 @@ def resources(title, width=130, height=100):
     label = ""
     try:
         jv = Analysis(data)
-        j = jv.calculate_jcell(jv.v_cell, jv._get_params())
+        j = jv.calculate_jcell(jv.v_cell, jv._get_model_params())
         label = "calculated"
     except AnalysisError as e:
         print(e.error)
