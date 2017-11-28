@@ -696,6 +696,7 @@ function analyze() {
             data: data,
             dataType: "json",
             success: function(data) {
+                // $('#plot-container').html(data);
                 console.log(data);
             },
             error: function (request, status, error) {
