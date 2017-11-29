@@ -59,7 +59,7 @@
         </form>
     </div>
 </div>
-<div class="row">
+<div id="results" class="row" hidden="hidden">
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-12">
@@ -87,11 +87,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>0.55</td>
-                            <td>12.5</td>
-                            <td>62.5</td>
-                            <td>4.0</td>
+                        <tr id="pv-params">
+                            <!-- pv params will be inserted here dynamically -->
                         </tr>
                     </tbody>
                 </table>
@@ -109,12 +106,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>12.5</td>
-                        <td>62.5e-8</td>
-                        <td>1.5</td>
-                        <td>7.8</td>
-                        <td>3000</td>
+                    <tr id="model-params">
+                        <!-- model params will be insereted here dynamically -->
                     </tr>
                     </tbody>
                 </table>
