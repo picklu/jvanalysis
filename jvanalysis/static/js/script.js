@@ -1,11 +1,10 @@
 /*********************************
 * Global variables
 **********************************/
-var rawData;
-var parsedData = {};
-var isTableVisible = false;
 var contentEditable = [];
 var dataTableHeader = [];
+var isTableVisible = false;
+var jvData = {};
 
 /**********************************************************************
  * Calculate a 32 bit FNV-1a hash
@@ -38,6 +37,7 @@ function hashFnv32a(str, asString, seed) {
 **********************************/
 function uploadFile() {
     var message;
+    var alertType;
     var fileObject = $('#data-file').prop('files');
     
     // hide analyze button
@@ -67,24 +67,29 @@ function uploadFile() {
             // update file control text area
             $('.custom-file-control').text(fileName);
             
-            // read file, save rawData, and parse the rawData
+            // read file, save raw Data, and parse the raw data
             reader.onload = function() {
                 var delimiter = $('#delimiter').val();
-                rawData = this.result;
-                parseData(rawData, delimiter);
-                if (parsedData.jv.length) {
-                    parsedData['name'] = fileName;
+                jvData["raw"] = this.result;
+                jvData["jv"] = parseData(jvData.raw, delimiter);
+                // show table data info
+                if (jvData.jv.length) {
+                    jvData['name'] = fileName;
+                    alertType = 'success';
+                    message = getDataInfo();
                     $('#analyze').show();
                 }
                 else {
-                    parsedData = {};
+                    jvData = {};
+                    alertType = 'fail';
+                    message = 'There is no data!';
                 }
+                alertTable(message, alertType);
             };
             reader.readAsText(file);
         }
         else {
-            rawData = "";
-            parsedData = {};
+            jvData = {};
             // update file control text area and alert box
             message = 'The size of the file "' + fileName + '" is larger than 10 kB!';
             alertTable(message, 'fail');
@@ -92,11 +97,11 @@ function uploadFile() {
         }
     }
     else{
-        rawData = "";
-        parsedData = {};
+        jvData = {};
         // update file control text area and alert box
         message = 'No file was selected!';
-        alertTable(message, 'fail');
+        alertType = 'fail';
+        alertTable(message, alertType);
         $('.custom-file-control').text('Choose file ...');
     }
 }
@@ -141,18 +146,9 @@ function parseData(csvData, delimiter) {
     }
     
     // parse data with Papa parse
-    parsedData['jv'] = Papa.parse(csvData, config).data;
+    var data = Papa.parse(csvData, config).data;
     
-    // show table data info
-    var alertType = parsedData.jv.length ? 'success' : 'fail';
-    var message;
-    if (alertType == 'success') {
-        message = getDataInfo();
-    }
-    else if (alertType == 'fail') {
-        message = 'There is no data!';
-    }
-    alertTable(message, alertType);
+    return data;
 }
 
 /**********************************
@@ -163,19 +159,35 @@ function reParseData() {
     var $tableContainer = $('#table-container');
     // empty table container
     $tableContainer.html(null);
-    
     // If there is already a data then reparse
     var fileObject = $('#data-file').prop('files');
-    if (fileObject.length && rawData.length) {
+    if (fileObject.length && jvData.raw) {
         var delimiter = $('#delimiter').val();
-        parseData(rawData, delimiter);
-        if (isTableVisible) {
-            var $ajaxLoader = getAjaxLoader();
+        jvData.jv = parseData(jvData.raw, delimiter);
+        // show table data info
+        if (jvData.jv.length) {
+            alertType = 'success';
+            message = getDataInfo();
+            $('#analyze').show();
             // show ajax loader
-            $tableContainer.html($ajaxLoader);
-            showData(parsedData);
+            if (isTableVisible) {
+                var $ajaxLoader = getAjaxLoader();
+                $tableContainer.html($ajaxLoader);
+                showData(jvData.jv);
+            }
+        }
+        else {
+            jvData = {};
+            alertType = 'fail';
+            message = 'No data parsed!';
         }
     }
+    else {
+            jvData = {};
+            alertType = 'fail';
+            message = 'There is no data!';
+    }
+    alertTable(message, alertType);
 }
 
 /*******************************************
@@ -393,7 +405,7 @@ function updateContent(content) {
     var $cell = content.cell;
     var row = parseInt(content.row, 10);
     var col = parseInt(content.col, 10);
-    var oldVal = parsedData.jv[row][col];
+    var oldVal = jvData.jv[row][col];
     var newVal = $cell.text();
     var message;
     
@@ -411,7 +423,7 @@ function updateContent(content) {
             alertTable(message, 'fail');
         }
         else {
-            parsedData.jv[row][col] = newVal;
+            jvData.jv[row][col] = newVal;
             message = '"' + dataTableHeader[col] + '" data at row# '+ (row + 1) + 
                 ' has been updated. Previous value was ' + oldVal + '.'; 
             alertTable(message, 'success');
@@ -431,7 +443,7 @@ function deleteCell() {
         var message;
         
         // update parsed data 
-        parsedData.jv[rowIndex].splice(colIndex, 1);
+        jvData.jv[rowIndex].splice(colIndex, 1);
         
         // remove the cell
         $cell.remove();
@@ -457,19 +469,19 @@ function deleteRow() {
         var rowIndex = parseInt($row.attr('row'), 10);
         
         // update parsed data
-        parsedData.jv.splice(rowIndex, 1);
+        jvData.jv.splice(rowIndex, 1);
         
         // remove the row
         $row.remove();
         
         // show data in a table
-        var alertType = parsedData.jv.length ? 'success' : 'fail';
+        var alertType = jvData.jv.length ? 'success' : 'fail';
         
         if (alertType == 'success') {
             var $ajaxLoader = getAjaxLoader();
             // show ajax loader
             $tableContainer.html($ajaxLoader);
-            showData(parsedData.jv); 
+            showData(jvData.jv); 
             message = getDataInfo();
             message = 'Table row at ' + (rowIndex + 1) + 
                 ' has been deleted! ' + message;
@@ -538,7 +550,7 @@ function updateDataTableHeader() {
 * invoked from showData and deleteRow
 ***********************************/
 function getDataInfo() {
-    var jv = parsedData.jv;
+    var jv = jvData.jv;
     var numRws = jv.length;
     var numCols = numRws ? jv[0].length : 0;
     
@@ -667,7 +679,7 @@ function tableShowHide() {
                 var $ajaxLoader = getAjaxLoader();
                 // show ajax loader
                 $tableContainer.html($ajaxLoader);
-                showData(parsedData.jv);
+                showData(jvData.jv);
             }
             $tableContainer.show();
             
@@ -709,7 +721,7 @@ function getJVData() {
     }
     var voltageIndex = dataTableHeader.indexOf('voltage');
     var currentIndex = dataTableHeader.indexOf('current');
-    $(parsedData.jv).each(function(i, row) {
+    $(jvData.jv).each(function(i, row) {
         if (row.length >= 2) { 
         voltage.push(Number(row[voltageIndex]));    
         current.push(Number(row[currentIndex]));
@@ -740,10 +752,10 @@ function analyze() {
             data: data,
             dataType: "json",
             success: function(data) {
-                // update parsedData
-                parsedData["vexp"] = data.vexp;
-                parsedData["jexp"] = data.jexp;
-                parsedData["jcal"] = data.jcal;
+                // update jvData
+                jvData["vexp"] = data.vexp;
+                jvData["jexp"] = data.jexp;
+                jvData["jcal"] = data.jcal;
                 // show parameters in the tables
                 showPVParams(data);
                 showModelParams(data);
