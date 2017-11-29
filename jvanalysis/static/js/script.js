@@ -743,11 +743,11 @@ function analyze() {
                 showPVParams(data);
                 showModelParams(data);
                 $('#results').show();
-                alertTable("Data has been succesfully analyzed!", "success");
+                alertTable("Data were analyzed successfully!", "success");
             },
             error: function (request, status, error) {
                 $('#results').hide();
-                alertTable("There was something wrong!", "fail");
+                alertTable("There was something wrong with the data!", "fail");
                 console.log(error, status, request.responseText);
             }
         });
@@ -758,14 +758,9 @@ function analyze() {
 * Show PV parameters in the table pv-params 
 * invoked by analyze
 ******************************************/
-function showPVParams(params) {
-    var $row = $('<tr/>');
+function showPVParams(paramsData) {
     var pvParams = ["voc", "jsc", "ff", "pec"];
-    
-    $(pvParams).each(function(i, param) {
-        $row.append($('<td/>', { text: numeral(params[param]).format('0.00') }))
-    });
-    
+    var $row = showParams(pvParams, paramsData);
     $('#pv-params').html($row);
 }
 
@@ -773,18 +768,25 @@ function showPVParams(params) {
 * Show model parameters in the table model-params 
 * invoked by analyze
 *************************************************/
-function showModelParams(params) {
-    var $row = $('<tr/>');
+function showModelParams(paramsData) {
     var modelParams = ["jph", "jnot", "ideality", "rseries", "rshunt"];
-    
-    $(modelParams).each(function(i, param) {
-        var parameter = params[param];
+    var $row = showParams(modelParams, paramsData);
+    $('#model-params').html($row);
+}
+
+/***********************************
+* Show parameters in a row of table
+* invoked by showPVParams/ModelParams
+************************************/
+function showParams(params, data) {
+    var $row = $('<tr/>');
+    $(params).each(function(i, param) {
+        var parameter = data[param];
         $row.append($('<td/>', { 
             text: parameter >= 0.01 ? 
                 numeral(parameter).format('0.00') : numeral(parameter).format('0.00e+0')
             })
         );
     });
-    
-    $('#model-params').html($row);
+    return $row;
 }
