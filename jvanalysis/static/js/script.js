@@ -66,8 +66,13 @@ function uploadFile() {
                 var delimiter = $('#delimiter').val();
                 rawData = this.result;
                 parseData(rawData, delimiter);
-                parsedData['name'] = fileName;
-                $('#analyze').show();
+                if (parsedData.jv.length) {
+                    parsedData['name'] = fileName;
+                    $('#analyze').show();
+                }
+                else {
+                    parsedData = {};
+                }
             };
             reader.readAsText(file);
         }
@@ -133,7 +138,7 @@ function parseData(csvData, delimiter) {
     parsedData['jv'] = Papa.parse(csvData, config).data;
     
     // show table data info
-    var alertType = parsedData.length ? 'success' : 'fail';
+    var alertType = parsedData.jv.length ? 'success' : 'fail';
     var message;
     if (alertType == 'success') {
         message = getDataInfo();
@@ -382,7 +387,7 @@ function updateContent(content) {
     var $cell = content.cell;
     var row = parseInt(content.row, 10);
     var col = parseInt(content.col, 10);
-    var oldVal = parsedData[row][col];
+    var oldVal = parsedData.jv[row][col];
     var newVal = $cell.text();
     var message;
     
@@ -400,7 +405,7 @@ function updateContent(content) {
             alertTable(message, 'fail');
         }
         else {
-            parsedData[row][col] = newVal;
+            parsedData.jv[row][col] = newVal;
             message = '"' + dataTableHeader[col] + '" data at row# '+ (row + 1) + 
                 ' has been updated. Previous value was ' + oldVal + '.'; 
             alertTable(message, 'success');
@@ -420,7 +425,7 @@ function deleteCell() {
         var message;
         
         // update parsed data 
-        parsedData[rowIndex].splice(colIndex, 1);
+        parsedData.jv[rowIndex].splice(colIndex, 1);
         
         // remove the cell
         $cell.remove();
@@ -446,19 +451,19 @@ function deleteRow() {
         var rowIndex = parseInt($row.attr('row'), 10);
         
         // update parsed data
-        parsedData.splice(rowIndex, 1);
+        parsedData.jv.splice(rowIndex, 1);
         
         // remove the row
         $row.remove();
         
         // show data in a table
-        var alertType = parsedData.length ? 'success' : 'fail';
+        var alertType = parsedData.jv.length ? 'success' : 'fail';
         
         if (alertType == 'success') {
             var $ajaxLoader = getAjaxLoader();
             // show ajax loader
             $tableContainer.html($ajaxLoader);
-            showData(parsedData); 
+            showData(parsedData.jv); 
             message = getDataInfo();
             message = 'Table row at ' + (rowIndex + 1) + 
                 ' has been deleted! ' + message;
@@ -527,8 +532,9 @@ function updateDataTableHeader() {
 * invoked from showData and deleteRow
 ***********************************/
 function getDataInfo() {
-    var numRws = parsedData.length;
-    var numCols = numRws ? parsedData[0].length : 0;
+    var jv = parsedData.jv;
+    var numRws = jv.length;
+    var numCols = numRws ? jv[0].length : 0;
     
     return 'There are total ' + numRws + 
         ' row(s) and '+ numCols + 
@@ -655,7 +661,7 @@ function tableShowHide() {
                 var $ajaxLoader = getAjaxLoader();
                 // show ajax loader
                 $tableContainer.html($ajaxLoader);
-                showData(parsedData);
+                showData(parsedData.jv);
             }
             $tableContainer.show();
             
@@ -697,7 +703,7 @@ function getJVData() {
     }
     var voltageIndex = dataTableHeader.indexOf('voltage');
     var currentIndex = dataTableHeader.indexOf('current');
-    $(parsedData).each(function(i, row) {
+    $(parsedData.jv).each(function(i, row) {
         if (row.length >= 2) { 
         voltage.push(Number(row[voltageIndex]));    
         current.push(Number(row[currentIndex]));
