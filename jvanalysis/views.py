@@ -4,10 +4,13 @@ from flask import json
 from flask import url_for
 
 from jvanalysis import app
-from jvanalysis.jvplot import INLINE, resources, get_params
+from jvanalysis.jvplot import DATA_FOLDER
+from jvanalysis.jvplot import INLINE
+from jvanalysis.jvplot import resources
+from jvanalysis.jvplot import get_params
+from jvanalysis.jvplot import get_resources
 
-
-JVDATA = {}
+filename = DATA_FOLDER + "/analyze.json"
 
 @app.route("/")
 def index():
@@ -30,7 +33,12 @@ def account():
 
 @app.route("/plot/<path:path>")
 def plot(path=""):
-    bkdiv, bkscript = resources("jV Plot of " + path)
+    if path == "analyzed":
+        with open(filename, "r") as jsonfile:
+            data = json.load(jsonfile)
+        bkdiv, bkscript = get_resources("jV plot of analyzed data", data)
+    else:
+        bkdiv, bkscript = resources("jV Plot of " + path)
     return render_template(
         "plot.html",
         bkjs=INLINE.render_js(),
@@ -39,11 +47,13 @@ def plot(path=""):
         bkscript=bkscript,
         title="plot|" + path if path else "plot")
 
-@app.route("/analyze", methods=["POST"])
+@app.route("/analyze", methods=["GET", "POST"])
 def analyze():
     data = request.form
     jv_data = json.loads(data.get("jv"))
     params = get_params(jv_data)
+    with open(filename, "w") as jsonfile:
+        json.dump(params, jsonfile)
     return json.dumps(params)
 
 @app.route("/analysis")

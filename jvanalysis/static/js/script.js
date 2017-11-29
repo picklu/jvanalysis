@@ -740,9 +740,15 @@ function analyze() {
             data: data,
             dataType: "json",
             success: function(data) {
+                // update parsedData
+                parsedData["vexp"] = data.vexp;
+                parsedData["jexp"] = data.jexp;
+                parsedData["jcal"] = data.jcal;
+                // show parameters in the tables
                 showPVParams(data);
                 showModelParams(data);
                 $('#results').show();
+                
                 alertTable("Data were analyzed successfully!", "success");
             },
             error: function (request, status, error) {

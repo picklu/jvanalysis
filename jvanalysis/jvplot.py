@@ -51,13 +51,43 @@ def resources(title, width=130, height=100):
     
     return (div, script)
 
+def get_resources(title, data, width=130, height=100):
+    """ return bokeh resources for plot
+    """
+    plot = figure(title=title, tools=TOOLS, plot_width=width, 
+                plot_height=height,sizing_mode='scale_width')
+    # Vertical line
+    vline = Span(location=0, dimension='height', line_color='gray', line_width=1)
+    # Horizontal line
+    hline = Span(location=0, dimension='width', line_color='gray', line_width=1)
+    plot.renderers.extend([vline, hline])
+    
+    plot.circle(data["vexp"], np.array(data["jexp"])*1000, legend="experimental", line_color="green", fill_color=None, line_width=2)
+    plot.line(data["vexp"], np.array(data["jcal"])*1000, legend="calculated", line_color="red", line_width=2)    
+    plot.x_range = Range1d(-0.6, 0.1)
+    plot.y_range = Range1d(-5, 20)
+    plot.legend.location = "top_left"
+    plot.xaxis.axis_label = "Voltage (V)"
+    plot.yaxis.axis_label = r"Current Density (mA/cm^2)"
+    
+    script, div = components(plot)
+    
+    return (div, script)
+
 def get_params(data):
     """ return a dictionary of all parameters 
         of a solar cell after analyzing the data.
     """
-    jv_data = np.array(data)
-    jv_analyzed = Analysis(jv_data)
-    params = jv_analyzed.get_pv_params()
-    params.update(jv_analyzed.get_model_params())
-    return params
+    jv_analyzed = Analysis(np.array(data))
+    
+    v_exp = jv_analyzed.v_cell
+    j_exp = jv_analyzed.j_cell.tolist()
+    model_params = jv_analyzed._get_model_params()
+    j_cal = jv_analyzed.calculate_jcell(v_exp, model_params).tolist()
+    v_exp = v_exp.tolist()
+    
+    results = jv_analyzed.get_pv_params()
+    results.update({"vexp": v_exp, "jexp": j_exp, "jcal": j_cal})
+    results.update(jv_analyzed.get_model_params())
+    return results
     
