@@ -728,6 +728,7 @@ function analyze() {
         e.preventDefault();
         var data = $(this).serializeArray();
         var jv = getJVData();
+        
         data.push({
             name: 'jv', 
             value: JSON.stringify(jv)
@@ -739,13 +740,51 @@ function analyze() {
             data: data,
             dataType: "json",
             success: function(data) {
+                showPVParams(data);
+                showModelParams(data);
                 $('#results').show();
                 alertTable("Data has been succesfully analyzed!", "success");
             },
             error: function (request, status, error) {
+                $('#results').hide();
                 alertTable("There was something wrong!", "fail");
                 console.log(error, status, request.responseText);
             }
         });
     });
+}
+
+/******************************************
+* Show PV parameters in the table pv-params 
+* invoked by analyze
+******************************************/
+function showPVParams(params) {
+    var $row = $('<tr/>');
+    var pvParams = ["voc", "jsc", "ff", "pec"];
+    
+    $(pvParams).each(function(i, param) {
+        $row.append($('<td/>', { text: numeral(params[param]).format('0.00') }))
+    });
+    
+    $('#pv-params').html($row);
+}
+
+/************************************************
+* Show model parameters in the table model-params 
+* invoked by analyze
+*************************************************/
+function showModelParams(params) {
+    var $row = $('<tr/>');
+    var modelParams = ["jph", "jnot", "ideality", "rseries", "rshunt"];
+    
+    $(modelParams).each(function(i, param) {
+        var parameter = params[param];
+        $row.append($('<td/>', { 
+            text: parameter >= 0.01 ? 
+                numeral(parameter).format('0.00') : numeral(parameter).format('0.00e+0')
+            })
+        );
+    });
+    
+    $('#model-params').html($row);
 }
