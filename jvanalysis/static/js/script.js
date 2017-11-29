@@ -46,6 +46,12 @@ function uploadFile() {
     }
     $('#analyze').hide();
     
+    // hide result button
+    if ($('#results').attr('hidden') == 'hidden') {
+        $('#results').attr('hidden', false);
+    }
+    $('#results').hide();
+    
     // empty table container
     $('#table-container').html(null);
     
@@ -712,6 +718,11 @@ function getJVData() {
     return [voltage, current];
 }
 
+
+/******************************************
+* Analyze JV data and show the results
+* invoked by click event of analyze button
+******************************************/
 function analyze() {
     $('#analyze').on('submit', function(e){
         e.preventDefault();
@@ -728,10 +739,11 @@ function analyze() {
             data: data,
             dataType: "json",
             success: function(data) {
-                // $('#plot-container').html(data);
-                console.log(data);
+                $('#results').show();
+                alertTable("Data has been succesfully analyzed!", "success");
             },
             error: function (request, status, error) {
+                alertTable("There was something wrong!", "fail");
                 console.log(error, status, request.responseText);
             }
         });
