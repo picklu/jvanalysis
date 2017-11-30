@@ -821,12 +821,12 @@ function loadPlot() {
     $("#plot-container").html(getAjaxLoader());
     // load plot
     var url = Flask.url_for("plot", {path: 'analyzed'});
-    $.getScript(url)
-     .done(function( script, textStatus ) {
-        $("#plot-container").html(script);
-     })
-     .fail(function( jqxhr, settings, exception ) {
-        console.log( msg + jqXHR.status + " " + jqXHR.statusText );
-        alertTable("There was an error loding plot!", "fail");
-     });
+    $("#plot-container").load( url, 
+        function( response, status, xhr ) {
+            if ( status == "error" ) {
+                console.log( msg + xhr.status + " " + xhr.statusText );
+                alertTable("There was an error loding plot!", "fail");
+            }
+        }
+    );
 }
