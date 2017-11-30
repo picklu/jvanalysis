@@ -32,7 +32,7 @@ def account():
 
 @app.route("/plot/<path:path>")
 def plot(path=""):
-    if path == "analyzed":
+    if path == "analyzed" in path:
         with open(filename, "r") as jsonfile:
             data = json.load(jsonfile)
         bkdiv, bkscript = get_resources("jV plot of analyzed data", data)
