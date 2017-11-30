@@ -7,14 +7,14 @@
         <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
         <title>{{ title }}</title>
         <!-- Bokeh css resource -->
-        {{ bkcss|safe }}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bokeh-0.12.9.min.css') }}">
     </head>
     <body>
         <div id="jv-plot">
             {{ bkdiv|safe }}
         </div>
         <!-- Bokeh js resources -->
-        {{ bkjs|safe }}
+        <script type="text/javascript" src="{{ url_for('static', filename='js/bokeh-0.12.9.min.js') }}"></script>
         {{ bkscript|safe }}
     </body>
 </html>

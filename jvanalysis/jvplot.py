@@ -3,7 +3,6 @@ from jvanalysis.analysis import Analysis, AnalysisError
 from bokeh.plotting import figure
 from bokeh.embed import components
 from bokeh.models import Range1d, Span
-from bokeh.resources import INLINE
 
 
 DATA_FOLDER = "/home/ubuntu/workspace/jvanalysis/data"

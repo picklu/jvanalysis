@@ -5,7 +5,6 @@ from flask import url_for
 
 from jvanalysis import app
 from jvanalysis.jvplot import DATA_FOLDER
-from jvanalysis.jvplot import INLINE
 from jvanalysis.jvplot import resources
 from jvanalysis.jvplot import get_params
 from jvanalysis.jvplot import get_resources
@@ -41,8 +40,6 @@ def plot(path=""):
         bkdiv, bkscript = resources("jV Plot of " + path)
     return render_template(
         "plot.html",
-        bkjs=INLINE.render_js(),
-        bkcss=INLINE.render_css(),
         bkdiv=bkdiv,
         bkscript=bkscript,
         title="plot|" + path if path else "plot")
