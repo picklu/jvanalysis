@@ -8,7 +8,7 @@ from bokeh.models import Range1d, Span
 DATA_FOLDER = "/home/ubuntu/workspace/jvanalysis/data"
 TOOLS = "wheel_zoom,box_zoom,reset,save"
 
-def resources(title, width=130, height=100):
+def resources(title, width=200, height=100):
     """ return bokeh resources for plot
     """
     data = np.transpose(np.loadtxt("/home/ubuntu/workspace/jvanalysis/data/D1_SCtoOC_SR500mVps.txt"))
@@ -50,7 +50,7 @@ def resources(title, width=130, height=100):
     
     return (div, script)
 
-def get_resources(title, data, width=130, height=100):
+def get_resources(title, data, width=200, height=100):
     """ return bokeh resources for plot
     """
     plot = figure(title=title, tools=TOOLS, plot_width=width, 
