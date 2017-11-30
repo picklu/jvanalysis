@@ -760,7 +760,7 @@ function analyze() {
                 showPVParams(data);
                 showModelParams(data);
                 $('#results').show();
-                
+                $("#plot-container").load(Flask.url_for("plot", {path: 'analyzed'}));
                 alertTable("Data were analyzed successfully!", "success");
             },
             error: function (request, status, error) {
