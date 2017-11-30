@@ -747,31 +747,34 @@ function analyze() {
         });
         
         $.ajax({
-            type: "POST",
+            method: "POST",
             url: Flask.url_for("analyze"),
             data: data,
-            dataType: "json",
-            success: function(data) {
-                // show ajax loader before loading the results
-                $("#plot-container").html(getAjaxLoader());
-                // update jvData
-                jvData["vexp"] = data.vexp;
-                jvData["jexp"] = data.jexp;
-                jvData["jcal"] = data.jcal;
-                // show parameters in the tables
-                showPVParams(data);
-                showModelParams(data);
-                $('#results').show();
-                // show plot
-                $("#plot-container").load(Flask.url_for("plot", {path: 'analyzed'}));
-                // show alert message
-                alertTable("Data were analyzed successfully!", "success");
-            },
-            error: function (request, status, error) {
-                $('#results').hide();
-                alertTable("There was something wrong with the data!", "fail");
-                console.log(error, status, request.responseText);
-            }
+            dataType: "json"
+        })
+         .done(function(data) {
+            // update jvData
+            jvData["vexp"] = data.vexp;
+            jvData["jexp"] = data.jexp;
+            jvData["jcal"] = data.jcal;
+            // show parameters in the tables
+            showPVParams(data);
+            showModelParams(data);
+            $('#results').show();
+            // show plot
+            $("#plot-container").html($('<button/>', {
+                class: 'btn btn-outline-info btn-block',
+                text: 'View Plot'
+                }).click(loadPlot)
+            );
+            // show alert message
+            alertTable("Data were analyzed successfully!", "success");
+        })
+         .fail(function (jqXHR, status) {
+            $('#results').hide();
+            // show alert message
+            alertTable("There was something wrong with the data!", "fail");
+            console.log(status);
         });
     });
 }
@@ -811,4 +814,19 @@ function showParams(params, data) {
         );
     });
     return $row;
+}
+
+function loadPlot() {
+    // show ajax loader before loading the results
+    $("#plot-container").html(getAjaxLoader());
+    // load plot
+    var url = Flask.url_for("plot", {path: 'analyzed'});
+    $.getScript(url)
+     .done(function( script, textStatus ) {
+        $("#plot-container").html(script);
+     })
+     .fail(function( jqxhr, settings, exception ) {
+        console.log( msg + jqXHR.status + " " + jqXHR.statusText );
+        alertTable("There was an error loding plot!", "fail");
+     });
 }
