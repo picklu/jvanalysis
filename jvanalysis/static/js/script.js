@@ -752,6 +752,8 @@ function analyze() {
             data: data,
             dataType: "json",
             success: function(data) {
+                // show ajax loader before loading the results
+                $("#plot-container").html(getAjaxLoader());
                 // update jvData
                 jvData["vexp"] = data.vexp;
                 jvData["jexp"] = data.jexp;
@@ -760,7 +762,9 @@ function analyze() {
                 showPVParams(data);
                 showModelParams(data);
                 $('#results').show();
+                // show plot
                 $("#plot-container").load(Flask.url_for("plot", {path: 'analyzed'}));
+                // show alert message
                 alertTable("Data were analyzed successfully!", "success");
             },
             error: function (request, status, error) {
@@ -787,7 +791,7 @@ function showPVParams(paramsData) {
 * invoked by analyze
 *************************************************/
 function showModelParams(paramsData) {
-    var modelParams = ["jph", "jnot", "ideality", "rseries", "rshunt"];
+    var modelParams = ["jnot", "ideality", "rseries", "rshunt"];
     var $row = showParams(modelParams, paramsData);
     $('#model-params').html($row);
 }
