@@ -63,8 +63,8 @@ def get_resources(title, data, width=200, height=100):
     
     plot.circle(data["vexp"], np.array(data["jexp"])*1000, legend="experimental", line_color="green", fill_color=None, line_width=2)
     plot.line(data["vexp"], np.array(data["jcal"])*1000, legend="calculated", line_color="red", line_width=2)    
-    plot.x_range = Range1d(-(data["voc"]+0.2), 0.1)
-    plot.y_range = Range1d(-2, data["jsc"]+2)
+    plot.x_range = Range1d(-(((((data["voc"]*10)//2)*2)/10)+0.2), 0.1)
+    plot.y_range = Range1d(-2, (data["jsc"]//2)*2+2)
     plot.legend.location = "top_left"
     plot.xaxis.axis_label = "Voltage (V)"
     plot.yaxis.axis_label = r"Current Density (mA/cm^2)"
