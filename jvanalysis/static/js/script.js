@@ -774,7 +774,7 @@ function analyze() {
             $('#results').hide();
             // show alert message
             alertTable("There was something wrong with the data!", "fail");
-            console.log(status);
+            console.log(jqXHR.statusText);
         });
     });
 }
