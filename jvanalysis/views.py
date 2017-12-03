@@ -46,8 +46,8 @@ def plot(path=""):
 
 @app.route("/analyze", methods=["GET", "POST"])
 def analyze():
-    data = request.form
-    jv_data = json.loads(data.get("jv"))
+    data = request.form.get("jv")
+    jv_data = json.loads(data)
     params = get_params(jv_data)
     with open(filename, "w") as jsonfile:
         json.dump(params, jsonfile)
