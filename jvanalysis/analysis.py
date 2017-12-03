@@ -96,21 +96,19 @@ class Analysis(object):
             self.data = np.flip(data, axis=1)
 
         # power value of the iv data
-        power = data[0] * data[1]
-        indices = np.where(power <= 0)[0]
+        power = self.data[0] * self.data[1]
+        indices = np.where(power < 0)
         try:
-            start = indices[0]
-            stop = indices[-1]
+            start = indices[0][0]
+            stop = indices[0][-1]
         except IndexError:
-            raise AnalysisError("NoPowerData",
-                                "There is no data between SC and OC")
-        if stop - start < 0:
             raise AnalysisError("NoPowerData",
                                 "There is no data between SC and OC")
         if stop - start < 20:
             raise AnalysisError("NoPowerData",
                                 "There is not enough data between SC and OC")
 
+        self.indices = indices[0]
         self.start = start
         self.stop = stop
         self.length = len(data[0])
@@ -133,13 +131,13 @@ class Analysis(object):
 
         # set vcell, jcell, pmax
         self.power = self.v_cell * self.j_cell
-        self.photo_power = self.power[self.start:self.stop]
-        self._pmax = min(self.photo_power)
-        self.flength = len(self.photo_power)
+        self.photo_power = self.power[self.indices]
+        self._pmax = self.photo_power.min()
+        self.flength = self.photo_power.size
 
         # set photo power data: data between SC and OC
-        self.x = self.v_cell[self.start:self.stop]
-        self.y = self.j_cell[self.start:self.stop]
+        self.x = self.v_cell[self.indices]
+        self.y = self.j_cell[self.indices]
 
     def _set_pv_params(self):
         """ set Voc, jsc, ff and eff of the data 
@@ -191,7 +189,7 @@ class Analysis(object):
     def _get_data_sc(self):
         """ returns data at around jsc """
         max_sc_len = len(self._get_data_max_sc()[0])
-        sc_len = max_sc_len // 3
+        sc_len = max_sc_len // 2
         return (self.x[:sc_len], self.y[:sc_len])
 
     def _get_data_max_sc(self):
