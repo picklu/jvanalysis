@@ -8,6 +8,14 @@ from jvanalysis.jvplot import DATA_FOLDER
 from jvanalysis.jvplot import resources
 from jvanalysis.jvplot import get_params
 from jvanalysis.jvplot import get_resources
+if app.config.get('TESTING'):
+    from jvanalysis.mockdbhelper import MockDBHelper as DBHelper
+else:
+    from jvanalysis.dbhelper import DBHelper
+from jvanalysis.passwordhelper import PasswordHelper
+
+DB = DBHelper()
+PH = PasswordHelper()
 
 filename = DATA_FOLDER + "/analyze.json"
 
@@ -33,9 +41,12 @@ def account():
 @app.route("/plot/<path:path>")
 def plot(path=""):
     if path == "analyzed" in path:
-        with open(filename, "r") as jsonfile:
-            data = json.load(jsonfile)
-        bkdiv, bkscript = get_resources("jV plot of analyzed data", data)
+        data = DB.get_data("guest@jvanalysis.net")
+        jv_data = json.loads(data)
+        print("**************")
+        print(jv_data)
+        print("**************")
+        bkdiv, bkscript = get_resources("jV plot of analyzed data", jv_data)
     else:
         bkdiv, bkscript = resources("jV Plot of " + path)
     return render_template(
