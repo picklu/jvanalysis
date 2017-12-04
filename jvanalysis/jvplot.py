@@ -50,7 +50,7 @@ def resources(title, width=200, height=100):
     
     return (div, script)
 
-def get_resources(title, data, width=200, height=150):
+def get_resources(title, data, width=200, height=120):
     """ return bokeh resources for plot
     """
     plot = figure(title=title, tools=TOOLS, plot_width=width, 
