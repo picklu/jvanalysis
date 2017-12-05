@@ -818,7 +818,7 @@ function loadPlot() {
     // show ajax loader before loading the results
     $("#plot-container").html(getAjaxLoader());
     // load plot
-    var url = Flask.url_for("plot", {path: jvData.data_id});
+    var url = Flask.url_for("plot", {data_id: jvData.data_id});
     $("#plot-container").load( url,
         function( response, status, xhr ) {
             if ( status == "error" ) {

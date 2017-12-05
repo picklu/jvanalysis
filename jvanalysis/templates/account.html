@@ -120,6 +120,6 @@
 <script>
     // load jv plot
     $('#plot-container').html(getAjaxLoader());
-    $('#plot-container').load(Flask.url_for("plot"));
+    $('#plot-container').load(Flask.url_for("plot", {data_id: 1}));
 </script>
 {% endblock %}

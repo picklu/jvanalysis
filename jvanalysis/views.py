@@ -4,6 +4,7 @@ from flask import json
 from flask import url_for
 
 from jvanalysis import app
+from jvanalysis.jvhelper import mongo_id, nice_id
 from jvanalysis.jvplot import DATA_FOLDER
 from jvanalysis.jvplot import resources
 from jvanalysis.jvplot import get_params
@@ -16,8 +17,8 @@ from jvanalysis.passwordhelper import PasswordHelper
 
 DB = DBHelper()
 PH = PasswordHelper()
+user_id = mongo_id("5a2652642ebaf4ba89405473")
 
-filename = DATA_FOLDER + "/analyze.json"
 
 @app.route("/")
 def index():
@@ -38,12 +39,14 @@ def about():
 def account():
     return render_template("account.html", title="Account")
 
-@app.route("/plot/<data_id>")
+@app.route("/users/<objectid:data_id>")
+def users(data_id):
+    return "Data ID: %r" % data_id
+
+@app.route("/plot/<objectid:data_id>")   
 def plot(data_id):
     if data_id:
-        data_id = int(data_id)
-        user_id = 1
-        data = DB.get_data(user_id, data_id)
+        data = DB.get_data(user_id, data_id).get("data")
         bkdiv, bkscript = get_resources("jV plot of analyzed data", data)
     else:
         bkdiv, bkscript = resources("jV Plot")
@@ -51,15 +54,15 @@ def plot(data_id):
         "plot.html",
         bkdiv=bkdiv,
         bkscript=bkscript,
-        title="plot|" + data_id if data_id else "plot")
+        title="plot|" + str(data_id) if data_id else "plot")
 
 @app.route("/upload", methods=["POST"])
 def upload():
     data = request.form.get("jv")
     jv_data = json.loads(data)
     params = get_params(jv_data)
-    id = DB.add_data(1, params)
-    params["data_id"] = id
+    id = DB.add_data(user_id, params)
+    params["data_id"] = nice_id(id)
     return json.dumps(params)
 
 @app.route("/analysis")

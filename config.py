@@ -12,5 +12,5 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     """Development environment specific config"""
     DEBUG = True
-    TESTING = True
+    # TESTING = True
     SECRET_KEY = 'd908eb90af7ac0e79c2c61b8fe60c33e'
