@@ -40,11 +40,11 @@ function uploadFile() {
     var alertType;
     var fileObject = $('#data-file').prop('files');
     
-    // hide analyze button
-    if ($('#analyze').attr('hidden') == 'hidden') {
-        $('#analyze').attr('hidden', false);
+    // hide upload button
+    if ($('#upload').attr('hidden') == 'hidden') {
+        $('#upload').attr('hidden', false);
     }
-    $('#analyze').hide();
+    $('#upload').hide();
     
     // hide result button
     if ($('#results').attr('hidden') == 'hidden') {
@@ -77,7 +77,7 @@ function uploadFile() {
                     jvData['name'] = fileName;
                     alertType = 'success';
                     message = getDataInfo();
-                    $('#analyze').show();
+                    $('#upload').show();
                 }
                 else {
                     jvData = {};
@@ -168,7 +168,7 @@ function reParseData() {
         if (jvData.jv.length) {
             alertType = 'success';
             message = getDataInfo();
-            $('#analyze').show();
+            $('#upload').show();
             // show ajax loader
             if (isTableVisible) {
                 var $ajaxLoader = getAjaxLoader();
@@ -732,11 +732,11 @@ function getJVData() {
 
 
 /******************************************
-* Analyze JV data and show the results
-* invoked by click event of analyze button
+* Upload JV data and show the results
+* invoked by click event of upload button
 ******************************************/
-function analyze() {
-    $('#analyze').on('submit', function(e){
+function uploadData() {
+    $('#upload').on('submit', function(e){
         e.preventDefault();
         var data = $(this).serializeArray();
         var jv = getJVData();
@@ -748,15 +748,13 @@ function analyze() {
         
         $.ajax({
             method: "POST",
-            url: Flask.url_for("analyze"),
+            url: Flask.url_for("upload"),
             data: data,
             dataType: "json"
         })
          .done(function(data) {
             // update jvData
-            jvData["vexp"] = data.vexp;
-            jvData["jexp"] = data.jexp;
-            jvData["jcal"] = data.jcal;
+            jvData["data_id"] = data.data_id;
             // show parameters in the tables
             showPVParams(data);
             showModelParams(data);
@@ -768,7 +766,7 @@ function analyze() {
                 }).click(loadPlot)
             );
             // show alert message
-            alertTable("Data were analyzed successfully!", "success");
+            alertTable("Data were uploaded and analyzed successfully!", "success");
         })
          .fail(function (jqXHR, status) {
             $('#results').hide();
@@ -781,7 +779,7 @@ function analyze() {
 
 /******************************************
 * Show PV parameters in the table pv-params 
-* invoked by analyze
+* invoked by uploadData
 ******************************************/
 function showPVParams(paramsData) {
     var pvParams = ["voc", "jsc", "ff", "pec"];
@@ -791,7 +789,7 @@ function showPVParams(paramsData) {
 
 /************************************************
 * Show model parameters in the table model-params 
-* invoked by analyze
+* invoked by uploadData
 *************************************************/
 function showModelParams(paramsData) {
     var modelParams = ["jnot", "ideality", "rseries", "rshunt"];
@@ -820,12 +818,12 @@ function loadPlot() {
     // show ajax loader before loading the results
     $("#plot-container").html(getAjaxLoader());
     // load plot
-    var url = Flask.url_for("plot", {path: 'analyzed'});
-    $("#plot-container").load( url, 
+    var url = Flask.url_for("plot", {path: jvData.data_id});
+    $("#plot-container").load( url,
         function( response, status, xhr ) {
             if ( status == "error" ) {
-                console.log( msg + xhr.status + " " + xhr.statusText );
-                alertTable("There was an error loding plot!", "fail");
+                console.log( xhr.status + " " + xhr.statusText );
+                alertTable("There was an error loading plot!", "fail");
             }
         }
     );
