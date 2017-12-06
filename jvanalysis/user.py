@@ -4,14 +4,19 @@
 # By Gareth Dwyer, Shalabh Aggarwal, Jack Stouffer
 # *************************************************
 class User(object):
-    def __init__(self, email):
+    def __init__(self, email, id, active=True):
         self.email = email
+        self.id = id
+        self.active = active
     
     def get_email(self):
         return self.email
     
+    def get_id(self):
+        return self.id
+    
     def is_active(self):
-        return True
+        return self.active
     
     def is_anonymous(self):
         return False

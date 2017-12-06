@@ -1,7 +1,7 @@
 {% extends "home.html" %}
 
 {% block signin %}
-<form class="form-inline my-2 my-lg-0" action="{{ url_for('signin') }}" method="get">
+<form class="form-inline my-2 my-lg-0" action="{{ url_for('signin') }}" method="GET">
     <input class="btn btn-sm btn-success my-sm-0" type="submit" value="Sign in">
 </form>
 {% endblock %}
@@ -10,25 +10,46 @@
 <div class="jumbotron">
     <div class="container">
         <div class="content-jumbotron">
-            <form class="form-horizontal form-signup" action="/register" method="POST">
+            <form class="form-horizontal form-signup" action="{{ url_for('signup') }}" method="POST">
+                {{ signup_form.csrf_token }}
                 <div class="form-group">
                     <div class="col-sm-12">
-                        <input type="email" name="email" id="email" placeholder="Email address" class="form-control">
+                        {% if signup_form.errors %}
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <div class="text-left">
+                                <strong>Warning!</strong>
+                                <ul class="alert alert-warning">
+                                    {% for field_name, field_errors in signup_form.errors|dictsort if field_errors %}
+                                    {% for error in field_errors %}
+                                        {% if field_name == "password2" %}
+                                            {% set field_name = "Confirm Password" %}
+                                        {% endif %}
+                                    <li><strong>{{ field_name|capitalize }} error:</strong> {{ error }}</li>
+                                    {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {{ signup_form.email(class="form-control", placeholder="Email Address") }}
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12">
-                        <input type="password" name="password" id="password" placeholder="Password" class="form-control">
+                        {{ signup_form.password(class="form-control", placeholder="Password") }}
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12">
-                        <input type="password" name="password2" id="password2" placeholder="Confirm password" class="form-control">
+                        {{ signup_form.password2(class="form-control", placeholder="Confirm Password") }}
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12">
-                        <input type="submit" value="Sign up" class="btn btn-jumbotron btn-info btn-block">
+                        {{ signup_form.submit(value="Sign up", class="btn btn-jumbotron btn-info btn-block") }}
                     </div>
                 </div>
             </form> <!-- /form -->

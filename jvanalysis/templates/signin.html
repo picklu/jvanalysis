@@ -14,13 +14,21 @@
                 {{ signin_form.csrf_token }}
                 <div class="form-group">
                     <div class="col-sm-12">
-                        {% if signin_form.email.errors %}
-                        <div class=" text-left alert alert-warning alert-dismissible fade show" role="alert">
+                        {% if signin_form.errors %}
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <strong>Error!</strong>
-                            <ul class="alert alert-warning">{% for error in signin_form.email.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                            <div class="text-left">
+                                <strong>Warning!</strong>
+                                <ul class="alert alert-warning">
+                                    {% for field_name, field_errors in signin_form.errors|dictsort if field_errors %}
+                                    {% for error in field_errors %}
+                                    <li><strong>{{ field_name|capitalize }} error:</strong> {{ error }}</li>
+                                    {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
                         {% endif %}
                         {{ signin_form.email(class="form-control", placeholder="email address") }}
