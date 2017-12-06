@@ -1,7 +1,7 @@
 {% extends "home.html" %}
 
 {% block signin %}
-<form class="form-inline my-2 my-lg-0" action="{{ url_for('signup') }}" method="get">
+<form class="form-inline my-2 my-lg-0" action="{{ url_for('signup') }}" method="GET">
     <input class="btn btn-sm btn-info my-sm-0" type="submit" value="Sign up">
 </form>
 {% endblock %}
@@ -10,20 +10,30 @@
 <div class="jumbotron">
     <div class="container">
         <div class="content-jumbotron">
-            <form class="form-horizontal form-signup" action="/register" method="POST">
+            <form class="form-horizontal form-signup" action="{{ url_for('signin') }}" method="POST">
+                {{ signin_form.csrf_token }}
                 <div class="form-group">
                     <div class="col-sm-12">
-                        <input type="email" name="email" id="email" placeholder="Email address" class="form-control">
+                        {% if signin_form.email.errors %}
+                        <div class=" text-left alert alert-warning alert-dismissible fade show" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong>Error!</strong>
+                            <ul class="alert alert-warning">{% for error in signin_form.email.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                        </div>
+                        {% endif %}
+                        {{ signin_form.email(class="form-control", placeholder="email address") }}
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12">
-                        <input type="password" name="password" id="password" placeholder="Password" class="form-control">
+                        {{ signin_form.password(class="form-control", placeholder="password") }}
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12">
-                        <input type="submit" value="Sign in" class="btn btn-jumbotron btn-success btn-block">
+                        {{ signin_form.submit(value="Sign in", class="btn btn-jumbotron btn-success btn-block") }}
                     </div>
                 </div>
             </form> <!-- /form -->
