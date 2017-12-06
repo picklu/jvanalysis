@@ -4,7 +4,8 @@ from flask import json
 from flask import url_for
 
 from jvanalysis import app
-from jvanalysis.jvhelper import mongo_id, nice_id
+from jvanalysis.jvhelper import mongo_id
+from jvanalysis.jvhelper import nice_id
 from jvanalysis.jvplot import DATA_FOLDER
 from jvanalysis.jvplot import resources
 from jvanalysis.jvplot import get_params
@@ -39,22 +40,18 @@ def about():
 def account():
     return render_template("account.html", title="Account")
 
-@app.route("/users/<objectid:data_id>")
-def users(data_id):
-    return "Data ID: %r" % data_id
-
 @app.route("/plot/<objectid:data_id>")   
 def plot(data_id):
-    if data_id:
+    try:
         data = DB.get_data(user_id, data_id).get("data")
         bkdiv, bkscript = get_resources("jV plot of analyzed data", data)
-    else:
-        bkdiv, bkscript = resources("jV Plot")
-    return render_template(
-        "plot.html",
-        bkdiv=bkdiv,
-        bkscript=bkscript,
-        title="plot|" + str(data_id) if data_id else "plot")
+        return render_template(
+            "plot.html",
+            bkdiv=bkdiv,
+            bkscript=bkscript,
+            title="plot|" + str(data_id) if data_id else "plot")
+    except:
+        return json.dumps({"error": "Invalid Data ID!"})
 
 @app.route("/upload", methods=["POST"])
 def upload():
