@@ -7,14 +7,15 @@ from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
 def mongo_id(text):
-    "Return mongodb _id as ObjectId"
+    "Return a mongodb _id as an ObjectId"
     return ObjectId(text)
 
-def nice_id(text):
-    "Convert mongodb _id string as nice text"
-    return base64_encode(text).decode()
+def nice_id(object_id):
+    "Convert a mongodb _id as a nice plain text"
+    return base64_encode(str(object_id)).decode()
 
 class ObjectIDConverter(BaseConverter):
+    """ Based on the snippet found at flask.pocoo.org"""
     def to_python(self, value):
         try:
             return ObjectId(base64_decode(value).decode())

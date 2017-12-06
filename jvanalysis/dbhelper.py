@@ -1,3 +1,7 @@
+# *************************************************
+# Book: Flask: Building Python Web Services
+# By Gareth Dwyer, Shalabh Aggarwal, Jack Stouffer
+# *************************************************
 import pymongo
 
 DATABASE = "jvanalysis"
@@ -17,7 +21,7 @@ class DBHelper(object):
     
     def add_data(self, user_id, data):
         new_id = self.db.data.insert({"user_id": user_id, "data": data})
-        return str(new_id)
+        return new_id
 
     def get_data(self, user_id, data_id):
         return self.db.data.find_one({"_id": data_id, "user_id": user_id})

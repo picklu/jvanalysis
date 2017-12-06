@@ -1,3 +1,7 @@
+# *************************************************
+# Book: Flask: Building Python Web Services
+# By Gareth Dwyer, Shalabh Aggarwal, Jack Stouffer
+# *************************************************
 import base64
 import hashlib
 import os
