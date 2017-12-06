@@ -116,7 +116,7 @@ def signup():
         salt = PH.get_salt()
         hashed = PH.get_hash(form.password2.data + salt)
         DB.add_user(form.email.data, salt, hashed)
-        return render_template("home.html", onloadmessage="Registration successful. Please log in.")
+        return render_template("signin.html", signin_form=SigninForm(),  onloadmessage="Registration successful. Please log in.")
     return render_template("signup.html", signup_form=form)
 
 
