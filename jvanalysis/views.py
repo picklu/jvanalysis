@@ -56,19 +56,15 @@ def unauthorized_callback():
 @app.route("/")
 def index():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return render_template("home_secured.html")
     else:
         return render_template("home.html", signin_form=SigninForm())
 
-@app.route("/home")
-@login_required
-def home():
-    return render_template("home_secured.html")
-
 @app.route("/about")
 def about():
-    form = None
-    if not current_user.is_authenticated:
+    if current_user.is_authenticated:
+        form = None
+    else:
         form = SigninForm()
     return render_template("about.html", signin_form=form, title="About")
 
@@ -147,7 +143,8 @@ def signin():
                 user = User(db_user["email"])
                 login_user(user, remember=True)
                 next = request.args.get('next')
-                return redirect(next or url_for("home"))
+                url = url_for("index") if not next or next == "index" else next
+                return redirect(url)
             else:
                 form.email.errors = []
                 form.password.errors.append("Invalid password")
@@ -158,11 +155,12 @@ def signin():
 @app.route("/signout", methods=["POST"])
 @login_required
 def signout():
-    next = request.args.get('next')
     logout_user()
-    return redirect(next or url_for("index"))
+    next = request.args.get('next')
+    url = url_for("index") if not next or next == "index" else next
+    return redirect(url)
 
 @app.route("/guest")
 @login_required
 def guest():
-    return home()
+    return index()
