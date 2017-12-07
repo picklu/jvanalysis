@@ -18,6 +18,7 @@ from jvanalysis.forms import SignupForm
 
 from jvanalysis.jvhelper import mongo_id
 from jvanalysis.jvhelper import nice_id
+from jvanalysis.jvhelper import is_safe_url
 from jvanalysis.jvhelper import ugly_id
 
 from jvanalysis.jvplot import resources
@@ -143,7 +144,7 @@ def signin():
                 user = User(db_user["email"])
                 login_user(user, remember=True)
                 next = request.args.get('next')
-                url = url_for("index") if not next or next == "index" else next
+                url = next if is_safe_url(next) else url_for("index")
                 return redirect(url)
             else:
                 form.email.errors = []
@@ -157,7 +158,7 @@ def signin():
 def signout():
     logout_user()
     next = request.args.get('next')
-    url = url_for("index") if not next or next == "index" else next
+    url = next if is_safe_url(next) else url_for("index")
     return redirect(url)
 
 @app.route("/guest")
