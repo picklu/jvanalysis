@@ -1,4 +1,4 @@
-{%extends "base.html" %}
+{% extends "home.html" if signin_form else "base.html" %}
 
 {% block jumbotron %}
 <div class="jumbotron">
