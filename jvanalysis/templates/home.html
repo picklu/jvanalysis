@@ -11,7 +11,7 @@
         </li>
     </ul>
     {% block signin %}
-    <form class="form-inline my-2 my-lg-0" action="{{ url_for('signin') }}" method="POST">
+    <form class="form-inline my-2 my-lg-0" action="{{ url_for('signin', next=request.endpoint) }}" method="POST">
         {{ signin_form.csrf_token }}
         {{ signin_form.email(class="form-control form-control-sm mr-sm-2", placeholder="email address") }}
         {{ signin_form.password(class="form-control form-control-sm mr-sm-2", placeholder="password") }}

@@ -20,7 +20,6 @@ from jvanalysis.jvhelper import mongo_id
 from jvanalysis.jvhelper import nice_id
 from jvanalysis.jvhelper import ugly_id
 
-from jvanalysis.jvplot import DATA_FOLDER
 from jvanalysis.jvplot import resources
 from jvanalysis.jvplot import get_params
 from jvanalysis.jvplot import get_resources
@@ -39,14 +38,16 @@ PH = PasswordHelper()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 @login_manager.user_loader
-def load_user(user_id):
-    user_password = DB.get_user(user_id)
-    if user_password:
-        email = user_password["email"]
-        id = nice_id(user_password["_id"])
-        return User(email, id)
+def load_user(email):
+    db_user = DB.get_user(email)
+    if db_user:
+        id = nice_id(db_user["_id"])
+        user = User(email)
+        user.add_id(id)
+        return user
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
@@ -80,7 +81,7 @@ def account():
 @login_required
 def plot(data_id):
     try:
-        user_id = current_user.get_id()
+        user_id = current_user.id
         data = DB.get_data(user_id, data_id).get("data")
         bkdiv, bkscript = get_resources("jV plot of analyzed data", data)
         return render_template(
@@ -128,6 +129,7 @@ def signup():
 
 @app.route("/signin", methods=["GET", "POST"])
 def signin():
+    # if the requested method is GET
     if request.method == "GET":
         form=SigninForm()
         success = request.args.get("success")
@@ -136,17 +138,16 @@ def signin():
             form.message = messages["message"]
             form.email.data = messages["id"]
         return render_template("signin.html", signin_form=form, title="Sign In")
-        
+    # else the method must be post 
     form = SigninForm(request.form)
     if form.validate():
         db_user = DB.get_user(form.email.data)
         if db_user:
             if PH.validate_password(form.password.data, db_user['salt'], db_user['hashed']):
-                email = db_user["email"]
-                id = nice_id(db_user["_id"])
-                user = User(email, id)
+                user = User(db_user["email"])
                 login_user(user, remember=True)
-                return redirect(url_for("home"))
+                next = request.args.get('next')
+                return redirect(next or url_for("home"))
             else:
                 form.email.errors = []
                 form.password.errors.append("Invalid password")
@@ -154,11 +155,12 @@ def signin():
             form.email.errors.append("Email not found")
     return render_template("signin.html", signin_form=form)
 
-@app.route("/signout")
+@app.route("/signout", methods=["POST"])
 @login_required
 def signout():
+    next = request.args.get('next')
     logout_user()
-    return redirect(url_for("index"))
+    return redirect(next or url_for("index"))
 
 @app.route("/guest")
 @login_required
