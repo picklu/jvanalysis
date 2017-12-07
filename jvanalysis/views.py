@@ -18,6 +18,7 @@ from jvanalysis.forms import SignupForm
 
 from jvanalysis.jvhelper import mongo_id
 from jvanalysis.jvhelper import nice_id
+from jvanalysis.jvhelper import ugly_id
 
 from jvanalysis.jvplot import DATA_FOLDER
 from jvanalysis.jvplot import resources
@@ -117,8 +118,9 @@ def signup():
         salt = PH.get_salt()
         hashed = PH.get_hash(form.password2.data + salt)
         DB.add_user(form.email.data, salt, hashed)
-        messages = json.dumps({"message": "Sign up successful! Please sign in.", "id": email})
-        return redirect(url_for("signin", messages=messages))
+        messages = json.dumps({"message": "Sign up successful! Please sign in.", 
+                                "id": email})
+        return redirect(url_for("signin", success=nice_id(messages)))
     return render_template("signup.html", signup_form=form)
 
 
@@ -127,15 +129,13 @@ def signup():
 def signin():
     if request.method == "GET":
         form=SigninForm()
-        messages = request.args.get("messages")
-        if messages:
-            messages = json.loads(messages)
-            message = messages.get("message")
-            form.email.data = messages.get("id")
-        else:
-            message = None
-        return render_template("signin.html", signin_form=form, 
-                                onloadmessage=message, title="Sign In")
+        success = request.args.get("success")
+        if success:
+            messages = json.loads(ugly_id(success))
+            form.message = messages["message"]
+            form.email.data = messages["id"]
+        return render_template("signin.html", signin_form=form, title="Sign In")
+        
     form = SigninForm(request.form)
     if form.validate():
         db_user = DB.get_user(form.email.data)
@@ -150,7 +150,7 @@ def signin():
                 form.email.errors = []
                 form.password.errors.append("Invalid password")
         else:    
-            form.email.errors.append("Email is not found")
+            form.email.errors.append("Email not found")
     return render_template("signin.html", signin_form=form)
 
 @app.route("/signout")

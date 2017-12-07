@@ -15,6 +15,10 @@ def nice_id(object_id):
     "Convert a mongodb _id as a nice plain text"
     return base64_encode(str(object_id)).decode()
 
+def ugly_id(nice_id):
+    "Convert a nice plain text to its original form"
+    return base64_decode(nice_id).decode()
+
 class ObjectIDConverter(BaseConverter):
     """ Based on the snippet found at flask.pocoo.org"""
     def to_python(self, value):
