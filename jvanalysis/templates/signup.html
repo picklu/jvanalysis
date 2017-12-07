@@ -21,7 +21,7 @@
                             </button>
                             <div class="text-left">
                                 <strong>Warning!</strong>
-                                <ul class="alert alert-warning">
+                                <ul>
                                     {% for field_name, field_errors in signup_form.errors|dictsort if field_errors %}
                                     {% for error in field_errors %}
                                         {% if field_name == "password2" %}

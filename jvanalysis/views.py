@@ -110,13 +110,15 @@ def signup():
         return render_template("signup.html", signup_form=SignupForm(), title="Sign Up")
     form = SignupForm(request.form)
     if form.validate():
-        if DB.get_user(form.email.data):
+        email = form.email.data
+        if DB.get_user(email):
             form.email.errors.append("Email address already registered")
             return render_template("signup.html", signup_form=form)
         salt = PH.get_salt()
         hashed = PH.get_hash(form.password2.data + salt)
         DB.add_user(form.email.data, salt, hashed)
-        return render_template("signin.html", signin_form=SigninForm(),  onloadmessage="Registration successful. Please log in.")
+        messages = json.dumps({"message": "Sign up successful! Please sign in.", "id": email})
+        return redirect(url_for("signin", messages=messages))
     return render_template("signup.html", signup_form=form)
 
 
@@ -124,7 +126,16 @@ def signup():
 @app.route("/signin", methods=["GET", "POST"])
 def signin():
     if request.method == "GET":
-        return render_template("signin.html", signin_form=SigninForm(), title="Sign In")
+        form=SigninForm()
+        messages = request.args.get("messages")
+        if messages:
+            messages = json.loads(messages)
+            message = messages.get("message")
+            form.email.data = messages.get("id")
+        else:
+            message = None
+        return render_template("signin.html", signin_form=form, 
+                                onloadmessage=message, title="Sign In")
     form = SigninForm(request.form)
     if form.validate():
         db_user = DB.get_user(form.email.data)
