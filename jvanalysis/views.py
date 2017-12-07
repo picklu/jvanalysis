@@ -65,9 +65,11 @@ def home():
     return render_template("home_secured.html")
 
 @app.route("/about")
-@login_required
 def about():
-    return render_template("about.html", title="About")
+    form = None
+    if not current_user.is_authenticated:
+        form = SigninForm()
+    return render_template("about.html", signin_form=form, title="About")
 
 @app.route("/account")
 @login_required
@@ -103,7 +105,6 @@ def upload():
 @login_required
 def analysis():
     return render_template("analysis.html", title="Analysis")
-
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
