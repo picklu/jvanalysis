@@ -44,6 +44,7 @@
                             </div>
                         </div>
                         {% endif %}
+                        {{ signin_form.next(value=next or '') }}
                         {{ signin_form.email(class="form-control", placeholder="email address") }}
                     </div>
                 </div>

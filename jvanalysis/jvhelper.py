@@ -1,7 +1,7 @@
 import urllib.request
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
-from flask import request
+from flask import redirect, request, url_for
 from itsdangerous import base64_encode, base64_decode
 from urllib.parse import urlparse, urljoin
 from werkzeug.routing import BaseConverter, ValidationError
@@ -29,6 +29,39 @@ def is_safe_url(target):
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and \
            ref_url.netloc == test_url.netloc
+
+# *********************************************
+# Modified from
+# ource: http://flask.pocoo.org/snippets/62/
+# *********************************************
+def get_redirect_target():
+    """ return target url
+
+    From Securely Redirect Back. source: http://flask.pocoo.org/snippets/62/
+    """
+    target = request.endpoint
+    if is_safe_url(target):
+        if any(suburl in target for suburl in ["signin", "signout"]):
+            return url_for("index")
+        return target
+    return url_for("index")
+
+# *********************************************
+# Modified from
+# ource: http://flask.pocoo.org/snippets/62/
+# *********************************************
+def redirect_back(endpoint, **values):
+    """ redirect url back to the referrer
+
+    From Securely Redirect Back. source: http://flask.pocoo.org/snippets/62/
+    """
+    target = request.form['next']
+    print("*************************")
+    print("before target", target)
+    if not target or not is_safe_url(target):
+        target = url_for(endpoint, **values)
+    print("after target", target)
+    return redirect(target)
 
 # *********************************************
 # Modified from

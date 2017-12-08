@@ -4,7 +4,7 @@
 # By Gareth Dwyer, Shalabh Aggarwal, Jack Stouffer
 # *************************************************
 from flask_wtf import FlaskForm
-from wtforms import (PasswordField, SubmitField, validators, TextField)
+from wtforms import (PasswordField, SubmitField, validators, HiddenField)
 from wtforms.fields.html5 import EmailField
 
 class SignupForm(FlaskForm):
@@ -15,6 +15,7 @@ class SignupForm(FlaskForm):
 
 
 class SigninForm(FlaskForm):
+    next = HiddenField('next')
     email = EmailField('email', validators=[validators.DataRequired("Email field is required"), validators.Email()])
     password = PasswordField('password', validators=[validators.DataRequired(message="Password field is required")])
     submit = SubmitField('submit', [validators.DataRequired()])

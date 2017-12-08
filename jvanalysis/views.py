@@ -16,8 +16,10 @@ from flask_login import LoginManager
 from jvanalysis.forms import SigninForm
 from jvanalysis.forms import SignupForm
 
+from jvanalysis.jvhelper import get_redirect_target
 from jvanalysis.jvhelper import mongo_id
 from jvanalysis.jvhelper import nice_id
+from jvanalysis.jvhelper import redirect_back
 from jvanalysis.jvhelper import is_safe_url
 from jvanalysis.jvhelper import ugly_id
 
@@ -56,23 +58,26 @@ def unauthorized_callback():
 
 @app.route("/")
 def index():
+    next = get_redirect_target()
     if current_user.is_authenticated:
-        return render_template("home_secured.html")
+        return render_template("home_secured.html", next=next)
     else:
-        return render_template("home.html", signin_form=SigninForm())
+        return render_template("home.html", next=next, signin_form=SigninForm())
 
 @app.route("/about")
 def about():
+    next = get_redirect_target()
     if current_user.is_authenticated:
         form = None
     else:
         form = SigninForm()
-    return render_template("about.html", signin_form=form, title="About")
+    return render_template("about.html", next=next, signin_form=form, title="About")
 
 @app.route("/account")
 @login_required
 def account():
-    return render_template("account.html", title="Account")
+    next = get_redirect_target()
+    return render_template("account.html", next=next, title="Account")
 
 @app.route("/plot/<objectid:data_id>")   
 @login_required
@@ -102,7 +107,8 @@ def upload():
 @app.route("/analysis")
 @login_required
 def analysis():
-    return render_template("analysis.html", title="Analysis")
+    next = get_redirect_target()
+    return render_template("analysis.html", next=next, title="Analysis")
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -123,9 +129,9 @@ def signup():
     return render_template("signup.html", signup_form=form)
 
 
-
 @app.route("/signin", methods=["GET", "POST"])
 def signin():
+    next = get_redirect_target()
     # if the requested method is GET
     if request.method == "GET":
         form=SigninForm()
@@ -134,7 +140,7 @@ def signin():
             messages = json.loads(ugly_id(success))
             form.message = messages["message"]
             form.email.data = messages["id"]
-        return render_template("signin.html", signin_form=form, title="Sign In")
+        return render_template("signin.html", next=next, signin_form=form, title="Sign In")
     # else the method must be post 
     form = SigninForm(request.form)
     if form.validate():
@@ -143,23 +149,19 @@ def signin():
             if PH.validate_password(form.password.data, db_user['salt'], db_user['hashed']):
                 user = User(db_user["email"])
                 login_user(user, remember=True)
-                next = request.args.get('next')
-                url = next if is_safe_url(next) else url_for("index")
-                return redirect(url)
+                return redirect_back("index")
             else:
                 form.email.errors = []
                 form.password.errors.append("Invalid password")
         else:    
             form.email.errors.append("Email not found")
-    return render_template("signin.html", signin_form=form)
+    return render_template("signin.html", next=next, signin_form=form)
 
 @app.route("/signout", methods=["POST"])
 @login_required
 def signout():
     logout_user()
-    next = request.args.get('next')
-    url = next if is_safe_url(next) else url_for("index")
-    return redirect(url)
+    return redirect_back("index")
 
 @app.route("/guest")
 @login_required

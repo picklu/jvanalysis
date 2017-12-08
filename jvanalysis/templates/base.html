@@ -40,7 +40,8 @@
                             <a class="nav-link" href="{{ url_for('analysis') }}">Analysis</a>
                         </li>
                     </ul>
-                    <form class="form-inline my-2 my-lg-0" action="{{ url_for('signout', next=request.endpoint) }}" method="post">
+                    <form class="form-inline my-2 my-lg-0" action="{{ url_for('signout') }}" method="POST">
+                        <input type="text" name="next" value="{{ next or '' }}" hidden />
                         <input class="btn btn-sm btn-default my-sm-0" type="submit" value="Sign out">
                     </form>
                 </div>
