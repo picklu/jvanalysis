@@ -18,10 +18,10 @@ from jvanalysis.forms import SignupForm
 
 from jvanalysis.jvhelper import get_redirect_target
 from jvanalysis.jvhelper import mongo_id
-from jvanalysis.jvhelper import nice_id
+from jvanalysis.jvhelper import nicefy
 from jvanalysis.jvhelper import redirect_back
 from jvanalysis.jvhelper import is_safe_url
-from jvanalysis.jvhelper import ugly_id
+from jvanalysis.jvhelper import uglyfy
 
 from jvanalysis.jvplot import resources
 from jvanalysis.jvplot import get_params
@@ -47,7 +47,7 @@ login_manager.login_view = 'login'
 def load_user(email):
     db_user = DB.get_user(email)
     if db_user:
-        id = nice_id(db_user["_id"])
+        id = nicefy(db_user["_id"])
         user = User(email)
         user.add_id(id)
         return user
@@ -101,7 +101,7 @@ def upload():
     jv_data = json.loads(data)
     params = get_params(jv_data)
     id = DB.add_data(current_user.id, params)
-    params["data_id"] = nice_id(id)
+    params["data_id"] = nicefy(id)
     return json.dumps(params)
 
 @app.route("/analysis")
@@ -125,7 +125,7 @@ def signup():
         DB.add_user(form.email.data, salt, hashed)
         messages = json.dumps({"message": "Sign up successful! Please sign in.", 
                                 "id": email})
-        return redirect(url_for("signin", success=nice_id(messages)))
+        return redirect(url_for("signin", success=nicefy(messages)))
     return render_template("signup.html", signup_form=form)
 
 
@@ -137,7 +137,7 @@ def signin():
         form=SigninForm()
         success = request.args.get("success")
         if success:
-            messages = json.loads(ugly_id(success))
+            messages = json.loads(uglyfy(success))
             form.message = messages["message"]
             form.email.data = messages["id"]
         return render_template("signin.html", next=next, signin_form=form, title="Sign In")

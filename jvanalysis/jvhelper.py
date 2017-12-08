@@ -6,17 +6,17 @@ from itsdangerous import base64_encode, base64_decode
 from urllib.parse import urlparse, urljoin
 from werkzeug.routing import BaseConverter, ValidationError
 
-def mongo_id(text):
+def mongo_id(idtext):
     "Return a mongodb _id as an ObjectId"
-    return ObjectId(text)
+    return ObjectId(idtext)
 
-def nice_id(object_id):
+def nicefy(uglytext):
     "Convert a mongodb _id as a nice plain text"
-    return base64_encode(str(object_id)).decode()
+    return base64_encode(str(uglytext)).decode()
 
-def ugly_id(nice_id):
+def uglyfy(nicetext):
     "Convert a nice plain text to its original form"
-    return base64_decode(nice_id).decode()
+    return base64_decode(nicetext).decode()
 
 # *********************************************
 # Modified from
