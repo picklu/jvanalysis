@@ -3,6 +3,7 @@
 # By Gareth Dwyer, Shalabh Aggarwal, Jack Stouffer
 # *************************************************
 import pymongo
+import datetime
 
 DATABASE = "jvanalysis"
 
@@ -17,7 +18,7 @@ class DBHelper(object):
         return self.db.users.find_one({"email": email})
 
     def add_user(self, email, salt, hashed):
-        self.db.users.insert({"email": email, "salt": salt, "hashed": hashed})
+        self.db.users.insert({"email": email, "salt": salt, "hashed": hashed, "signedup_on": datetime.datetime.utcnow()})
     
     def add_data(self, user_id, data):
         new_id = self.db.data.insert({"user_id": user_id, "data": data})
