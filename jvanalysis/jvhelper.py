@@ -56,11 +56,8 @@ def redirect_back(endpoint, **values):
     From Securely Redirect Back. source: http://flask.pocoo.org/snippets/62/
     """
     target = request.form['next']
-    print("*************************")
-    print("before target", target)
     if not target or not is_safe_url(target):
         target = url_for(endpoint, **values)
-    print("after target", target)
     return redirect(target)
 
 # *********************************************
