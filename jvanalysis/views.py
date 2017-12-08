@@ -56,7 +56,7 @@ def load_user(email):
 def unauthorized_callback():
     message = nicefy("""Your are not signed in! 
         Plase sign in to get full access. 
-        If you don't have an account id then, please, 
+        If you are here for the first time then, please, 
         sign up or you may try as a guest after closing this warning.""")
     return redirect(url_for('index', message=message))
 
