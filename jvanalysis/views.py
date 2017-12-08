@@ -54,7 +54,11 @@ def load_user(email):
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
-    return redirect(url_for('index'))
+    message = nicefy("""Your are not signed in! 
+        Plase sign in to get full access. 
+        If you don't have an account id then, please, 
+        sign up or you may try as a guest after closing this warning.""")
+    return redirect(url_for('index', message=message))
 
 @app.route("/")
 def index():
@@ -62,7 +66,11 @@ def index():
     if current_user.is_authenticated:
         return render_template("home_secured.html", next=next)
     else:
-        return render_template("home.html", next=next, signin_form=SigninForm())
+        form = SigninForm()
+        message = request.args.get("message")
+        if message:
+            form.message = uglyfy(message)
+        return render_template("home.html", next=next, signin_form=form)
 
 @app.route("/about")
 def about():

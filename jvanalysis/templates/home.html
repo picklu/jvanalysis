@@ -20,9 +20,24 @@
     </form>
     {% endblock %}
 {% endblock %}
-    
+
 {%- block leadbtn %}
-<p class="lead"><a class="btn btn-info btn-jumbotron" href="{{ url_for('signup') }}" role="button">Sign up to get full access</a></p>
-<p class="lead">or</p>
-<p class="lead"><a class="btn btn-info  btn-jumbotron" href="{{ url_for('guest') }}" role="button">try as a guest</a></p>
+{% if signin_form.message %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <div class="text-left">
+        <h5><strong>Warning!</strong></h5>
+        <span>{{ signin_form.message }}</span>
+    </div>
+</div>
+<div id="lead-button" class="collapse">
+{% else %}
+<div>
+{% endif %}
+    <p class="lead"><a class="btn btn-info btn-jumbotron" href="{{ url_for('signup') }}" role="button">Sign up to get full access</a></p>
+    <p class="lead">or</p>
+    <p class="lead"><a class="btn btn-info  btn-jumbotron" href="{{ url_for('guest') }}" role="button">try as a guest</a></p>
+</div>
 {% endblock %}

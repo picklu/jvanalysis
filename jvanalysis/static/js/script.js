@@ -828,3 +828,9 @@ function loadPlot() {
         }
     );
 }
+
+$(function(){
+    $('body').on('click', '.close', function() {
+        $('#lead-button').addClass('show');
+    });
+});
