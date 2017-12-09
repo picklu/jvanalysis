@@ -64,7 +64,7 @@ def unauthorized_callback():
 def index():
     next = get_redirect_target()
     if current_user.is_authenticated:
-        return render_template("home_secured.html", next=next)
+        return render_template("home.html", next=next)
     else:
         form = SigninForm()
         message = request.args.get("message")

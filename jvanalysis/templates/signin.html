@@ -1,6 +1,7 @@
-{% extends "home.html" %}
+{% extends "base.html" %}
 
 {% block signin %}
+</ul>
 <form class="form-inline my-2 my-lg-0" action="{{ url_for('signup') }}" method="GET">
     <input class="btn btn-sm btn-info my-sm-0" type="submit" value="Sign up">
 </form>
@@ -45,7 +46,7 @@
                         </div>
                         {% endif %}
                         {{ signin_form.next(value=next or '') }}
-                        {{ signin_form.email(class="form-control", placeholder="email address") }}
+                        {{ signin_form.email(class="form-control", placeholder="email@address") }}
                     </div>
                 </div>
                 <div class="form-group">
