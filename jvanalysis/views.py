@@ -28,10 +28,10 @@ from jvanalysis.jvplot import get_resources
 
 from jvanalysis.user import User
 
-if app.config.get('TESTING'):
-    from jvanalysis.mockdbhelper import MockDBHelper as DBHelper
-else:
+if app.config.get("DATABASE"):
     from jvanalysis.dbhelper import DBHelper
+else:
+    from jvanalysis.mockdbhelper import MockDBHelper as DBHelper
 
 from jvanalysis.passwordhelper import PasswordHelper
 
@@ -40,11 +40,14 @@ PH = PasswordHelper()
 
 @login_manager.user_loader
 def load_user(email):
+    guest_email = app.config['GUEST_USER_EMAIL']
     db_user = DB.get_user(email)
     if db_user:
         id = nicefy(db_user["_id"])
         user = User(email)
-        user.add_id(id)
+        user.id = id
+        if email == guest_email:
+            user.regular = False
         return user
 
 @login_manager.unauthorized_handler
@@ -86,8 +89,8 @@ def account():
 @login_required
 def plot(data_id):
     try:
-        user_id = current_user.id
-        data = DB.get_data(user_id, data_id).get("data")
+        user_id = mongo_id(current_user.id)
+        data = DB.get_temporary_data(user_id, data_id).get("data")
         bkdiv, bkscript = get_resources("jV plot of analyzed data", data)
         return render_template(
             "plot.html",
@@ -103,8 +106,9 @@ def upload():
     data = request.form.get("jv")
     jv_data = json.loads(data)
     params = get_params(jv_data)
-    id = DB.add_data(current_user.id, params)
-    params["data_id"] = nicefy(id)
+    user_id = mongo_id(current_user.id)
+    data_id = DB.upload_data(user_id, params)
+    params["data_id"] = nicefy(data_id)
     return json.dumps(params)
 
 @app.route("/analysis")
@@ -175,7 +179,7 @@ def guest():
         if PH.validate_password(password, db_user['salt'], db_user['hashed']):
             user = User(db_user["email"])
             login_user(user, remember=True)
-            return index()
+            return redirect(url_for("analysis"))
     else:    
         message = nicefy("There is no guest access at the moment!")
         return redirect(url_for('index', message=message))
