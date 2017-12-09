@@ -1,8 +1,12 @@
+import os
+
 class Config(object):
     """Base config class"""
     SECRET_KEY = 'A really secret string generated randomly'
     DEBUG = True
     TESTING = False
+    GUEST_USER_EMAIL = os.environ.get('GUEST_ID')
+    GUEST_USER_PASSWORD = os.environ.get('GUEST_PASSWORD')
 
 class ProductionConfig(Config):
     """Production specific config"""

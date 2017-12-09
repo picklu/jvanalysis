@@ -172,6 +172,15 @@ def signout():
     return redirect_back("index")
 
 @app.route("/guest")
-@login_required
 def guest():
-    return index()
+    email = app.config['GUEST_USER_EMAIL']
+    password = app.config['GUEST_USER_PASSWORD']
+    db_user = DB.get_user(email)
+    if db_user:
+        if PH.validate_password(password, db_user['salt'], db_user['hashed']):
+            user = User(db_user["email"])
+            login_user(user, remember=True)
+            return index()
+    else:    
+        message = nicefy("There is no guest access at the moment!")
+        return redirect(url_for('index', message=message))
