@@ -42,6 +42,7 @@
                     </ul>
                     <form class="form-inline my-2 my-lg-0" action="{{ url_for('signout') }}" method="POST">
                         <input type="text" name="next" value="{{ next or '' }}" hidden />
+                        <span><a class="nav-link" href="{{ url_for('account') }}">User: {{ current_user.email }}&nbsp;</a></span>
                         <input class="btn btn-sm btn-default my-sm-0" type="submit" value="Sign out">
                     </form>
                 </div>
