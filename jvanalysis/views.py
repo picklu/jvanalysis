@@ -5,13 +5,12 @@ from flask import redirect
 from flask import url_for
 
 from flask_login import current_user
-from flask_login import LoginManager
 from flask_login import login_required
 from flask_login import login_user
 from flask_login import logout_user
 
 from jvanalysis import app
-from flask_login import LoginManager
+from jvanalysis import login_manager
 
 from jvanalysis.forms import SigninForm
 from jvanalysis.forms import SignupForm
@@ -38,10 +37,6 @@ from jvanalysis.passwordhelper import PasswordHelper
 
 DB = DBHelper()
 PH = PasswordHelper()
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def load_user(email):
