@@ -733,20 +733,29 @@ function uploadData() {
             dataType: "json"
         })
          .done(function(data) {
-            // update jvData
-            jvData["data_id"] = data.data_id;
-            // show parameters in the tables
-            showPVParams(data);
-            showModelParams(data);
-            loadPlot();
-            $('#results').show();
-            // show alert message
-            alertTable("Data were uploaded and analyzed successfully!", "success");
+            var message = data.success || data.fail;
+            if (data.success) {
+                console.log(data.success);
+                // update jvData
+                jvData["data_id"] = data.data_id;
+                // show parameters in the tables
+                showPVParams(data);
+                showModelParams(data);
+                loadPlot();
+                $('#results').show();
+                // show alert message
+                alertTable(message, "success");
+            }
+            else {
+                $('#results').hide();
+                // show alert message
+                alertTable(message, "fail");
+            }
         })
          .fail(function (jqXHR, status) {
             $('#results').hide();
             // show alert message
-            alertTable("There was something wrong with the data!", "fail");
+            alertTable("There was something wrong receving the analyzed data!", "fail");
             console.log(jqXHR.statusText);
         });
     });
@@ -793,7 +802,7 @@ function loadPlot() {
     // show ajax loader before loading the results
     $("#plot-container").html(getAjaxLoader());
     // load plot
-    var url = Flask.url_for("plot", {data_id: jvData.data_id});
+    var url = Flask.url_for("plot", {data_type: 'temporary', data_id: jvData.data_id});
     $("#plot-container").load( url,
         function( response, status, xhr ) {
             if ( status == "error" ) {

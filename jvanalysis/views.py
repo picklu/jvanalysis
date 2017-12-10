@@ -85,20 +85,24 @@ def account():
     next = get_redirect_target()
     return render_template("account.html", next=next, title="Account")
 
-@app.route("/plot/<objectid:data_id>")   
+@app.route("/plot/<string:data_type>/<objectid:data_id>")   
 @login_required
-def plot(data_id):
-    try:
-        user_id = mongo_id(current_user.id)
+def plot(data_type, data_id):
+    user_id = mongo_id(current_user.id)
+    if data_type == "persistent":
+        data = DB.get_data(user_id, data_id).get("data")
+    elif data_type == "temporary":
         data = DB.get_temporary_data(user_id, data_id).get("data")
+    
+    if data:
         bkdiv, bkscript = get_resources("jV plot of analyzed data", data)
         return render_template(
             "plot.html",
             bkdiv=bkdiv,
             bkscript=bkscript,
-            title="plot|" + str(data_id) if data_id else "plot")
-    except:
-        return json.dumps({"error": "Invalid Data ID!"})
+            title="plot|" + nicefy(data_id) if data_id else "plot")
+    else:
+        return json.dumps({"error": "Data not found!"})
 
 @app.route("/upload", methods=["POST"])
 @login_required
@@ -106,10 +110,15 @@ def upload():
     data = request.form.get("jv")
     jv_data = json.loads(data)
     params = get_params(jv_data)
-    user_id = mongo_id(current_user.id)
-    data_id = DB.upload_data(user_id, params)
-    params["data_id"] = nicefy(data_id)
-    return json.dumps(params)
+    if params:
+        user_id = mongo_id(current_user.id)
+        data_id = DB.upload_data(user_id, params)
+        if data_id:
+            params["data_id"] = nicefy(data_id)
+            params["success"] = "Data were uploaded and analyzed successfully!"
+            return json.dumps(params)
+        return json.dumps({"fail": "Failed to save data to the temporary database."})
+    return json.dumps({"fail": "Failed to analyze data. Please check if the data headers have been identified correctly."})
 
 @app.route("/analysis")
 @login_required

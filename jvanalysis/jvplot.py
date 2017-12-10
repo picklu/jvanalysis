@@ -77,16 +77,18 @@ def get_params(data):
     """ return a dictionary of all parameters 
         of a solar cell after analyzing the data.
     """
-    jv_analyzed = Analysis(np.array(data))
-    
-    v_exp = jv_analyzed.v_cell
-    j_exp = jv_analyzed.j_cell.tolist()
-    model_params = jv_analyzed._get_model_params()
-    j_cal = jv_analyzed.calculate_jcell(v_exp, model_params).tolist()
-    v_exp = v_exp.tolist()
-    
-    results = jv_analyzed.get_pv_params()
-    results.update({"vexp": v_exp, "jexp": j_exp, "jcal": j_cal})
-    results.update(jv_analyzed.get_model_params())
-    return results
+    try:
+        jv_analyzed = Analysis(np.array(data))
+        v_exp = jv_analyzed.v_cell
+        j_exp = jv_analyzed.j_cell.tolist()
+        model_params = jv_analyzed._get_model_params()
+        j_cal = jv_analyzed.calculate_jcell(v_exp, model_params).tolist()
+        v_exp = v_exp.tolist()
+        
+        results = jv_analyzed.get_pv_params()
+        results.update({"vexp": v_exp, "jexp": j_exp, "jcal": j_cal})
+        results.update(jv_analyzed.get_model_params())
+        return results
+    except:
+        return {}
     

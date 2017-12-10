@@ -41,41 +41,47 @@ class DBHelper(object):
                     email_confirmed_on=None,
                     email_confirmed=False):
         where = {"email": email}
-        query = {}
+        what = {}
         if salt and hashed:
-            query["salt"] = salt
-            query["hashed"] = hashed
+            what["salt"] = salt
+            what["hashed"] = hashed
         if email_confirmation_sent_on:
-            query["email_confirmation_sent_on"] = email_confirmation_sent_on
+            what["email_confirmation_sent_on"] = email_confirmation_sent_on
         if email_confirmed_on:
-            query["email_confirmed_on"] = email_confirmed_on
+            what["email_confirmed_on"] = email_confirmed_on
         if email_confirmed:
-            query["email_confirmed"] = email_confirmed
-        self.db.users.update(where, {"$set": query})
+            what["email_confirmed"] = email_confirmed
+        self.db.users.update(where, {"$set": what})
     
     def get_user(self, email):
         return self.db.users.find_one({"email": email})
     
     def upload_data(self, user_id, data):
-        old_data = list(self.db.tempdata.find({"user_id": user_id}, {"_id": 1}))
+        analyzed_on=datetime.datetime.utcnow()
+        old_data = list(self.get_temporary_data(user_id))
+        data_id = None
         if old_data:
-            print(old_data)
             data_id = old_data[0]["_id"]
-            self.db.tempdata.update({"_id": data_id, "user_id": user_id}, {"$set": {"data": data}})
+            self.db.tempdata.update({"_id": data_id, "user_id": user_id}, {"$set": {"analyzed_on": analyzed_on, "data": data}})
         else:
-            data_id = self.db.tempdata.insert({"user_id": user_id, "data": data})
+            data_id = self.db.tempdata.insert({"user_id": user_id, "analyzed_on": analyzed_on, "data": data})
         return data_id
     
-    def get_temporary_data(self, user_id, data_id):
-        return self.db.tempdata.find_one({"_id": data_id, "user_id": user_id}, {"_id": 0, "data": 1})
+    def get_temporary_data(self, user_id, data_id=None):
+        if data_id:
+            return self.db.tempdata.find_one({"_id": data_id, "user_id": user_id})
+        else:
+            return self.db.tempdata.find({"user_id": user_id})
 
-    def delete_temporay_data(self, data_id, user_id):
-        self.db.tempdata.remove({"_id": data_id, "user_id": user_id})
+    def delete_temporay_data(self, user_id):
+        self.db.tempdata.remove({"user_id": user_id})
     
     def save_data(self, user_id, data_id):
-        data = self.get_temporary_data(data_id, user_id)
-        new_id = self.db.tempdata.insert({"user_id": user_id, "data_id": data_id, "data": data})
-        return new_id
+        data = self.get_temporary_data(user_id)
+        if data:
+            self.delete_temporay_data(user_id)
+            new_id = self.db.tempdata.insert({"user_id": user_id, "data_id": data_id, "data": data})
+            return new_id
     
     def get_data(self, user_id, data_id):
         return self.db.data.find_one({"user_id": user_id, "data_id": data_id})
