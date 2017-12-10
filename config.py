@@ -7,6 +7,7 @@ class Config(object):
     TESTING = False
     GUEST_USER_EMAIL = os.environ.get('GUEST_ID')
     GUEST_USER_PASSWORD = os.environ.get('GUEST_PASSWORD')
+    SAMPLE_DATA = "data/sample_data.txt"
     SECRET_KEY = 'A really secret string generated randomly'
 
 class ProductionConfig(Config):
