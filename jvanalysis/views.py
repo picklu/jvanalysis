@@ -183,3 +183,14 @@ def guest():
     else:    
         message = nicefy("There is no guest access at the moment!")
         return redirect(url_for('index', message=message))
+
+@app.route("/data/<path:path>")
+@login_required
+def data(path):
+    file_name = app.config['SAMPLE_DATA']
+    sample_data = "No data found!"
+    if file_name == path:
+        file_path = "data/" + file_name
+        with open(file_path, "r") as f:
+            sample_data = f.read()
+    return render_template("data.html", sample_data=sample_data, title="Sample Data")

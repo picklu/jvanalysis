@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    {% block header %}
     <header class="header clearfix bg-dark fixed-top">
         <div class="container">
             <nav class="navbar navbar-expand-md navbar-dark">
@@ -65,6 +66,7 @@
             </nav>
         </div>
     </header>
+    {% endblock header %}
     
     <main role="main">
         {%- block jumbotron -%}
