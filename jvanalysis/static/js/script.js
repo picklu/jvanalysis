@@ -639,7 +639,7 @@ function tableShowHide() {
     var $buttonShowHide = $('<strong/>', {
         id: 'table-show-hide',
         class: 'cursor-pointer',
-        text: isTableVisible ? 'Hide table' : 'Show table'
+        text: isTableVisible ? 'Hide data table' : 'Show data table'
     });
     
     // hover and click event handler for show/hide
@@ -667,13 +667,13 @@ function tableShowHide() {
         // update visibility and button text
         if (isTableVisible) {
             isTableVisible = false;
-            $this.text('Show table');
+            $this.text('Show data table');
             $tableContainer.hide(500);
             $buttonClose.hide();
         }
         else {
             isTableVisible = true;
-            $this.text('Hide table');
+            $this.text('Hide data table');
             $buttonClose.show();
             if (!$('#raw-data').length) {
                 var $ajaxLoader = getAjaxLoader();
