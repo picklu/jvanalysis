@@ -3,7 +3,7 @@
 **********************************/
 var contentEditable = [];
 var dataTableHeader = [];
-var isTableVisible = false;
+var isTableVisible = true;
 var jvData = {};
 
 /**********************************************************************
@@ -77,7 +77,10 @@ function uploadFile() {
                     jvData['name'] = fileName;
                     alertType = 'success';
                     message = getDataInfo();
+                    // set table visibility to true
+                    isTableVisible = true;
                     $('#upload').show();
+                    showData(jvData.jv);
                 }
                 else {
                     jvData = {};
