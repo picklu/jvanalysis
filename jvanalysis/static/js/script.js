@@ -532,9 +532,11 @@ function getDataInfo() {
     var numRws = jv.length;
     var numCols = numRws ? jv[0].length : 0;
     
-    return 'There are total ' + numRws + 
+    var message = 'There are total ' + numRws + 
         ' row(s) and '+ numCols + 
-        ' column(s) (based on first row) in the data.';
+        ' column(s) (based on first row) in the data.' +
+        ' Please verify that the data has been parsed correctly.';
+    return message;
 }
 
 /**********************************
