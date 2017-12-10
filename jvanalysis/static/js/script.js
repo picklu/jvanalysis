@@ -738,13 +738,8 @@ function uploadData() {
             // show parameters in the tables
             showPVParams(data);
             showModelParams(data);
+            loadPlot();
             $('#results').show();
-            // show plot
-            $("#plot-container").html($('<button/>', {
-                class: 'btn btn-outline-info btn-block',
-                text: 'View Plot'
-                }).click(loadPlot)
-            );
             // show alert message
             alertTable("Data were uploaded and analyzed successfully!", "success");
         })
