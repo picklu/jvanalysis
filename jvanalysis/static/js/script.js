@@ -16,10 +16,10 @@ function uploadFile() {
     var fileObject = $('#data-file').prop('files');
     
     // hide upload button
-    if ($('#upload').attr('hidden') == 'hidden') {
-        $('#upload').attr('hidden', false);
+    if ($('#analyze').attr('hidden') == 'hidden') {
+        $('#analyze').attr('hidden', false);
     }
-    $('#upload').hide();
+    $('#analyze').hide();
     
     // hide result button
     if ($('#results').attr('hidden') == 'hidden') {
@@ -54,7 +54,7 @@ function uploadFile() {
                     message = getDataInfo();
                     // set table visibility to true
                     isTableVisible = true;
-                    $('#upload').show();
+                    $('#analyze').show();
                     showData(jvData.jv);
                 }
                 else {
@@ -146,7 +146,7 @@ function reParseData() {
         if (jvData.jv.length) {
             alertType = 'success';
             message = getDataInfo();
-            $('#upload').show();
+            $('#analyze').show();
             // show ajax loader
             if (isTableVisible) {
                 var $ajaxLoader = getAjaxLoader();
@@ -710,13 +710,12 @@ function getJVData() {
     return [voltage, current];
 }
 
-
 /******************************************
 * Upload JV data and show the results
 * invoked by click event of upload button
 ******************************************/
-function uploadData() {
-    $('#upload').on('submit', function(e){
+function analyzeData() {
+    $('#analyze').on('submit', function(e){
         e.preventDefault();
         var data = $(this).serializeArray();
         var jv = getJVData();
@@ -728,14 +727,13 @@ function uploadData() {
         
         $.ajax({
             method: "POST",
-            url: Flask.url_for("upload"),
+            url: Flask.url_for("analyze"),
             data: data,
             dataType: "json"
         })
          .done(function(data) {
             var message = data.success || data.fail;
             if (data.success) {
-                console.log(data.success);
                 // update jvData
                 jvData["data_id"] = data.data_id;
                 // show parameters in the tables
@@ -743,6 +741,8 @@ function uploadData() {
                 showModelParams(data);
                 loadPlot();
                 $('#results').show();
+                $('#analyze-btn').text('Save')
+                                 .addClass('save-data');
                 // show alert message
                 alertTable(message, "success");
             }

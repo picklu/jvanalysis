@@ -104,9 +104,9 @@ def plot(data_type, data_id):
     else:
         return json.dumps({"error": "Data not found!"})
 
-@app.route("/upload", methods=["POST"])
+@app.route("/analyze", methods=["POST"])
 @login_required
-def upload():
+def analyze():
     data = request.form.get("jv")
     jv_data = json.loads(data)
     params = get_params(jv_data)
