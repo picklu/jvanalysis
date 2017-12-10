@@ -40,8 +40,9 @@ def get_redirect_target():
     From Securely Redirect Back. source: http://flask.pocoo.org/snippets/62/
     """
     target = request.endpoint
+    bad_endpoints = ["account", "analysis", "signin", "signout"]
     if is_safe_url(target):
-        if any(suburl in target for suburl in ["signin", "signout"]):
+        if any(suburl in target for suburl in bad_endpoints):
             return url_for("index")
         return target
     return url_for("index")
