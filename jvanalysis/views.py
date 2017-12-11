@@ -1,3 +1,4 @@
+from dateutil.parser import parse
 from flask import render_template
 from flask import json
 from flask import request
@@ -23,7 +24,7 @@ from jvanalysis.jvhelper import is_safe_url
 from jvanalysis.jvhelper import uglyfy
 
 from jvanalysis.jvplot import resources
-from jvanalysis.jvplot import get_params
+from jvanalysis.jvplot import get_analyzed_params
 from jvanalysis.jvplot import get_resources
 
 from jvanalysis.user import User
@@ -38,6 +39,7 @@ from jvanalysis.passwordhelper import PasswordHelper
 DB = DBHelper()
 PH = PasswordHelper()
 
+
 @login_manager.user_loader
 def load_user(email):
     guest_email = app.config['GUEST_USER_EMAIL']
@@ -50,6 +52,7 @@ def load_user(email):
             user.regular = False
         return user
 
+
 @login_manager.unauthorized_handler
 def unauthorized_callback():
     message = nicefy("""Your are not signed in! 
@@ -57,6 +60,7 @@ def unauthorized_callback():
         If you are here for the first time then, please, 
         sign up or you may try as a guest after closing this warning.""")
     return redirect(url_for('index', message=message))
+
 
 @app.route("/")
 def index():
@@ -70,6 +74,7 @@ def index():
             form.message = uglyfy(message)
         return render_template("home.html", next=next, signin_form=form)
 
+
 @app.route("/about")
 def about():
     next = get_redirect_target()
@@ -77,7 +82,9 @@ def about():
         form = None
     else:
         form = SigninForm()
-    return render_template("about.html", next=next, signin_form=form, title="About")
+    return render_template("about.html", next=next, 
+                            signin_form=form, title="About")
+
 
 @app.route("/account")
 @login_required
@@ -85,7 +92,8 @@ def account():
     next = get_redirect_target()
     return render_template("account.html", next=next, title="Account")
 
-@app.route("/plot/<string:data_type>/<objectid:data_id>")   
+
+@app.route("/plot/<string:data_type>/<objectid:data_id>")
 @login_required
 def plot(data_type, data_id):
     user_id = mongo_id(current_user.id)
@@ -93,7 +101,7 @@ def plot(data_type, data_id):
         data = DB.get_data(user_id, data_id).get("data")
     elif data_type == "temporary":
         data = DB.get_temporary_data(user_id, data_id).get("data")
-    
+
     if data:
         bkdiv, bkscript = get_resources("jV plot of analyzed data", data)
         return render_template(
@@ -104,21 +112,38 @@ def plot(data_type, data_id):
     else:
         return json.dumps({"error": "Data not found!"})
 
+
 @app.route("/analyze", methods=["POST"])
 @login_required
 def analyze():
-    data = request.form.get("jv")
-    jv_data = json.loads(data)
-    params = get_params(jv_data)
+    form = request.form
+    area = float(form["area"])
+    data = form["jv"]
+    sample_name = form["data-name"]
+    measured_on = parse(form["measured-date"], dayfirst=True)
+    temperature = float(form.get("temperature"))
+    jv = json.loads(data)
+    params = get_analyzed_params(jv, area, temperature)
     if params:
+        params.update({
+            "area": area,
+            "measured_on": measured_on,
+            "sameple_name": sample_name,
+            "temperature": temperature
+        })
         user_id = mongo_id(current_user.id)
         data_id = DB.upload_data(user_id, params)
         if data_id:
             params["data_id"] = nicefy(data_id)
             params["success"] = "Data were uploaded and analyzed successfully!"
             return json.dumps(params)
-        return json.dumps({"fail": "Failed to save data to the temporary database."})
-    return json.dumps({"fail": "Failed to analyze data. Please check if the data headers have been identified correctly."})
+        return json.dumps({
+            "fail": "Failed to save data to the temporary database."
+        })
+    return json.dumps({
+        "fail": "Failed to analyze data. Please check if the data headers have been identified correctly."
+    })
+
 
 @app.route("/save", methods=["POST"])
 @login_required
@@ -133,16 +158,19 @@ def save():
     result["fail"] = "Failed to save the analyzed data."
     return json.dumps(result)
 
+
 @app.route("/analysis")
 @login_required
 def analysis():
     next = get_redirect_target()
     return render_template("analysis.html", next=next, title="Analysis")
 
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "GET":
-        return render_template("signup.html", signup_form=SignupForm(), title="Sign Up")
+        return render_template(
+            "signup.html", signup_form=SignupForm(), title="Sign Up")
     form = SignupForm(request.form)
     if form.validate():
         email = form.email.data
@@ -152,8 +180,10 @@ def signup():
         salt = PH.get_salt()
         hashed = PH.get_hash(form.password2.data + salt)
         DB.add_user(form.email.data, salt, hashed)
-        messages = json.dumps({"message": "Sign up successful! Please sign in.", 
-                                "id": email})
+        messages = json.dumps({
+            "message": "Sign up successful! Please sign in.",
+            "id": email
+        })
         return redirect(url_for("signin", success=nicefy(messages)))
     return render_template("signup.html", signup_form=form)
 
@@ -163,26 +193,28 @@ def signin():
     next = get_redirect_target()
     # if the requested method is GET
     if request.method == "GET":
-        form=SigninForm()
+        form = SigninForm()
         success = request.args.get("success")
         if success:
             messages = json.loads(uglyfy(success))
             form.message = messages["message"]
             form.email.data = messages["id"]
-        return render_template("signin.html", next=next, signin_form=form, title="Sign In")
-    # else the method must be post 
+        return render_template("signin.html", next=next, 
+                                signin_form=form, title="Sign In")
+    # else the method must be post
     form = SigninForm(request.form)
     if form.validate():
         db_user = DB.get_user(form.email.data)
         if db_user:
-            if PH.validate_password(form.password.data, db_user['salt'], db_user['hashed']):
+            if PH.validate_password(form.password.data, db_user['salt'],
+                                    db_user['hashed']):
                 user = User(db_user["email"])
                 login_user(user, remember=True)
                 return redirect_back("index")
             else:
                 form.email.errors = []
                 form.password.errors.append("Invalid password")
-        else:    
+        else:
             form.email.errors.append("Email not found")
     return render_template("signin.html", next=next, signin_form=form)
 
@@ -204,7 +236,7 @@ def guest():
             user = User(db_user["email"])
             login_user(user, remember=True)
             return redirect(url_for("analysis"))
-    else:    
+    else:
         message = nicefy("There is no guest access at the moment!")
         return redirect(url_for('index', message=message))
 
@@ -218,4 +250,5 @@ def data(path):
         file_path = "data/" + file_name
         with open(file_path, "r") as f:
             sample_data = f.read()
-    return render_template("data.html", sample_data=sample_data, title="Sample Data")
+    return render_template("data.html", sample_data=sample_data, 
+                            title="Sample Data")

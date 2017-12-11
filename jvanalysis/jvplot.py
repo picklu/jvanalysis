@@ -73,12 +73,12 @@ def get_resources(title, data, width=200, height=120):
     
     return (div, script)
 
-def get_params(data):
+def get_analyzed_params(data, area, temperature):
     """ return a dictionary of all parameters 
         of a solar cell after analyzing the data.
     """
     try:
-        jv_analyzed = Analysis(np.array(data))
+        jv_analyzed = Analysis(np.array(data), area, temperature)
         v_exp = jv_analyzed.v_cell
         j_exp = jv_analyzed.j_cell.tolist()
         model_params = jv_analyzed._get_model_params()
