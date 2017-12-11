@@ -30,16 +30,11 @@ function uploadFile() {
     }
     $resultDiv.hide();
     
-    // empty table container
-    $tableContainer.html(null);
-    
     // hide table container
     if ($tableContainer.attr('hidden') == 'hidden') {
         $tableContainer.attr('hidden', false);
     }
     $tableContainer.hide();
-    
-    // set table visibility to false
     isTableVisible = false;
     
     if (fileObject.length) {
@@ -61,13 +56,12 @@ function uploadFile() {
                     jvData['name'] = fileName;
                     alertType = 'success';
                     message = getDataInfo();
-                    // set table visibility to true
-                    isTableVisible = true;
                     $('#analyze').show();
                     // show ajax loader in the table container
-                    $tableContainer.show();
                     $tableContainer.html(getAjaxLoader());
                     // show table
+                    $tableContainer.show();
+                    isTableVisible = true;
                     showData(jvData.jv);
                 }
                 else {
@@ -629,6 +623,10 @@ function alertTable(message, alertType) {
 * invoked from alertTable
 ***********************************/
 function tableShowHide() {
+    // if jvData is empty
+    if (!jvData.length) {
+        return;
+    }
     // create show/hide button
     var $buttonShowHide = $('<strong/>', {
         id: 'table-show-hide',
@@ -669,13 +667,13 @@ function tableShowHide() {
             isTableVisible = true;
             $this.text('Hide data table');
             $buttonClose.show();
+            $tableContainer.show();
+            $('#analyze').show();
             if (!$('#raw-data').length) {
                 // show ajax loader in the table container
                 $tableContainer.html(getAjaxLoader());
                 showData(jvData.jv);
             }
-            $tableContainer.show();
-            
         }
     });
     
@@ -757,6 +755,9 @@ function analyzeData() {
                 $('#results').show();
                 // hide analyze form
                 $('#analyze').hide();
+                // hide data table
+                $('#table-container').hide();
+                isTableVisible = false;
                 // show alert message
                 alertTable(message, "success");
                 // reset file object
@@ -796,12 +797,12 @@ function saveData() {
          .done(function(data) {
             var message = data.success || data.fail;
             if (data.success) {
-                // show analyze form
-                $("analyze").show();
-                // hide results
-                $('#results').hide();
                 // reset jvData
                 jvData = {};
+                // hide table show/hide button
+                $('#table-container').html(null);
+                // hide results
+                $('#results').hide();
                 // show alert message
                 alertTable(message, "success");
             }
