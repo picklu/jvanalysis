@@ -97,6 +97,8 @@
     {{ JSGlue.include() }}
     <!-- jquery-ui.min.js -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
+    <!-- form validator for bootstrap: https://github.com/1000hz/bootstrap-validator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js" integrity="sha256-dHf/YjH1A4tewEsKUSmNnV05DDbfGN3g7NMq86xgGh8=" crossorigin="anonymous"></script>
     <!-- custom js script -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
     {%- block customjs -%}{% endblock %}

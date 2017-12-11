@@ -728,57 +728,64 @@ function getJVData() {
 * invoked by click event of upload button
 ******************************************/
 function analyzeData() {
-    $('#analyze').on('submit', function(e){
-        e.preventDefault();
-        var data = $(this).serializeArray();
-        var jv = getJVData();
-        
-        data.push({
-            name: 'jv', 
-            value: JSON.stringify(jv)
-        });
-        
-        $.ajax({
-            method: "POST",
-            url: Flask.url_for("analyze"),
-            data: data,
-            dataType: "json"
-        })
-         .done(function(data) {
-            var message = data.success || data.fail;
-            if (data.success) {
-                // update jvData
-                jvData["data_id"] = data.data_id;
-                // show parameters in the tables
-                showPVParams(data);
-                showModelParams(data);
-                loadPlot();
-                // show results
-                $('#results').show();
-                // hide analyze form
-                $('#analyze').hide();
-                // hide data table
-                $('#table-container').hide();
-                isTableVisible = false;
-                // show alert message
-                alertTable(message, "success");
-                // reset file object
-                $('#data-file').val('');
-                // update file control text area and alert box
-                $('.custom-file-control').text('Choose file ...');
-            }
-            else {
+    $('#analyze').validator().on('submit', function(e){
+        if (e.isDefaultPrevented()) {
+            // form was not valid; show alert message
+            alertTable("You are trying to submit an invalid form!", "fail");
+        } 
+        else {
+            e.preventDefault();
+            var data = $(this).serializeArray();
+            var jv = getJVData();
+            
+            data.push({
+                name: 'jv', 
+                value: JSON.stringify(jv)
+            });
+            
+            $.ajax({
+                method: "POST",
+                url: Flask.url_for("analyze"),
+                data: data,
+                dataType: "json"
+            })
+             .done(function(data) {
+                var message = data.success || data.fail;
+                if (data.success) {
+                    // update jvData
+                    jvData["data_id"] = data.data_id;
+                    // show parameters in the tables
+                    showPVParams(data);
+                    showModelParams(data);
+                    loadPlot();
+                    // show results
+                    $('#results').show();
+                    // hide analyze form
+                    $('#analyze').hide();
+                    // hide data table
+                    $('#table-container').hide();
+                    isTableVisible = false;
+                    // show alert message
+                    alertTable(message, "success");
+                    // reset file object
+                    $('#data-file').val('');
+                    // update file control text area and alert box
+                    $('.custom-file-control').text('Choose file ...');
+                }
+                else {
+                    $('#results').hide();
+                    // show alert message
+                    alertTable(message, "fail");
+                }
+            })
+             .fail(function (jqXHR, status) {
                 $('#results').hide();
                 // show alert message
-                alertTable(message, "fail");
-            }
-        })
-         .fail(function (jqXHR, status) {
-            $('#results').hide();
-            // show alert message
-            alertTable("There was something wrong receving the analyzed data!", "fail");
-            console.log(jqXHR.statusText);
-        });
+                alertTable("There was something wrong receving the analyzed data!", "fail");
+                console.log(jqXHR.statusText);
+            });
+        
+        }
     });
 }
 
