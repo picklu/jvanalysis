@@ -63,13 +63,14 @@ function uploadFile() {
                     $tableContainer.show();
                     isTableVisible = true;
                     showData(jvData.jv);
+                    alertTable(message, alertType, true);
                 }
                 else {
                     jvData = {};
                     alertType = 'fail';
                     message = 'There is no data!';
+                    alertTable(message, alertType);
                 }
-                alertTable(message, alertType);
             };
             reader.readAsText(file);
         }
@@ -148,6 +149,8 @@ function reParseData() {
     // empty table container
     $tableContainer.html(null);
     // If there is already a data then reparse
+    var message;
+    var alertType;
     var fileObject = $('#data-file').prop('files');
     if (fileObject.length && jvData.raw) {
         var delimiter = $('#delimiter').val();
@@ -161,6 +164,8 @@ function reParseData() {
             if (isTableVisible) {
                 $tableContainer.html(getAjaxLoader());
                 showData(jvData.jv);
+                alertTable(message, alertType, true);
+                return false;
             }
         }
         else {
@@ -175,6 +180,7 @@ function reParseData() {
             message = 'There is no data!';
     }
     alertTable(message, alertType);
+    return false;
 }
 
 /*******************************************
@@ -551,7 +557,7 @@ function getDataInfo() {
 * Show alert message for the data table
 * invoked from showData
 ***********************************/
-function alertTable(message, alertType) {
+function alertTable(message, alertType, isTable=false) {
     // create div for data info inside info container
     var $alertInfo = $('<span/>', {
         id: 'alert-message'
@@ -584,12 +590,17 @@ function alertTable(message, alertType) {
         $alertDiv.addClass('alert-danger');
     }
     else {
-        // create table show/hide button
-        var $buttonShowHide = tableShowHide();
-        $alertDivInfo.append($('<span/>', {
-            text: '\xa0\xa0'
-        })).append($buttonShowHide);
-        
+        if (isTable) {
+            // create table show/hide button
+            var $buttonShowHide = tableShowHide();
+            $alertDivInfo.append($('<span/>', {
+                text: '\xa0\xa0'
+            })).append($buttonShowHide);
+            // update visibility of close button
+            if (!isTableVisible) {
+                $buttonClose.hide();
+            }
+        }
         
         if (alertType == 'success') {
             // show alert type
@@ -597,11 +608,6 @@ function alertTable(message, alertType) {
         
             // add appropriate class and add the show/hide button 
             $alertDiv.addClass('alert-info');
-            
-            // update visibility of close button
-            if (!isTableVisible) {
-                $buttonClose.hide();
-            }
         }
         else if (alertType == 'warning') {
             // show alert type
@@ -623,10 +629,6 @@ function alertTable(message, alertType) {
 * invoked from alertTable
 ***********************************/
 function tableShowHide() {
-    // if jvData is empty
-    if (!jvData.length) {
-        return;
-    }
     // create show/hide button
     var $buttonShowHide = $('<strong/>', {
         id: 'table-show-hide',
