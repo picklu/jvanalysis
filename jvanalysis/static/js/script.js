@@ -14,21 +14,30 @@ function uploadFile() {
     var message;
     var alertType;
     var fileObject = $('#data-file').prop('files');
+    var $tableContainer = $('#table-container');
+    var $formAnalyze = $('#analyze');
+    var $resultDiv = $('#results');
     
-    // hide upload button
-    if ($('#analyze').attr('hidden') == 'hidden') {
-        $('#analyze').attr('hidden', false);
+    // hide anlyze form
+    if ($formAnalyze .attr('hidden') == 'hidden') {
+        $formAnalyze .attr('hidden', false);
     }
-    $('#analyze').hide();
+    $formAnalyze .hide();
     
     // hide result button
-    if ($('#results').attr('hidden') == 'hidden') {
-        $('#results').attr('hidden', false);
+    if ($resultDiv.attr('hidden') == 'hidden') {
+        $resultDiv.attr('hidden', false);
     }
-    $('#results').hide();
+    $resultDiv.hide();
     
     // empty table container
-    $('#table-container').html(null);
+    $tableContainer.html(null);
+    
+    // hide table container
+    if ($tableContainer.attr('hidden') == 'hidden') {
+        $tableContainer.attr('hidden', false);
+    }
+    $tableContainer.hide();
     
     // set table visibility to false
     isTableVisible = false;
@@ -55,6 +64,10 @@ function uploadFile() {
                     // set table visibility to true
                     isTableVisible = true;
                     $('#analyze').show();
+                    // show ajax loader in the table container
+                    $tableContainer.show();
+                    $tableContainer.html(getAjaxLoader());
+                    // show table
                     showData(jvData.jv);
                 }
                 else {
@@ -150,10 +163,9 @@ function reParseData() {
             alertType = 'success';
             message = getDataInfo();
             $('#analyze').show();
-            // show ajax loader
+            // show ajax loader in the table container
             if (isTableVisible) {
-                var $ajaxLoader = getAjaxLoader();
-                $tableContainer.html($ajaxLoader);
+                $tableContainer.html(getAjaxLoader());
                 showData(jvData.jv);
             }
         }
@@ -459,9 +471,8 @@ function deleteRow() {
         var alertType = jvData.jv.length ? 'success' : 'fail';
         
         if (alertType == 'success') {
-            var $ajaxLoader = getAjaxLoader();
             // show ajax loader
-            $tableContainer.html($ajaxLoader);
+            $tableContainer.html(getAjaxLoader());
             showData(jvData.jv); 
             message = getDataInfo();
             message = 'Table row at ' + (rowIndex + 1) + 
@@ -659,9 +670,8 @@ function tableShowHide() {
             $this.text('Hide data table');
             $buttonClose.show();
             if (!$('#raw-data').length) {
-                var $ajaxLoader = getAjaxLoader();
-                // show ajax loader
-                $tableContainer.html($ajaxLoader);
+                // show ajax loader in the table container
+                $tableContainer.html(getAjaxLoader());
                 showData(jvData.jv);
             }
             $tableContainer.show();
