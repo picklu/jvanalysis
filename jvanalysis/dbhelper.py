@@ -41,17 +41,17 @@ class DBHelper(object):
                     email_confirmed_on=None,
                     email_confirmed=False):
         where = {"email": email}
-        what = {}
+        fields = {}
         if salt and hashed:
-            what["salt"] = salt
-            what["hashed"] = hashed
+            fields["salt"] = salt
+            fields["hashed"] = hashed
         if email_confirmation_sent_on:
-            what["email_confirmation_sent_on"] = email_confirmation_sent_on
+            fields["email_confirmation_sent_on"] = email_confirmation_sent_on
         if email_confirmed_on:
-            what["email_confirmed_on"] = email_confirmed_on
+            fields["email_confirmed_on"] = email_confirmed_on
         if email_confirmed:
-            what["email_confirmed"] = email_confirmed
-        self.db.users.update(where, {"$set": what})
+            fields["email_confirmed"] = email_confirmed
+        self.db.users.update(where, {"$set": fields})
     
     def get_user(self, email):
         return self.db.users.find_one({"email": email})
@@ -77,10 +77,15 @@ class DBHelper(object):
         self.db.tempdata.remove({"user_id": user_id})
     
     def save_data(self, user_id, data_id):
-        data = self.get_temporary_data(user_id)
+        data = self.get_temporary_data(user_id, data_id)
         if data:
             self.delete_temporay_data(user_id)
-            new_id = self.db.tempdata.insert({"user_id": user_id, "data_id": data_id, "data": data})
+            fields = {}
+            fields["_id"] = data_id
+            fields["user_id"] = user_id
+            fields["analyzed_on"] = data["analyzed_on"]
+            fields["data"] = data["data"]
+            new_id = self.db.data.insert(fields)
             return new_id
     
     def get_data(self, user_id, data_id):

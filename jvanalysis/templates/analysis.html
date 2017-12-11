@@ -94,6 +94,7 @@
 </div>
 <div id="results" class="row" hidden="hidden">
     <div class="col-md-12">
+        <button id="save" class="btn btn-block btn-info">Save</button>
         <div class="row">
             <div id="plot-container" class="col-md-12">
                 <!-- bokeh plot will be rendered here -->
@@ -141,7 +142,7 @@
     <script>
         // analyze data
         analyzeData();
-        
+        saveData();
         // event handlers for  data table
         $('#data-file').on('change', uploadFile);
         $('#delimiter').on('change', reParseData);

@@ -120,6 +120,19 @@ def analyze():
         return json.dumps({"fail": "Failed to save data to the temporary database."})
     return json.dumps({"fail": "Failed to analyze data. Please check if the data headers have been identified correctly."})
 
+@app.route("/save", methods=["POST"])
+@login_required
+def save():
+    data_id = mongo_id(request.form.get("data_id"))
+    user_id = mongo_id(current_user.id)
+    new_id = DB.save_data(user_id, data_id)
+    result = {}
+    if new_id:
+        result["success"] = "The analyzed data were saved successfully!"
+        return json.dumps(result)
+    result["fail"] = "Failed to save the analyzed data."
+    return json.dumps(result)
+
 @app.route("/analysis")
 @login_required
 def analysis():
@@ -173,11 +186,13 @@ def signin():
             form.email.errors.append("Email not found")
     return render_template("signin.html", next=next, signin_form=form)
 
+
 @app.route("/signout", methods=["POST"])
 @login_required
 def signout():
     logout_user()
     return redirect_back("index")
+
 
 @app.route("/guest")
 def guest():
@@ -192,6 +207,7 @@ def guest():
     else:    
         message = nicefy("There is no guest access at the moment!")
         return redirect(url_for('index', message=message))
+
 
 @app.route("/data/<path:path>")
 @login_required

@@ -71,8 +71,11 @@ function uploadFile() {
             // update file control text area and alert box
             message = 'The size of the file "' + fileName + '" is larger than 10 kB!';
             alertTable(message, 'fail');
+            // reset file object
+            $('#data-file').val('');
+            // update file control text area and alert box
             $('.custom-file-control').text('Choose file ...');
-        }
+    }
     }
     else{
         jvData = {};
@@ -740,9 +743,55 @@ function analyzeData() {
                 showPVParams(data);
                 showModelParams(data);
                 loadPlot();
+                // show results
                 $('#results').show();
-                $('#analyze-btn').text('Save')
-                                 .addClass('save-data');
+                // hide analyze form
+                $('#analyze').hide();
+                // show alert message
+                alertTable(message, "success");
+                // reset file object
+                $('#data-file').val('');
+                // update file control text area and alert box
+                $('.custom-file-control').text('Choose file ...');
+            }
+            else {
+                $('#results').hide();
+                // show alert message
+                alertTable(message, "fail");
+            }
+        })
+         .fail(function (jqXHR, status) {
+            $('#results').hide();
+            // show alert message
+            alertTable("There was something wrong receving the analyzed data!", "fail");
+            console.log(jqXHR.statusText);
+        });
+    });
+}
+
+/******************************************
+* Upload JV data and show the results
+* invoked by click event of upload button
+******************************************/
+function saveData() {
+    $('#save').on('click', function(e){
+        e.preventDefault();
+        
+        $.ajax({
+            method: "POST",
+            url: Flask.url_for("save"),
+            data: {data_id: jvData.data_id},
+            dataType: "json"
+        })
+         .done(function(data) {
+            var message = data.success || data.fail;
+            if (data.success) {
+                // show analyze form
+                $("analyze").show();
+                // hide results
+                $('#results').hide();
+                // reset jvData
+                jvData = {};
                 // show alert message
                 alertTable(message, "success");
             }
@@ -755,7 +804,7 @@ function analyzeData() {
          .fail(function (jqXHR, status) {
             $('#results').hide();
             // show alert message
-            alertTable("There was something wrong receving the analyzed data!", "fail");
+            alertTable("There was something wrong saving the analyzed data!", "fail");
             console.log(jqXHR.statusText);
         });
     });
