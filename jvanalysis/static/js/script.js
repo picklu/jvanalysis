@@ -24,7 +24,7 @@ function uploadFile() {
     }
     $formAnalyze .hide();
     
-    // hide result button
+    // hide result div
     if ($resultDiv.attr('hidden') == 'hidden') {
         $resultDiv.attr('hidden', false);
     }
@@ -101,7 +101,7 @@ function uploadFile() {
 **********************************/
 function getAjaxLoader() {
     var $ajaxLoader = $('<div/>', {
-        class: 'table-data ajax-loader-container',
+        class: 'ajax-loader-container',
         html: $('<img/>', {
             class: 'ajax-loader',
             alt: 'loading file',
@@ -753,11 +753,12 @@ function analyzeData() {
                 var message = data.success || data.fail || data.warning;
                 if (data.success || data.warning) {
                     // update jvData
-                    jvData["data_id"] = data.data_id;
+                    var data_id = data.data_id;
+                    jvData["data_id"] = data_id;
                     // show parameters in the tables
                     showPVParams(data);
                     showModelParams(data);
-                    loadPlot();
+                    loadPlot('temporary', data_id);
                     // show results
                     $('#results').show();
                     // hide analyze form
@@ -874,11 +875,11 @@ function showParams(params, data) {
     return $row;
 }
 
-function loadPlot() {
+function loadPlot(data_type, data_id) {
     // show ajax loader before loading the results
     $("#plot-container").html(getAjaxLoader());
     // load plot
-    var url = Flask.url_for("plot", {data_type: 'temporary', data_id: jvData.data_id});
+    var url = Flask.url_for("plot", {data_type: data_type, data_id: data_id});
     $("#plot-container").load( url,
         function( response, status, xhr ) {
             if ( status == "error" ) {
@@ -887,6 +888,41 @@ function loadPlot() {
             }
         }
     );
+}
+
+function viewSavedPlot() {
+    var $resultDiv = $('#results');
+    
+    // hide result div
+    if ($resultDiv.attr('hidden') == 'hidden') {
+        $resultDiv.attr('hidden', false);
+    }
+    $resultDiv.hide();
+    
+    $('.view-result').on('click', function(e) {
+        e.preventDefault();
+        var data_id = $(this).attr('id');
+        $.ajax({
+                method: "POST",
+                url: Flask.url_for("result"),
+                data: {data_id: data_id},
+                dataType: "json"
+        })
+         .done(function(data) {
+            if (data.success) {
+                // show parameters in the tables
+                showPVParams(data);
+                showModelParams(data);
+                loadPlot('persistent', data_id);
+                // show results
+                $('#results').show();
+            }
+        })
+         .fail(function (jqXHR, status) {
+            $('#results').hide();
+            console.log(jqXHR.statusText);
+        });
+    });
 }
 
 $(function(){

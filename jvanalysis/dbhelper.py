@@ -89,7 +89,7 @@ class DBHelper(object):
             return new_id
     
     def get_data(self, user_id, data_id):
-        return self.db.data.find_one({"user_id": user_id, "data_id": data_id})
+        return self.db.data.find_one({"user_id": user_id, "_id": data_id}, {"_id": 0, "data": 1})
         
     def get_all_data(self, user_id):
         data = list(self.db.data.find({"user_id": user_id}, 

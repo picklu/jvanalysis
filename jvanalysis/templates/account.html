@@ -21,11 +21,11 @@
                     {% for data in saved_data %}
                     <tr>
                         <td>{{ loop.index }}</td>
-                        <td class="text-left">{{ data["data"]["sample_name"] }}</td>
-                        <td>{{ data["analyzed_on"]|nicedate }}</td>
-                        <td>{{ data["data"]["area"]|nicenum }}</td>
-                        <td>{{ data["data"]["temperature"]|nicenum(sd=1) }}</td>
-                        <td><a data_id="{{ data['_id']|nicefy }}" href="#">view</a></td>
+                        <td class="text-left">{{ data.data.sample_name }}</td>
+                        <td>{{ data.analyzed_on|nicedate }}</td>
+                        <td>{{ data.data.area|nicenum }}</td>
+                        <td>{{ data.data.temperature|nicenum(sd=1) }}</td>
+                        <td><a id="{{ data['_id']|nicefy }}" class="view-result" href="#">view</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -40,18 +40,21 @@
     <hr>
 </div>
 <div id="results" class="row" hidden="hidden">
-    <div class="col-md-12">
+    <!-- plot -->
+    <div class="col-md-6">
         <div class="row">
             <div id="plot-container" class="col-md-12">
                 <!-- bokeh plot will be rendered here -->
             </div>
         </div>
     </div>
-    <div class="col-md-12">
-        <div id="parameters" class="row">
-            <div class="col-md-6 table-responsive">
-                <label for="pv-params">Photovoltaic parameters</label>
-                <table id="pv-params" class="table table-striped text-center">
+    <!-- params -->
+    <div id="parameters" class="col-md-6">
+        <div class="row">
+            <!-- pv parameters -->
+            <div class="col-md-12 table-responsive">
+                <label for="pvparams">Photovoltaic parameters</label>
+                <table id="pvparams" class="table table-striped text-center">
                     <thead>
                         <tr>
                             <th><em>V</em><sub>oc</sub><br>(V)</th>
@@ -65,9 +68,12 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-md-6 table-responsive ">
-                <label for="model-params">Model parameters ( <em>j</em><sub>sc</sub> &asymp; <em>j</em><sub>ph</sub> )</label>
-                <table id="model-params" class="table table-striped text-center">
+        </div>
+        <div class="row">
+            <!-- model parameters -->
+            <div class="col-md-12 table-responsive ">
+                <label for="modelparams">Model parameters ( <em>j</em><sub>sc</sub> &asymp; <em>j</em><sub>ph</sub> )</label>
+                <table id="modelparams" class="table table-striped text-center">
                     <thead>
                         <tr>
                             <th><em>j</em><sub>0</sub><br>(mA/cm<sup>2</sup>)</th>
@@ -123,7 +129,8 @@
 
 {%- block customjs -%}
 <script>
-    // load jv plot
+    // event handler for result
+    viewSavedPlot() 
     
 </script>
 {% endblock %}
