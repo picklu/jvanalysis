@@ -241,6 +241,8 @@ def signin():
 @app.route("/signout", methods=["POST"])
 @login_required
 def signout():
+    user_id = mongo_id(current_user.id)
+    DB.delete_temporay_data(user_id)
     logout_user()
     return redirect_back("index")
 
