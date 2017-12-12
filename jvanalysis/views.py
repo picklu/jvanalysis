@@ -1,4 +1,5 @@
 from dateutil.parser import parse
+from flask import make_response
 from flask import render_template
 from flask import json
 from flask import request
@@ -119,7 +120,7 @@ def analyze():
     form = request.form
     area = float(form["area"])
     data = form["jv"]
-    sample_name = form["data-name"]
+    sample_name = form["sample-name"]
     measured_on = parse(form["measured-date"], dayfirst=True)
     temperature = float(form.get("temperature"))
     jv = json.loads(data)
@@ -128,7 +129,7 @@ def analyze():
         params.update({
             "area": area,
             "measured_on": measured_on,
-            "sameple_name": sample_name,
+            "sample_name": sample_name,
             "temperature": temperature
         })
         user_id = mongo_id(current_user.id)
@@ -252,3 +253,20 @@ def data(path):
             sample_data = f.read()
     return render_template("data.html", sample_data=sample_data, 
                             title="Sample Data")
+
+
+@app.route("/validator")
+@login_required
+def validator():
+    user_id = mongo_id(current_user.id)
+    sample_name = request.args.get("sample-name")
+    used_name = DB.get_sample_names(user_id, sample_name)
+    if used_name:
+        message = "Name already exists!"
+        status = 400
+    else:
+        message = "It's a new name!"
+        status = 200
+    resp = make_response(message, status)
+    resp.headers["X-data-name-validator"] = message
+    return resp
