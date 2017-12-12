@@ -91,7 +91,13 @@ def about():
 @login_required
 def account():
     next = get_redirect_target()
-    return render_template("account.html", next=next, title="Account")
+    user_id = mongo_id(current_user.id)
+    saved_data = DB.get_all_data(user_id)
+    print("****************************")
+    print(saved_data[0])
+    print("****************************")
+    return render_template("account.html", saved_data=saved_data,
+                            next=next, title="Account")
 
 
 @app.route("/plot/<string:data_type>/<objectid:data_id>")

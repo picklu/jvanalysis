@@ -22,8 +22,10 @@
                     <tr>
                         <td>{{ loop.index }}</td>
                         <td>{{ data["data"]["sample_name"] }}</td>
-                        <td>{{ data["data"]["analyzed_on"]  }}</td>
-                        <td><a data_id="{{ data['_id'] }}" href="#">view</a></td>
+                        <td>{{ data["analyzed_on"] }}</td>
+                        <td>{{ data["data"]["area"] }}</td>
+                        <td>{{ data["data"]["temperature"] }}</td>
+                        <td><a data_id="{{ data['_id']|nicefy }}" href="#">view</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

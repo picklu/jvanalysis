@@ -92,7 +92,8 @@ class DBHelper(object):
         return self.db.data.find_one({"user_id": user_id, "data_id": data_id})
         
     def get_all_data(self, user_id):
-        data = list(self.db.data.find({"user_id": user_id}, {"_id": 0, "data": 1}))
+        data = list(self.db.data.find({"user_id": user_id}, 
+            {"_id":1, "analyzed_on":1, "data.sample_name": 1, "data.area": 1, "data.temperature": 1}))
         return data
     
     def get_sample_names(self, user_id, sample_name):
