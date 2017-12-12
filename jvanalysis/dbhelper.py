@@ -96,6 +96,10 @@ class DBHelper(object):
             {"_id":1, "analyzed_on":1, "data.sample_name": 1, "data.area": 1, "data.temperature": 1}))
         return data
     
-    def get_sample_names(self, user_id, sample_name):
+    def has_sample_name(self, user_id, sample_name):
         sample_name = list(self.db.data.find({"user_id": user_id, "data.sample_name": sample_name}, {"_id": 1}))
-        return len(sample_name)
+        return bool(sample_name)
+    
+    def get_data_count(self, user_id):
+        data_count = len(self.get_all_data(user_id))
+        return data_count

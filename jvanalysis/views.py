@@ -139,11 +139,18 @@ def analyze():
             "temperature": temperature
         })
         user_id = mongo_id(current_user.id)
+        data_count = DB.get_data_count(user_id)
         data_id = DB.upload_data(user_id, params)
         if data_id:
             params["data_id"] = nicefy(data_id)
-            params["success"] = "Data were uploaded and analyzed successfully! You may save the data to your account."
-            return json.dumps(params)
+            if data_count < 4:
+                params["success"] = "Data were uploaded and analyzed successfully! You may save the data to your account."
+                return json.dumps(params)
+            else:
+                params["warning"] = """Data were uploaded and analyzed successfully!
+                                    However, you can't save the data to your account since you have already saved five data."
+                                    You may navigate to your account to see your saved data."""
+                return json.dumps(params)
         return json.dumps({
             "fail": "Failed to save data to the temporary database."
         })
@@ -155,15 +162,20 @@ def analyze():
 @app.route("/save", methods=["POST"])
 @login_required
 def save():
-    data_id = mongo_id(request.form.get("data_id"))
     user_id = mongo_id(current_user.id)
-    new_id = DB.save_data(user_id, data_id)
+    data_count = DB.get_data_count(user_id)
     result = {}
-    if new_id:
-        result["success"] = "The analyzed data were saved successfully! You may see the saved data by navigating to your account."
+    if data_count >= 5:
+        result["fail"] = "Sorry! You can't save more than five analyzed data at the moment."
         return json.dumps(result)
-    result["fail"] = "Failed to save the analyzed data."
-    return json.dumps(result)
+    else:
+        data_id = mongo_id(request.form.get("data_id"))
+        new_id = DB.save_data(user_id, data_id)
+        if new_id:
+            result["success"] = "The analyzed data were saved successfully! You may see the saved data by navigating to your account."
+            return json.dumps(result)
+        result["fail"] = "Failed to save the analyzed data."
+        return json.dumps(result)
 
 
 @app.route("/analysis")
@@ -266,7 +278,7 @@ def data(path):
 def validator():
     user_id = mongo_id(current_user.id)
     sample_name = request.args.get("sample-name")
-    used_name = DB.get_sample_names(user_id, sample_name)
+    used_name = DB.has_sample_name(user_id, sample_name)
     if used_name:
         message = "Name already exists!"
         status = 400

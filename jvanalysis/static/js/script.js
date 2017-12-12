@@ -750,8 +750,8 @@ function analyzeData() {
                 dataType: "json"
             })
              .done(function(data) {
-                var message = data.success || data.fail;
-                if (data.success) {
+                var message = data.success || data.fail || data.warning;
+                if (data.success || data.warning) {
                     // update jvData
                     jvData["data_id"] = data.data_id;
                     // show parameters in the tables
@@ -765,8 +765,15 @@ function analyzeData() {
                     // hide data table
                     $('#table-container').hide();
                     isTableVisible = false;
+                    var alertType;
+                    if (data.success) {
+                        alertType = "success";
+                    }
+                    else if (data.warning) {
+                        alertType =  "warning";
+                    }
                     // show alert message
-                    alertTable(message, "success");
+                    alertTable(message, alertType);
                     // reset file object
                     $('#data-file').val('');
                     // update file control text area and alert box
