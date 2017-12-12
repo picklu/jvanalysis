@@ -18,6 +18,12 @@ def uglyfy(nicetext):
     "Convert a nice plain text to its original form"
     return base64_decode(nicetext).decode()
 
+def nice_date(date):
+    return date.strftime("%Y/%m/%d")
+
+def nice_number(number, sd=2):
+    return "{0:0.{1:d}f}".format(number, sd)
+
 # *********************************************
 # Modified from
 # ource: http://flask.pocoo.org/snippets/62/
