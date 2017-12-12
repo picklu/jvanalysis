@@ -136,7 +136,7 @@ def analyze():
         data_id = DB.upload_data(user_id, params)
         if data_id:
             params["data_id"] = nicefy(data_id)
-            params["success"] = "Data were uploaded and analyzed successfully!"
+            params["success"] = "Data were uploaded and analyzed successfully! You may save the data to your account."
             return json.dumps(params)
         return json.dumps({
             "fail": "Failed to save data to the temporary database."
@@ -154,7 +154,7 @@ def save():
     new_id = DB.save_data(user_id, data_id)
     result = {}
     if new_id:
-        result["success"] = "The analyzed data were saved successfully!"
+        result["success"] = "The analyzed data were saved successfully! You may see the saved data by navigating to your account."
         return json.dumps(result)
     result["fail"] = "Failed to save the analyzed data."
     return json.dumps(result)
