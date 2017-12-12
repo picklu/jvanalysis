@@ -2,124 +2,124 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-12 table-responsive">
-        <h5 class="content-jumbotron">Accont settings:</h5>
-        <table class="table table-striped text-center">
-            <thead>
-                <tr>
-                    <th>
-                        Item
-                    </th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scorpe="row">Id</th>
-                    <td><button id="change" class="btn btn-sm btn-info my-sm-0" type="submit">Change</button></td>
-                </tr>
-                <tr>
-                    <th scope="row">Account</th>
-                    <td><button id="delete" class="btn btn-sm btn-danger my-sm-0" type="submit">Delete</button></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-<hr>
-<div class="row">
-    <div class="col-md-12 table-responsive">
-        <h5>Uploaded data:</h5>
-        <table class="table table-striped text-center">
-            <thead>
-                <tr>
-                    <th>
-                        Data
-                    </th>
-                    <th>Date</th>
-                    <th>Area</th>
-                    <th>Temperature</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <form class="form-inline">
-                            <select id="data" class="form-control">
-                                <option name="data" value="data-1">20171109-user001-data-01</option>
-                                <option name="data" value="data-2">data-2</option>
-                                <option name="data" value="data-3">data-3</option>
-                                <option name="data" value="data-4">data-4</option>
-                            </select>
-                        </form>
-                    </td>
-                    <td>2017.11.10</td>
-                    <td>0.25</td>
-                    <td>30</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="col-md-12 content-jumbotron">
+        <button data-target="#uploaded-data" class="btn btn-block btn-outline-success" data-toggle="collapse">Uploaded Data</button>
+        <div id="uploaded-data" class="table-responsive collapse">
+            {% if saved_data %}
+            <table class="table table-striped text-center">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Sample Name</th>
+                        <th>Analysis Date</th>
+                        <th>Area/cm<sup>2</sup></th>
+                        <th>Temperature/<sup>o</sup>C</th>
+                        <th>Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in saved_data %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ data["data"]["sample_name"] }}</td>
+                        <td>{{ data["data"]["analyzed_on"]  }}</td>
+                        <td><a data_id="{{ data['_id'] }}" href="#">view</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="alert alert-warning">You didn't save any data yet!</div>
+            {% endif %}
+        </div>
     </div>
 </div>
 <div class="row">
-    <div id="plot-container" class="col-md-10 col-center-block">
+    <hr>
+</div>
+<div id="results" class="row" hidden="hidden">
+    <div class="col-md-12">
+        <div class="row">
+            <div id="plot-container" class="col-md-12">
+                <!-- bokeh plot will be rendered here -->
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div id="parameters" class="row">
+            <div class="col-md-6 table-responsive">
+                <label for="pv-params">Photovoltaic parameters</label>
+                <table id="pv-params" class="table table-striped text-center">
+                    <thead>
+                        <tr>
+                            <th><em>V</em><sub>oc</sub><br>(V)</th>
+                            <th><em>j</em><sub>sc</sub><br>(mA/cm<sup>2</sup>)</th>
+                            <th><em>ff</em><br>(%)</th>
+                            <th><em>PE</em><br>(%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pv-params">
+                        <!-- pv params will be inserted here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6 table-responsive ">
+                <label for="model-params">Model parameters ( <em>j</em><sub>sc</sub> &asymp; <em>j</em><sub>ph</sub> )</label>
+                <table id="model-params" class="table table-striped text-center">
+                    <thead>
+                        <tr>
+                            <th><em>j</em><sub>0</sub><br>(mA/cm<sup>2</sup>)</th>
+                            <th><em>m</em><br>&nbsp;</th>
+                            <th><em>R</em><sub>s</sub><br>(&#x2126; cm<sup>2</sup>)</th>
+                            <th><em>R</em><sub>sh</sub><br>(&#x2126; cm<sup>2</sup>)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="model-params">
+                        <!-- model params will be insereted here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 <div class="row">
     <hr>
 </div>
 <div class="row">
-    <div class="col-md-5 table-responsive">
-        <label>Photovoltaic parameters</label>
-        <table class="table table-striped text-center">
-            <thead>
-                <tr>
-                    <th><em>V</em><sub>oc</sub><br>(V)</th>
-                    <th><em>j</em><sub>sc</sub><br>(mA/cm<sup>2</sup>)</th>
-                    <th><em>ff</em><br>(%)</th>
-                    <th><em>PE</em><br>(%)</th>
-                </tr>
-            </thead>
-            <tobody>
-                <tr>
-                    <td>0.55</td>
-                    <td>12.5</td>
-                    <td>62.5</td>
-                    <td>4.0</td>
-                </tr>
-            </tobody>
-        </table>
+    <div class="col-md-12">
+        <button data-target="#account-settings" class="btn btn-block btn-outline-danger" data-toggle="collapse">Account Settings</button>
+        <div id="account-settings" class="table-responsive collapse">
+            <table class="table table-striped text-center">
+                <thead>
+                    <tr>
+                        <th>
+                            Item
+                        </th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scorpe="row">Id</th>
+                        <td><button id="change" class="btn btn-sm btn-info my-sm-0" type="submit">Change</button></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Account</th>
+                        <td><button id="delete" class="btn btn-sm btn-danger my-sm-0" type="submit">Delete</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="col-md-7 table-responsive ">
-        <label>Model parameters</label>
-        <table class="table table-striped text-center">
-            <thead>
-                <tr>
-                    <th><em>j</em><sub>sc</sub><br>(mA/cm<sup>2</sup>)</th>
-                    <th><em>j</em><sub>0</sub><br>(mA/cm<sup>2</sup>)</th>
-                    <th><em>m</em><br>&nbsp;</th>
-                    <th><em>R</em><sub>s</sub><br>(&#x2126; cm<sup>2</sup>)</th>
-                    <th><em>R</em><sub>sh</sub><br>(&#x2126; cm<sup>2</sup>)</th>
-                </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>12.5</td>
-                <td>62.5e-8</td>
-                <td>1.5</td>
-                <td>7.8</td>
-                <td>3000</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+</div>
+<div class="row">
+    <hr>
 </div>
 {% endblock %}
 
 {%- block customjs -%}
 <script>
     // load jv plot
-    $('#plot-container').html(getAjaxLoader());
-    $('#plot-container').load(Flask.url_for("plot", {data_id: 1}));
+    
 </script>
 {% endblock %}
