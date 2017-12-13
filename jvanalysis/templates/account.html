@@ -36,52 +36,60 @@
     <hr>
 </div>
 <div id="results" class="row" hidden="hidden">
-    <!-- plot -->
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div class="row">
-            <div id="plot-container" class="col-md-12">
-                <!-- bokeh plot will be rendered here -->
-            </div>
-        </div>
-    </div>
-    <!-- params -->
-    <div id="parameters" class="col-md-6">
-        <div class="row">
-            <!-- pv parameters -->
-            <div class="col-md-12 table-responsive">
-                <label for="pvparams">Photovoltaic parameters</label>
-                <table id="pvparams" class="table table-striped text-center">
-                    <thead>
-                        <tr>
-                            <th><em>V</em><sub>oc</sub><br>(V)</th>
-                            <th><em>j</em><sub>sc</sub><br>(mA/cm<sup>2</sup>)</th>
-                            <th><em>ff</em><br>(%)</th>
-                            <th><em>PE</em><br>(%)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pv-params">
-                        <!-- pv params will be inserted here dynamically -->
-                    </tbody>
-                </table>
+            <div class="col-md-12">
+                <h5 class="text-center text-muted">Result for <span id="sample-name"></span> [area: <span id="area"></span> cm<sup>2</sup> &amp; temperature: <span id="temperature"></span> <sup>o</sup>C]</h5>
             </div>
         </div>
         <div class="row">
-            <!-- model parameters -->
-            <div class="col-md-12 table-responsive ">
-                <label for="modelparams">Model parameters ( <em>j</em><sub>sc</sub> &asymp; <em>j</em><sub>ph</sub> )</label>
-                <table id="modelparams" class="table table-striped text-center">
-                    <thead>
-                        <tr>
-                            <th><em>j</em><sub>0</sub><br>(mA/cm<sup>2</sup>)</th>
-                            <th><em>m</em><br>&nbsp;</th>
-                            <th><em>R</em><sub>s</sub><br>(&#x2126; cm<sup>2</sup>)</th>
-                            <th><em>R</em><sub>sh</sub><br>(&#x2126; cm<sup>2</sup>)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="model-params">
-                        <!-- model params will be insereted here dynamically -->
-                    </tbody>
-                </table>
+        
+        <div class="col-md-6"><!-- plot -->
+            <div class="row">
+                <div id="plot-container" class="col-md-12">
+                    <!-- bokeh plot will be rendered here -->
+                </div>
+            </div>
+        </div>
+        
+        <div id="parameters" class="col-md-6"><!-- params -->
+            <div class="row">
+                <!-- pv parameters -->
+                <div class="col-md-12 table-responsive">
+                    <label for="pvparams">Photovoltaic parameters</label>
+                    <table id="pvparams" class="table table-striped text-center">
+                        <thead>
+                            <tr>
+                                <th><em>V</em><sub>oc</sub><br>(V)</th>
+                                <th><em>j</em><sub>sc</sub><br>(mA/cm<sup>2</sup>)</th>
+                                <th><em>ff</em><br>(%)</th>
+                                <th><em>PE</em><br>(%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pv-params">
+                            <!-- pv params will be inserted here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <!-- model parameters -->
+                <div class="col-md-12 table-responsive ">
+                    <label for="modelparams">Model parameters ( <em>j</em><sub>sc</sub> &asymp; <em>j</em><sub>ph</sub> )</label>
+                    <table id="modelparams" class="table table-striped text-center">
+                        <thead>
+                            <tr>
+                                <th><em>j</em><sub>0</sub><br>(mA/cm<sup>2</sup>)</th>
+                                <th><em>m</em><br>&nbsp;</th>
+                                <th><em>R</em><sub>s</sub><br>(&#x2126; cm<sup>2</sup>)</th>
+                                <th><em>R</em><sub>sh</sub><br>(&#x2126; cm<sup>2</sup>)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="model-params">
+                            <!-- model params will be insereted here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

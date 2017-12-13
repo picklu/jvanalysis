@@ -53,7 +53,8 @@ def resources(title, width=200, height=100):
 def get_resources(data, width=200, height=180):
     """ return bokeh resources for plot
     """
-    title = "jV plot for {}".format(data["sample_name"])
+    title = "jV plot"
+            
     plot = figure(title=title, tools=TOOLS, plot_width=width, 
                 plot_height=height,sizing_mode='scale_width')
     # Vertical line
