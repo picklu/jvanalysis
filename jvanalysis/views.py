@@ -110,7 +110,7 @@ def plot(data_type, data_id):
         data = DB.get_temporary_data(user_id, data_id).get("data")
 
     if data:
-        bkdiv, bkscript = get_resources("jV plot of analyzed data", data)
+        bkdiv, bkscript = get_resources(data)
         return render_template(
             "plot.html",
             bkdiv=bkdiv,
