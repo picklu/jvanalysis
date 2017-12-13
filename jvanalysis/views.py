@@ -86,6 +86,11 @@ def about():
                             signin_form=form, title="About")
 
 
+@app.route("/how")
+def how():
+    next = get_redirect_target()
+    return render_template("how.html", next=next, title="How")
+
 @app.route("/account")
 @login_required
 def account():

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 content-jumbotron">
+        <div class="row">
+            <div class="col-md-10 col-center-block">
+                <h5>How to analyze current-voltage data of a solar cell:</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10 col-center-block">
+                <div id="how-tos" class="text-left">
+                    <ul>
+                        <li>Navigate to <a href="{{ url_for('analysis') }}">analysis</a>.</li>
+                        <li>Browse for a current-voltage data file.</li>
+                        <li>Select a data file.</li>
+                        <li>The data file must be of .txt/.csv extension.</li>
+                        <li>The data file must not contain any header text.</li>
+                        <li>The size of the data file must not exceed <bold>10 kB</bold>.</li>
+                        <li>If the data file contains header text or any other text then you may try to remove those texts from the data table after loading the file.</li>
+                        <li>Note that only <em>comma</em>, <em>semicolon</em>, and <em>tab</em> delimiters are supported by the parser.</li>
+                        <li>You don't need to set the delimiter; however, if your data is <em>space</em> delimitted then you may do so.</li>
+                        <li>Once the file is loaded, you may check if the data columns have been identified properly.</li>
+                        <li>You may see a <a href="{{ url_for('data', path='sample_data.txt') }}" target="_blank">example data file</a> to learn how your data file should be formatted.</li>
+                        <li>You may update the data attributes: sample name, measurement date, active area of the cell, and temperature.</li>
+                        <li>If everything is set then hit the upload button and see the analysis result.</li>
+                        <li>You may save the data to your account to see the results later.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

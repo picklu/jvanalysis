@@ -28,9 +28,6 @@
                 {% block navbar %}
                 <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                     <ul class="navbar-nav mr-auto text-md-center">
-                        <li class="nav-item {{ "active" if not title }}">
-                            <a class="nav-link" href="{{ url_for('index') }}">Home</a>
-                        </li>
                         <li class="nav-item {{ "active" if title == "About" }}">
                             <a class="nav-link" href="{{ url_for('about') }}">About</a>
                         </li>
@@ -42,6 +39,9 @@
                         </li>
                         <li class="nav-item {{ "active" if title == "Analysis" }}">
                             <a class="nav-link" href="{{ url_for('analysis') }}">Analysis</a>
+                        </li>
+                        <li class="nav-item {{ "active" if title == "How" }}">
+                            <a class="nav-link" href="{{ url_for('how') }}">How</a>
                         </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0" action="{{ url_for('signout') }}" method="POST">
