@@ -760,6 +760,9 @@ function analyzeData() {
                     showModelParams(data);
                     loadPlot('temporary', data_id);
                     // show results
+                    $('.sample-name').text(data.sample_name);
+                    $('.area').text(data.area);
+                    $('.temperature').text(data.temperature);
                     $('#results').show();
                     // hide analyze form
                     $('#analyze').hide();
