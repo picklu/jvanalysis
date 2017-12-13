@@ -74,7 +74,8 @@ class DBHelper(object):
             return self.db.tempdata.find({"user_id": user_id})
 
     def delete_temporay_data(self, user_id):
-        self.db.tempdata.remove({"user_id": user_id})
+        result = self.db.tempdata.remove({"user_id": user_id})
+        return result["n"]
     
     def save_data(self, user_id, data_id):
         data = self.get_temporary_data(user_id, data_id)
@@ -103,3 +104,7 @@ class DBHelper(object):
     def get_data_count(self, user_id):
         data_count = len(self.get_all_data(user_id))
         return data_count
+    
+    def delete_data(self, user_id, data_id):
+        result = self.db.data.remove({"user_id": user_id, "_id": data_id})
+        return result["n"]

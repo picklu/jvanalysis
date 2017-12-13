@@ -164,17 +164,32 @@ def analyze():
 def result():
     user_id = mongo_id(current_user.id)
     data_id = request.form.get("data_id")
+    action = request.form.get("action")
+    
     if data_id:
         data_id = mongo_id(data_id)
-        data = DB.get_data(user_id, data_id)
-        if data:
-            params = data["data"]
-            params["success"] = "Successfully retrieved the data."
-            return json.dumps(params)
+    else:
+        return json.dumps({"fail": "Invalid request."})
+    
+    if action == "view":
+            data = DB.get_data(user_id, data_id)
+            if data:
+                params = data["data"]
+                params["success"] = "Successfully retrieved the data."
+                return json.dumps(params)
+            return json.dumps({
+                "fail": "Failed to retrieve data from the database."
+            })
+        
+    elif action == "delete":
+        deleted = DB.delete_data(user_id, data_id)
+        if deleted:
+            return json.dumps({
+                "success": "Successfully deleted the data."
+            })
         return json.dumps({
-            "fail": "Failed to retrieve data from the database."
+            "fail": "Failed to delete the data from the database."
         })
-    return json.dumps({"fail": "Invalid request."})
 
 
 @app.route("/save", methods=["POST"])

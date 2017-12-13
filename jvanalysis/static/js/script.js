@@ -101,7 +101,7 @@ function uploadFile() {
 **********************************/
 function getAjaxLoader() {
     var $ajaxLoader = $('<div/>', {
-        class: 'ajax-loader-container',
+        class: 'ajax-loader-container table-data',
         html: $('<img/>', {
             class: 'ajax-loader',
             alt: 'loading file',
@@ -890,7 +890,7 @@ function loadPlot(data_type, data_id) {
     );
 }
 
-function viewSavedPlot() {
+function viewSavedData() {
     var $resultDiv = $('#results');
     
     // hide result div
@@ -905,7 +905,9 @@ function viewSavedPlot() {
         $.ajax({
                 method: "POST",
                 url: Flask.url_for("result"),
-                data: {data_id: data_id},
+                data: {data_id: data_id,
+                    action: 'view'
+                },
                 dataType: "json"
         })
          .done(function(data) {
@@ -920,6 +922,33 @@ function viewSavedPlot() {
         })
          .fail(function (jqXHR, status) {
             $('#results').hide();
+            console.log(jqXHR.statusText);
+        });
+    });
+}
+
+function deleteSavedData() {
+    var $resultDiv = $('#results');
+    
+    $('.delete-result').on('click', function(e) {
+        e.preventDefault();
+        var $row = $(this).parents(':eq(1)');
+        var data_id = $(this).parent().find('.view-result').attr('id');
+        $.ajax({
+                method: "POST",
+                url: Flask.url_for("result"),
+                data: {data_id: data_id,
+                    action: 'delete'
+                },
+                dataType: "json"
+        })
+         .done(function(data) {
+            if (data.success) {
+                // reload page
+                location.reload();
+            }
+        })
+         .fail(function (jqXHR, status) {
             console.log(jqXHR.statusText);
         });
     });

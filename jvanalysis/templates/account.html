@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-md-12 content-jumbotron">
         <button data-target="#uploaded-data" class="btn btn-block btn-outline-success" data-toggle="collapse">Uploaded Data</button>
-        <div id="uploaded-data" class="table-responsive collapse">
+        <div id="uploaded-data" class="table-responsive collapse show">
             {% if saved_data %}
             <table class="table table-striped text-center">
                 <thead>
@@ -12,8 +12,6 @@
                         <th>#</th>
                         <th>Sample Name</th>
                         <th>Analysis Date</th>
-                        <th>Area/cm<sup>2</sup></th>
-                        <th>Temperature/<sup>o</sup>C</th>
                         <th>Detail</th>
                     </tr>
                 </thead>
@@ -23,15 +21,13 @@
                         <td>{{ loop.index }}</td>
                         <td class="text-left">{{ data.data.sample_name }}</td>
                         <td>{{ data.analyzed_on|nicedate }}</td>
-                        <td>{{ data.data.area|nicenum }}</td>
-                        <td>{{ data.data.temperature|nicenum(sd=1) }}</td>
-                        <td><a id="{{ data['_id']|nicefy }}" class="view-result" href="#">view</a></td>
+                        <td><a id="{{ data['_id']|nicefy }}" class="view-result" href="#">✔</a>{% if regular %}&nbsp;&nbsp;<a class="delete-result" aria-label="Close" href="#">❌</a>{% endif %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
             {% else %}
-            <div class="alert alert-warning">You didn't save any data yet!</div>
+            <div class="alert alert-warning">You don't have any saved data!</div>
             {% endif %}
         </div>
     </div>
@@ -130,7 +126,8 @@
 {%- block customjs -%}
 <script>
     // event handler for result
-    viewSavedPlot() 
+    viewSavedData() 
+    deleteSavedData()
     
 </script>
 {% endblock %}

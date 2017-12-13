@@ -32,6 +32,12 @@
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
 }
+.table-data {  
+    height: 20.5rem;
+    overflow: auto;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
 .custom-file {
     width: 100%;
 }
@@ -62,7 +68,12 @@
 .cursor-pointer {
     cursor: pointer;
 }
-
+.delete-result {
+    color: #a94442;
+}
+.view-result {
+    color: #28a745;
+}
 /* from bootstrap3*/
 .has-feedback {
     position: relative
