@@ -24,7 +24,6 @@ from jvanalysis.jvhelper import redirect_back
 from jvanalysis.jvhelper import is_safe_url
 from jvanalysis.jvhelper import uglyfy
 
-from jvanalysis.jvplot import resources
 from jvanalysis.jvplot import get_analyzed_params
 from jvanalysis.jvplot import get_resources
 
