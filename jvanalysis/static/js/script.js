@@ -905,6 +905,14 @@ function viewSavedData() {
     $('.view-result').on('click', function(e) {
         e.preventDefault();
         var data_id = $(this).attr('id');
+        var $row = $(this).parents(':eq(1)');
+        if ($row.hasClass('table-info')) {
+            $row.removeClass('table-info');
+            $('#results').hide();
+            return;
+        }
+        $('#saved-data').find('tr').removeClass('table-info');
+        $row.addClass('table-info');
         $.ajax({
                 method: "POST",
                 url: Flask.url_for("result"),
@@ -938,7 +946,6 @@ function deleteSavedData() {
     
     $('.delete-result').on('click', function(e) {
         e.preventDefault();
-        var $row = $(this).parents(':eq(1)');
         var data_id = $(this).parent().find('.view-result').attr('id');
         $.ajax({
                 method: "POST",
