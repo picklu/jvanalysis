@@ -37,7 +37,7 @@ else:
 
 from jvanalysis.passwordhelper import PasswordHelper
 
-DB = DBHelper()
+DB = DBHelper(app.config["DATABASE"])
 PH = PasswordHelper()
 
 # ensure responses aren't cached
@@ -292,12 +292,10 @@ def signout():
     user_id = mongo_id(current_user.id)
     DB.delete_temporay_data(user_id)
     print("********** singnout before ************")
-    print(session.get("id"))
-    print(session.get("sid"))
+    print(session)
     logout_user()
     print("********** singnout after ************")
-    print(session.get("id"))
-    print(session.get("sid"))
+    print(session)
     print("**************************************")
     return redirect_back("index")
 
