@@ -6,9 +6,11 @@ from itsdangerous import base64_encode, base64_decode
 from urllib.parse import urlparse, urljoin
 from werkzeug.routing import BaseConverter, ValidationError
 
-def mongo_id(nice_id):
+def mongo_id(nice_id=None):
     "Return a mongodb _id as an ObjectId"
-    return ObjectId(uglyfy(nice_id))
+    if nice_id:
+        return ObjectId(uglyfy(nice_id))
+    return ObjectId()
 
 def nicefy(uglytext):
     "Convert a mongodb _id as a nice plain text"
@@ -46,7 +48,7 @@ def get_redirect_target():
     From Securely Redirect Back. source: http://flask.pocoo.org/snippets/62/
     """
     target = request.endpoint
-    bad_endpoints = ["account", "analysis", "signin", "signout"]
+    bad_endpoints = ["account", "analysis", "how", "signin", "signout"]
     if is_safe_url(target):
         if any(suburl in target for suburl in bad_endpoints):
             return url_for("index")

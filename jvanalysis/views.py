@@ -4,6 +4,7 @@ from flask import render_template
 from flask import json
 from flask import request
 from flask import redirect
+from flask import session
 from flask import url_for
 
 from flask_login import current_user
@@ -39,6 +40,14 @@ from jvanalysis.passwordhelper import PasswordHelper
 DB = DBHelper()
 PH = PasswordHelper()
 
+# ensure responses aren't cached
+if app.config["DEBUG"]:
+    @app.after_request
+    def after_request(response):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Expires"] = 0
+        response.headers["Pragma"] = "no-cache"
+        return response
 
 @login_manager.user_loader
 def load_user(email):
@@ -246,6 +255,7 @@ def signup():
 
 @app.route("/signin", methods=["GET", "POST"])
 def signin():
+    session.clear()
     next = get_redirect_target()
     # if the requested method is GET
     if request.method == "GET":
@@ -266,6 +276,7 @@ def signin():
                                     db_user['hashed']):
                 user = User(db_user["email"])
                 login_user(user, remember=True)
+                session['sid'] = nicefy(mongo_id())
                 return redirect_back("index")
             else:
                 form.email.errors = []
@@ -280,7 +291,14 @@ def signin():
 def signout():
     user_id = mongo_id(current_user.id)
     DB.delete_temporay_data(user_id)
+    print("********** singnout before ************")
+    print(session.get("id"))
+    print(session.get("sid"))
     logout_user()
+    print("********** singnout after ************")
+    print(session.get("id"))
+    print(session.get("sid"))
+    print("**************************************")
     return redirect_back("index")
 
 
@@ -293,6 +311,7 @@ def guest():
         if PH.validate_password(password, db_user['salt'], db_user['hashed']):
             user = User(db_user["email"])
             login_user(user, remember=True)
+            session['sid'] = nicefy(mongo_id())
             return redirect(url_for("analysis"))
     else:
         message = nicefy("There is no guest access at the moment!")

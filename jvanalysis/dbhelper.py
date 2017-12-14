@@ -2,16 +2,16 @@
 # Book: Flask: Building Python Web Services
 # By Gareth Dwyer, Shalabh Aggarwal, Jack Stouffer
 # *************************************************
-import pymongo
 import datetime
 from jvanalysis import app
+from pymongo import MongoClient
 
 DATABASE = app.config["DATABASE"]
 
 
 class DBHelper(object):
     def __init__(self):
-        client = pymongo.MongoClient()
+        client = MongoClient()
         self.db = client[DATABASE]
 
     def add_user(self,

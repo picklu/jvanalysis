@@ -9,6 +9,10 @@ class Config(object):
     GUEST_USER_PASSWORD = os.environ.get('GUEST_PASSWORD')
     SAMPLE_DATA = "sample_data.txt"
     SECRET_KEY = 'A really secret string generated randomly'
+    SESSION_TYPE = 'mongodb'
+    SESSION_MONGODB_DB = 'jvanalysis_session'
+    SESSION_MONGODB_COLLECT = 'session'
+    SESSION_KEY_PREFIX = 'jV'
 
 class ProductionConfig(Config):
     """Production specific config"""
