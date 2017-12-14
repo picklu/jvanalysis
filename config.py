@@ -10,9 +10,12 @@ class Config(object):
     SAMPLE_DATA = "sample_data.txt"
     SECRET_KEY = 'A really secret string generated randomly'
     SESSION_TYPE = 'mongodb'
+    SESSION_MONGODB = None
     SESSION_MONGODB_DB = 'jvanalysis_session'
     SESSION_MONGODB_COLLECT = 'session'
     SESSION_KEY_PREFIX = 'jV'
+    SESSION_PERMANENT = True
+    SESSION_USE_SIGNER = False
 
 class ProductionConfig(Config):
     """Production specific config"""
