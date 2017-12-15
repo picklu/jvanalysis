@@ -57,8 +57,7 @@ def load_user(email):
         id = nicefy(db_user["_id"])
         user = User(email)
         user.id = id
-        if email == guest_email:
-            user.regular = False
+        user.regular = not (guest_email == email)
         return user
 
 
@@ -104,8 +103,7 @@ def how():
 @login_required
 def account():
     next = get_redirect_target()
-    guest_email = app.config['GUEST_USER_EMAIL']
-    regular = not guest_email == current_user.email
+    regular = current_user.regular
     user_id = mongo_id(current_user.id)
     saved_data = DB.get_all_data(user_id)
     return render_template("account.html", next=next, 
@@ -231,6 +229,7 @@ def save():
 @login_required
 def analysis():
     next = get_redirect_target()
+    regular = current_user.regular
     return render_template("analysis.html", next=next, title="Analysis")
 
 
@@ -277,7 +276,7 @@ def signin():
             if PH.validate_password(form.password.data, db_user['salt'],
                                     db_user['hashed']):
                 user = User(db_user["email"])
-                login_user(user, remember=True)
+                login_user(user, remember=False)
                 session["sid"] = nicefy(mongo_id())
                 return redirect_back("index")
             else:
@@ -306,7 +305,7 @@ def guest():
     if db_user:
         if PH.validate_password(password, db_user['salt'], db_user['hashed']):
             user = User(db_user["email"])
-            login_user(user, remember=True)
+            login_user(user, remember=False)
             session['sid'] = nicefy(mongo_id())
             return redirect(url_for("analysis"))
     else:
