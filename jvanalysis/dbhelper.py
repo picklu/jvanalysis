@@ -45,7 +45,7 @@ class DBHelper(object):
             fields["email_confirmed_on"] = email_confirmed_on
         if email_confirmed:
             fields["email_confirmed"] = email_confirmed
-        return self.users.update(where, fields)
+        return self.users.update(where, {"$set": fields})
     
     def get_user(self, email):
         return self.users.find_one({"email": email})
@@ -56,7 +56,7 @@ class DBHelper(object):
         data_id = None
         if old_data:
             data_id = old_data[0]["_id"]
-            self.tempdata.update({"_id": data_id, "user_id": user_id, "sid": sid}, {"analyzed_on": analyzed_on, "data": data})
+            self.tempdata.update({"_id": data_id, "user_id": user_id, "sid": sid}, {"$set": {"analyzed_on": analyzed_on, "data": data}})
         else:
             data_id = self.tempdata.insert({"user_id": user_id, "sid": sid, "analyzed_on": analyzed_on, "data": data})
         return data_id
