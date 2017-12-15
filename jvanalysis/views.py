@@ -255,7 +255,6 @@ def signup():
 
 @app.route("/signin", methods=["GET", "POST"])
 def signin():
-    session.clear()
     next = get_redirect_target()
     # if the requested method is GET
     if request.method == "GET":
