@@ -158,7 +158,7 @@ def analyze():
         data_id = DB.upload_data(user_id, session_id, params)
         if data_id:
             params["data_id"] = nicefy(data_id)
-            if data_count < 4:
+            if data_count <= 5:
                 params["success"] = "Data were uploaded and analyzed successfully! You may save the data to your account."
                 return json.dumps(params)
             else:
