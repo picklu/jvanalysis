@@ -50,31 +50,31 @@ class DBHelper(object):
     def get_user(self, email):
         return self.users.find_one({"email": email})
     
-    def upload_data(self, user_id, data):
+    def upload_data(self, user_id, sid, data):
         analyzed_on=datetime.utcnow()
-        old_data = list(self.get_temporary_data(user_id))
+        old_data = self.get_temporary_data(user_id, sid)
         data_id = None
         if old_data:
             data_id = old_data[0]["_id"]
-            self.tempdata.update({"_id": data_id, "user_id": user_id}, {"analyzed_on": analyzed_on, "data": data})
+            self.tempdata.update({"_id": data_id, "user_id": user_id, "sid": sid}, {"analyzed_on": analyzed_on, "data": data})
         else:
-            data_id = self.tempdata.insert({"user_id": user_id, "analyzed_on": analyzed_on, "data": data})
+            data_id = self.tempdata.insert({"user_id": user_id, "sid": sid, "analyzed_on": analyzed_on, "data": data})
         return data_id
     
-    def get_temporary_data(self, user_id, data_id=None):
+    def get_temporary_data(self, user_id, sid, data_id=None):
         if data_id:
-            return self.tempdata.find_one({"_id": data_id, "user_id": user_id})
+            return self.tempdata.find_one({"_id": data_id, "user_id": user_id, "sid": sid})
         else:
-            return self.tempdata.find({"user_id": user_id})
+            return list(self.tempdata.find({"user_id": user_id, "sid": sid}))
 
-    def delete_temporay_data(self, user_id):
-        result = self.tempdata.remove({"user_id": user_id})
+    def delete_temporay_data(self, user_id, sid):
+        result = self.tempdata.remove({"user_id": user_id, "sid": sid})
         return result["n"]
     
-    def save_data(self, user_id, data_id):
-        data = self.get_temporary_data(user_id, data_id)
+    def save_data(self, user_id, sid, data_id):
+        data = self.get_temporary_data(user_id, sid, data_id)
         if data:
-            self.delete_temporay_data(user_id)
+            self.delete_temporay_data(user_id, sid)
             fields = {}
             fields["_id"] = data_id
             fields["user_id"] = user_id

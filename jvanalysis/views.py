@@ -118,12 +118,13 @@ def account():
 def plot(data_type, data_id):
     user_id = mongo_id(current_user.id)
     if data_type == "persistent":
-        data = DB.get_data(user_id, data_id).get("data")
+        data = DB.get_data(user_id, data_id)
     elif data_type == "temporary":
-        data = DB.get_temporary_data(user_id, data_id).get("data")
+        session_id = mongo_id(session["sid"])
+        data = DB.get_temporary_data(user_id, session_id, data_id)
 
     if data:
-        bkdiv, bkscript = get_resources(data)
+        bkdiv, bkscript = get_resources(data["data"])
         return render_template(
             "plot.html",
             bkdiv=bkdiv,
@@ -152,8 +153,9 @@ def analyze():
             "temperature": temperature
         })
         user_id = mongo_id(current_user.id)
+        session_id = mongo_id(session["sid"])
         data_count = DB.get_data_count(user_id)
-        data_id = DB.upload_data(user_id, params)
+        data_id = DB.upload_data(user_id, session_id, params)
         if data_id:
             params["data_id"] = nicefy(data_id)
             if data_count < 4:
@@ -216,7 +218,8 @@ def save():
         return json.dumps(result)
     else:
         data_id = mongo_id(request.form.get("data_id"))
-        new_id = DB.save_data(user_id, data_id)
+        session_id = mongo_id(session["sid"])
+        new_id = DB.save_data(user_id, session_id, data_id)
         if new_id:
             result["success"] = "The analyzed data were saved successfully! You may see the saved data by navigating to your account."
             return json.dumps(result)
@@ -275,7 +278,7 @@ def signin():
                                     db_user['hashed']):
                 user = User(db_user["email"])
                 login_user(user, remember=True)
-                session['sid'] = nicefy(mongo_id())
+                session["sid"] = nicefy(mongo_id())
                 return redirect_back("index")
             else:
                 form.email.errors = []
@@ -289,13 +292,9 @@ def signin():
 @login_required
 def signout():
     user_id = mongo_id(current_user.id)
-    DB.delete_temporay_data(user_id)
-    print("********** singnout before ************")
-    print(session)
+    session_id = mongo_id(session["sid"])
+    DB.delete_temporay_data(user_id, session_id)
     logout_user()
-    print("********** singnout after ************")
-    print(session)
-    print("**************************************")
     return redirect_back("index")
 
 
