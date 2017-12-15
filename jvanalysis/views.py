@@ -158,12 +158,12 @@ def analyze():
         data_id = DB.upload_data(user_id, session_id, params)
         if data_id:
             params["data_id"] = nicefy(data_id)
-            if data_count <= 5:
+            if data_count < 5:
                 params["success"] = "Data were uploaded and analyzed successfully! You may save the data to your account."
                 return json.dumps(params)
             else:
-                params["warning"] = """Data were uploaded and analyzed successfully!
-                                    However, you can't save the data to your account since you have already saved five data."
+                params["warning"] = """Data were uploaded and analyzed successfully;
+                                    however, you can't save the data to your account since you have already saved five data."
                                     You may navigate to your account to see your saved data."""
                 return json.dumps(params)
         return json.dumps({
