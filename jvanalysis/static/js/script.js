@@ -929,8 +929,9 @@ function viewSavedData() {
                 loadPlot('persistent', data_id);
                 // show results
                 $('#sample-name').text(data.sample_name);
-                $('#area').text(data.area);
-                $('#temperature').text(data.temperature);
+                $('#area').text(numeral(data.area).format('0.00'));
+                $('#temperature').text(numeral(data.temperature).format('0.0'));
+                $('#measured_on').text(data.measured_on.slice(0, 16));
                 $('#results').show();
             }
         })

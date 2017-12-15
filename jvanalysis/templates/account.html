@@ -16,12 +16,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for data in saved_data %}
+                    {% for edata in saved_data %}
                     <tr>
                         <td>{{ loop.index }}</td>
-                        <td class="text-left">{{ data.data.sample_name }}</td>
-                        <td>{{ data.analyzed_on|nicedate }}</td>
-                        <td><a id="{{ data['_id']|nicefy }}" class="view-result" href="#">✔</a>{% if regular %}&nbsp;&nbsp;<a class="delete-result" aria-label="Close" href="#">❌</a>{% endif %}</td>
+                        <td class="text-left">{{ edata.data.sample_name }}</td>
+                        <td>{{ edata.data.analyzed_on|nicedate }}</td>
+                        <td><a id="{{ edata['_id']|nicefy }}" class="view-result" href="#">✔</a>{% if regular %}&nbsp;&nbsp;<a class="delete-result" aria-label="Close" href="#">❌</a>{% endif %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -39,7 +39,7 @@
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-12">
-                <h5 class="text-center text-muted">Result for <span id="sample-name"></span> [area: <span id="area"></span> cm<sup>2</sup> &amp; temperature: <span id="temperature"></span> <sup>o</sup>C]</h5>
+                <h5 class="text-center text-muted">Result for <span id="sample-name"></span> [area: <span id="area"></span> cm<sup>2</sup> &amp; temperature: <span id="temperature"></span> <sup>o</sup>C] measured on <span id="measured_on"></span>.</h5>
             </div>
         </div>
         <div class="row">

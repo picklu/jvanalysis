@@ -51,14 +51,14 @@ class DBHelper(object):
         return self.users.find_one({"email": email})
     
     def upload_data(self, user_id, sid, data):
-        analyzed_on=datetime.utcnow()
+        data["analyzed_on"] = datetime.utcnow()
         old_data = self.get_temporary_data(user_id, sid)
         data_id = None
         if old_data:
             data_id = old_data[0]["_id"]
-            self.tempdata.update({"_id": data_id, "user_id": user_id, "sid": sid}, {"$set": {"analyzed_on": analyzed_on, "data": data}})
+            self.tempdata.update({"_id": data_id, "user_id": user_id, "sid": sid}, {"$set": {"data": data}})
         else:
-            data_id = self.tempdata.insert({"user_id": user_id, "sid": sid, "analyzed_on": analyzed_on, "data": data})
+            data_id = self.tempdata.insert({"user_id": user_id, "sid": sid, "data": data})
         return data_id
     
     def get_temporary_data(self, user_id, sid, data_id=None):
@@ -78,7 +78,6 @@ class DBHelper(object):
             fields = {}
             fields["_id"] = data_id
             fields["user_id"] = user_id
-            fields["analyzed_on"] = data["analyzed_on"]
             fields["data"] = data["data"]
             new_id = self.data.insert(fields)
             return new_id
@@ -88,7 +87,7 @@ class DBHelper(object):
         
     def get_all_data(self, user_id):
         data = list(self.data.find({"user_id": user_id}, 
-            {"_id":1, "analyzed_on":1, "data.sample_name": 1, "data.area": 1, "data.temperature": 1}))
+            {"_id":1, "data.analyzed_on":1, "data.sample_name": 1, "data.area": 1, "data.temperature": 1}))
         return data
     
     def has_sample_name(self, user_id, sample_name):
