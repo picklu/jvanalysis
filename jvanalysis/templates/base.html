@@ -21,7 +21,7 @@
     <header class="header clearfix bg-dark fixed-top">
         <div class="container">
             <nav class="navbar navbar-expand-md navbar-dark">
-                <h3><a class="navbar-brand text-muted" href="{{ url_for('index') }}">jVAnalysis</a></h3>
+                <h3><a class="navbar-brand {{ 'text-muted' if title else 'active' }}" href="{{ url_for('index') }}">{{ 'Home' if title else 'jVAnalysis' }}</a></h3>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
