@@ -1037,6 +1037,10 @@ function deleteSavedData() {
 }
 
 $(function(){
+    $('.carousel').carousel({
+        interval: 2000
+    });
+    
     $('body').on('click', '.close', function() {
         $('#lead-button').addClass('show');
     });
