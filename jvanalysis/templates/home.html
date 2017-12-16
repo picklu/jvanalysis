@@ -1,7 +1,7 @@
 {% extends "base.html" %}
     
 {% block jumbotron %}
-<div class="jumbotron">
+<div class="jumbotron jumbotron-fluid">
   <div class="container">
     <h1 class="display-4">jVAnalysis</h1>
     <p class="lead">Analyze current density-voltage (<em>jV</em>) data of a <a href="{{ url_for('about') }}#dsscs">dye-sensitized solar cell (DSSC)</a> within a minute. Go to <a href="{{ url_for('analysis') }}">analysis</a>, upload your data, and submit; it is that simple!</p>
@@ -33,6 +33,7 @@
     {% endif %}
   
   </div>
+</div>
 </div>
 {% endblock %}
     
