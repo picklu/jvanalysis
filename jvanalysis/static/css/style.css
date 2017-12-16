@@ -4,6 +4,9 @@
     max-width: 50rem;
   }
 }
+.carousel-control-prev {
+  color: #bada55;
+}
 .navbar{
     position:relative;
 }
