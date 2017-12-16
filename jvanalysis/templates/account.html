@@ -6,7 +6,7 @@
         <button data-target="#uploaded-data" class="btn btn-block btn-outline-info" data-toggle="collapse">Uploaded Data</button>
         <div id="uploaded-data" class="table-responsive collapse show">
             {% if saved_data %}
-            <table id="saved-data" class="table table-striped text-center">
+            <table id="saved-data" class="table table-hover text-center">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -18,9 +18,9 @@
                 <tbody>
                     {% for edata in saved_data %}
                     <tr>
-                        <td>{{ loop.index }}</td>
-                        <td class="text-left">{{ edata.data.sample_name }}</td>
-                        <td>{{ edata.data.analyzed_on|nicedate }}</td>
+                        <td class="idx">{{ loop.index }}</td>
+                        <td class="snm text-left">{{ edata.data.sample_name }}</td>
+                        <td class="ad">{{ edata.data.analyzed_on|nicedate }}</td>
                         <td><a id="{{ edata['_id']|nicefy }}" class="view-result" href="#">✔</a>{% if regular %}&nbsp;&nbsp;<a class="delete-result" aria-label="Close" href="#">❌</a>{% endif %}</td>
                     </tr>
                     {% endfor %}

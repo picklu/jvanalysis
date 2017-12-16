@@ -958,25 +958,29 @@ function loadPlot(data_type, data_id) {
 }
 
 function viewSavedData() {
-    var $resultDiv = $('#results');
-    
     // hide result div
+    var $resultDiv = $('#results');
     if ($resultDiv.attr('hidden') == 'hidden') {
         $resultDiv.attr('hidden', false);
     }
     $resultDiv.hide();
     
+    // trigger click event for view-result
+    $('.idx, .snm, .ad').click(function(){
+        $(this).parent().find('.view-result').trigger('click');
+    });
+    
     $('.view-result').on('click', function(e) {
         e.preventDefault();
         var data_id = $(this).attr('id');
         var $row = $(this).parents(':eq(1)');
-        if ($row.hasClass('table-info')) {
-            $row.removeClass('table-info');
+        if ($row.hasClass('table-active')) {
+            $row.removeClass('table-active');
             $('#results').hide();
             return;
         }
-        $('#saved-data').find('tr').removeClass('table-info');
-        $row.addClass('table-info');
+        $('#saved-data').find('tr').removeClass('table-active');
+        $row.addClass('table-active');
         $.ajax({
                 method: "POST",
                 url: Flask.url_for("result"),
