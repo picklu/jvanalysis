@@ -1010,29 +1010,23 @@ function viewSavedData() {
     });
 }
 
-function deleteSavedData() {
-    var $resultDiv = $('#results');
-    
-    $('.delete-result').on('click', function(e) {
-        e.preventDefault();
-        var data_id = $(this).parent().find('.view-result').attr('id');
-        $.ajax({
-                method: "POST",
-                url: Flask.url_for("result"),
-                data: {data_id: data_id,
-                    action: 'delete'
-                },
-                dataType: "json"
-        })
-         .done(function(data) {
-            if (data.success) {
-                // reload page
-                location.reload();
-            }
-        })
-         .fail(function (jqXHR, status) {
-            console.log(jqXHR.statusText);
-        });
+function deleteSavedData(data_id) {
+    $.ajax({
+            method: "POST",
+            url: Flask.url_for("result"),
+            data: {data_id: data_id,
+                action: 'delete'
+            },
+            dataType: "json"
+    })
+     .done(function(data) {
+        if (data.success) {
+            // reload page
+            location.reload();
+        }
+    })
+     .fail(function (jqXHR, status) {
+        console.log(jqXHR.statusText);
     });
 }
 
@@ -1043,5 +1037,17 @@ $(function(){
     
     $('body').on('click', '.close', function() {
         $('#lead-button').addClass('show');
+    });
+    
+    $('#modal-yes-no').on('show.bs.modal', function (e) {
+        var $td = $(e.relatedTarget).parent('td').find('.view-result');
+        var data_id = $td.attr('id');
+        var $this = $(e.target);
+        $('.btn-yes').click(e, function() {
+            console.log($td);
+            console.log(data_id);
+            deleteSavedData(data_id);
+            $this.modal('hide');
+        });
     });
 });
