@@ -1,4 +1,6 @@
+from os import listdir
 from dateutil.parser import parse
+
 from flask import make_response
 from flask import render_template
 from flask import json
@@ -39,8 +41,11 @@ from jvanalysis.passwordhelper import PasswordHelper
 
 DB = DBHelper(app.config["DATABASE"])
 PH = PasswordHelper()
+FILES = listdir(app.config["DATA_PATH"])
+
 
 # ensure responses aren't cached
+# from cs50x finance
 if app.config["DEBUG"]:
     @app.after_request
     def after_request(response):
@@ -97,7 +102,8 @@ def about():
 @app.route("/how")
 def how():
     next = get_redirect_target()
-    return render_template("how.html", next=next, title="How")
+    regular = current_user.regular
+    return render_template("how.html", next=next, regular=regular, title="How")
 
 @app.route("/account")
 @login_required
@@ -230,7 +236,7 @@ def save():
 def analysis():
     next = get_redirect_target()
     regular = current_user.regular
-    return render_template("analysis.html", next=next, title="Analysis")
+    return render_template("analysis.html", next=next, regular=regular, files=FILES, title="Analysis")
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -319,7 +325,7 @@ def data(path):
     file_name = app.config['SAMPLE_DATA']
     sample_data = "No data found!"
     if file_name == path:
-        file_path = "data/" + file_name
+        file_path = "jvanalysis/static/data/" + file_name
         with open(file_path, "r") as f:
             sample_data = f.read()
     return render_template("data.html", sample_data=sample_data, 

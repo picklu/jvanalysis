@@ -6,6 +6,7 @@
         <button data-target="#how-tos" class="btn btn-block btn-info" data-toggle="collapse">How to?</button>
         <div id="how-tos" class="text-left alert-info collapse">
             <ul>
+                {% if regular %}
                 <li>Browse for a current-voltage data file.</li>
                 <li>Select a data file.</li>
                 <li>The data file must be of .txt/.csv extension.</li>
@@ -15,7 +16,11 @@
                 <li>Note that only <em>comma</em>, <em>semicolon</em>, and <em>tab</em> delimiters are supported by the parser.</li>
                 <li>You don't need to set the delimiter; however, if your data is <em>space</em> delimitted then you may do so.</li>
                 <li>Once the file is loaded, you may check if the data columns have been identified properly.</li>
-                <li>You may see a <a href="{{ url_for('data', path='sample_data.txt') }}" target="_blank">example data file</a> to learn how your data file should be formatted.</li>
+                <li>You may see a <a href="{{ url_for('data', path='test_data_1.txt') }}" target="_blank">example data file</a> to learn how your data file should be formatted.</li>
+                {% else %}
+                <li>Select a data file.</li>
+                <li>Load the data file.</li>
+                {% endif %}
                 <li>You may update the data attributes: sample name, measurement date, active area of the cell, and temperature.</li>
                 <li>If everything is set then hit the upload button and see the analysis result.</li>
                 <li>You may save the data to your account to see the results later.</li>
@@ -49,6 +54,7 @@
 </div>
 <div class="row">
     <div class="col-md-12">
+        {% if regular %}
         <div class="form-row">
             <div class="form-group col-md-8">
                 <label class="custom-file">
@@ -66,16 +72,33 @@
                 </select>
             </div>
         </div>
+        {% else %}
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon3">{{ request.url_root }}data/</span>
+                        <select id="basic-url" name="filename" class="form-control" aria-describedby="basic-addon3">
+                            {% for file in files %}
+                            <option name="filename" value="{{ file }}">{{ file }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <input id="data-url" class="btn btn-block btn-outline-info" type="submit" value="Load">
+                </div>
+            </div>
+        {% endif %}
         <form id="analyze" action="{{ url_for('analyze') }}" hidden="hidden" method="POST" data-toggle="validator" role="form">
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="sample-name">Sample Name</label>
-                    <input id="data-name" class="form-control" name="sample-name" type="text" placeholder="test-data-sample-01" data-minlength="5" data-remote-error="This name is already used!" data-remote="{{ url_for('validator') }}" required>
+                    <input id="data-name" class="form-control" name="sample-name" type="text" placeholder="test-data-sample-01" data-minlength="5" data-remote-error="This name is already used!" data-remote="{{ url_for('validator') }}" value="test_data_01" required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="datepicker">Measured Date</label>
-                    <input id="datepicker" class="form-control" name="measured-date" type="text" readonly>
+                    <input id="datepicker" class="form-control" name="measured-date" type="text" required>
                     <div class="help-block with-errors"></div>
                 </div>
                 <div class="form-group col-md-2">
@@ -90,7 +113,7 @@
                 </div>
                 <div class="form-group col-md-2">
                      <label for="analyze-btn">&nbsp;</label>
-                    <input id="analyze-btn" class="btn btn-block btn-info" type="submit" value="Analyze">
+                    <input id="analyze-btn" class="btn btn-block btn-outline-info" type="submit" value="Analyze">
                 </div>
             </div>
         </form>
@@ -174,7 +197,8 @@
         analyzeData();
         saveData();
         // event handlers for  data table
-        $('#data-file').on('change', uploadFile);
+        $('#data-file').on('change', uploadFromFile);
+        $('#data-url').on('click', uploadFromURL);
         $('#delimiter').on('change', reParseData);
         $('#datepicker').val($.datepicker.formatDate('dd-mm-yy', new Date()))
                         .datepicker({ 

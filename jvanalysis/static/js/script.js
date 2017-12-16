@@ -10,7 +10,7 @@ var jvData = {};
 * Upload text or csv file
 * triggered when a file is slected
 **********************************/
-function uploadFile() {
+function uploadFromFile() {
     var message;
     var alertType;
     var fileObject = $('#data-file').prop('files');
@@ -93,6 +93,70 @@ function uploadFile() {
         alertTable(message, alertType);
         $('.custom-file-control').text('Choose file ...');
     }
+}
+
+/****************************************
+* Upload remote data file
+* triggered when a load button is clicked
+****************************************/
+function uploadFromURL() {
+    var message;
+    var alertType;
+    var $tableContainer = $('#table-container');
+    var $formAnalyze = $('#analyze');
+    var $resultDiv = $('#results');
+    
+    // reset jvData
+    jvData = {};
+    
+    // hide anlyze form
+    if ($formAnalyze.attr('hidden') == 'hidden') {
+        $formAnalyze.attr('hidden', false);
+    }
+    $formAnalyze .hide();
+    
+    // hide result div
+    if ($resultDiv.attr('hidden') == 'hidden') {
+        $resultDiv.attr('hidden', false);
+    }
+    $resultDiv.hide();
+    
+    // hide table container
+    if ($tableContainer.attr('hidden') == 'hidden') {
+        $tableContainer.attr('hidden', false);
+    }
+    $tableContainer.hide();
+    isTableVisible = false;
+    
+    var filename = 'data/' + $('#basic-url').val();
+    var url = Flask.url_for('static', {filename: filename});
+    Papa.parse(url, {
+    	download: true,
+    	complete: function(results) {
+    	    jvData.jv = results.data;
+    		
+    		// show table data info
+            if (jvData.jv.length) {
+                alertType = 'success';
+                message = getDataInfo();
+                $('#analyze').show();
+                
+                // show ajax loader in the table container
+                $tableContainer.html(getAjaxLoader());
+                
+                // show table
+                $tableContainer.show();
+                isTableVisible = true;
+                showData(jvData.jv);
+                alertTable(message, alertType, true);
+            }
+            else {
+                alertType = 'fail';
+                message = 'There is no data!';
+                alertTable(message, alertType);
+            }
+    	}
+    });
 }
 
 /*********************************
