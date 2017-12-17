@@ -1,7 +1,7 @@
 # analysis.py
 #
 # This script is based on the paper
-# Exact analytical analysis of current densityâ€“voltage curves
+# Exact analytical analysis of current density-voltage curves
 # of dye-sensitized solar cells
 # by sarker et al.,
 # source: https://doi.org/10.1016/j.solener.2015.03.009
@@ -325,17 +325,25 @@ class Analysis(object):
         return self.constraintY - self.calculate_jcell(self.constraintX,
                                                        params)
 
-    def fit_free(self, constraintXy=([], [])):
+    def _fit_free(self, constraintXy=([], [])):
         """ least square fit of the experimental data to the diode model equation
 
         returns fit parameters
         """
         p0 = self._get_model_params()
         params = leastsq(self._residuals, p0, args=(self.x, self.y))
+        return params
+    
+    def fit_free(self, constraintXy=([], [])):
+        """ least square fit of the experimental data to the diode model equation
+
+        returns fit parameters
+        """
+        params = self._fit_free(constraintXy=([], []))
         return model_params(*params[0])
     
 
-    def fit_bounded(self, bound_limit=0.10, constraintXy=([], [])):
+    def _fit_bounded(self, bound_limit=0.10, constraintXy=([], [])):
         """ least square fit of the experimental data to the diode model equation
         bounds and constraints can be used
         
@@ -357,6 +365,10 @@ class Analysis(object):
                    Rs * (1 + bound_limit / 2)), (Rsh * (1 - bound_limit / 2),
                                                  Rsh * (1 + bound_limit / 2))]
         params = fmin_slsqp(self._sum_residuals, p0, f_ieqcons=self._constraints, bounds=bounds)
+        return params
+    
+    def fit_bounded(self, bound_limit=0.10, constraintXy=([], [])):
+        params = self._fit_bounded(bound_limit=0.10, constraintXy=([], []))
         return model_params(*params)
 
     def display_model_params(self, bound_limit=0.10):
