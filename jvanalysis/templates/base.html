@@ -102,5 +102,26 @@
     <!-- custom js script -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
     {%- block customjs -%}{% endblock %}
+    
+    <!-- Modal start -->
+    <div class="modal fade" id="modal-yesno" tabindex="-1" role="dialog" aria-labelledby="modal-yesno-label" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-yesno-label">Delete data</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            The selected data will be deleted. Do you want to proceed?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info" data-dismiss="modal">No</button>
+            <button type="button" class="btn btn-danger btn-yes">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- Modal end -->
 </body>
 </html>

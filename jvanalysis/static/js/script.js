@@ -1043,21 +1043,27 @@ $(function(){
     });
     
     // modal for deleting data
-    $('#saved-data-yesno').on('show.bs.modal', function (e) {
+    $('#modal-yesno').on('show.bs.modal', function (e) {
         var $this = $(e.target);
-        var $td = $(e.relatedTarget).parent();
+        var $that = $(e.relatedTarget);
+        var $td = $that.parent();
+        var action = $that.attr('data-action');
         var data_id = $td.attr('id');
+        
+        console.log(action);
         modalData.row = $td.parent();
         modalData.row.addClass('table-warning');
         
         $('.btn-yes').click(e, function(evt) {
-            // modalData.data_id = data_id;
-            deleteSavedData(data_id);
+            if (action == 'delete-data') {
+                deleteSavedData(data_id);
+            }
+            
             $this.modal('hide');
         });
     });
     
-    $('#saved-data-yesno').on('hidden.bs.modal', function (e) {
+    $('#modal-yesno').on('hidden.bs.modal', function (e) {
         $('.btn-yes').off('click');
         modalData.row.removeClass('table-warning');
         modalData = {};
