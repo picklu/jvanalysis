@@ -21,7 +21,13 @@
                         <td class="idx">{{ loop.index }}</td>
                         <td class="snm text-left">{{ edata.data.sample_name }}</td>
                         <td class="ad">{{ edata.data.analyzed_on|nicedate }}</td>
-                        <td><a id="{{ edata['_id']|nicefy }}" class="view-result" href="#">✔</a>{% if regular %}&nbsp;&nbsp;<a aria-label="Close" href="#" data-toggle="modal" data-target="#modal-yes-no">❌</a>{% endif %}</td>
+                        <td id="{{ edata['_id']|nicefy }}">
+                            <a class="view-result" href="#">✔</a>
+                            {% if regular %}
+                            &nbsp;&nbsp;
+                            <a aria-label="Close" href="#" data-toggle="modal" data-target="#saved-data-yesno">❌</a>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -33,11 +39,11 @@
     </div>
 </div>
 <!-- Modal start -->
-<div class="modal fade" id="modal-yes-no" tabindex="-1" role="dialog" aria-labelledby="modal-yes-no-label" aria-hidden="true">
+<div class="modal fade" id="saved-data-yesno" tabindex="-1" role="dialog" aria-labelledby="saved-data-yesno-label" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modal-yes-no-label">Delete data</h5>
+        <h5 class="modal-title" id="saved-data-yesno-label">Delete data</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

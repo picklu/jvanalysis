@@ -4,6 +4,7 @@
 var contentEditable = [];
 var dataTableHeader = [];
 var isTableVisible = true;
+var modalData = {};
 var jvData = {};
 
 /*********************************
@@ -972,7 +973,7 @@ function viewSavedData() {
     
     $('.view-result').on('click', function(e) {
         e.preventDefault();
-        var data_id = $(this).attr('id');
+        var data_id = $(this).parent().attr('id');
         var $row = $(this).parents(':eq(1)');
         if ($row.hasClass('table-active')) {
             $row.removeClass('table-active');
@@ -1031,23 +1032,34 @@ function deleteSavedData(data_id) {
 }
 
 $(function(){
+    //  set carousel interval
     $('.carousel').carousel({
         interval: 2000
     });
     
+    // showing lead button/badge
     $('body').on('click', '.close', function() {
         $('#lead-button').addClass('show');
     });
     
-    $('#modal-yes-no').on('show.bs.modal', function (e) {
-        var $td = $(e.relatedTarget).parent('td').find('.view-result');
-        var data_id = $td.attr('id');
+    // modal for deleting data
+    $('#saved-data-yesno').on('show.bs.modal', function (e) {
         var $this = $(e.target);
-        $('.btn-yes').click(e, function() {
-            console.log($td);
-            console.log(data_id);
+        var $td = $(e.relatedTarget).parent();
+        var data_id = $td.attr('id');
+        modalData.row = $td.parent();
+        modalData.row.addClass('table-warning');
+        
+        $('.btn-yes').click(e, function(evt) {
+            // modalData.data_id = data_id;
             deleteSavedData(data_id);
             $this.modal('hide');
         });
+    });
+    
+    $('#saved-data-yesno').on('hidden.bs.modal', function (e) {
+        $('.btn-yes').off('click');
+        modalData.row.removeClass('table-warning');
+        modalData = {};
     });
 });
