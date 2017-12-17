@@ -334,6 +334,9 @@ function createTableRow(row, idx) {
         })
     }).append($('<span/>', {
             class: 'row-crossout cursor-pointer',
+            'data-action': 'delete-row',
+            'data-toggle': 'modal',
+            'data-target': '#modal-yesno',
             text: '\u274C'
         })).appendTo($tableRow);
     
@@ -358,6 +361,9 @@ function createTableRow(row, idx) {
             })
         ).append($('<span/>', {
             class: 'cell-crossout cursor-pointer',
+            'data-action': 'delete-cell',
+            'data-toggle': 'modal',
+            'data-target': '#modal-yesno',
             text: '\u274C'
             })
         ).appendTo($tableRow);
@@ -493,65 +499,60 @@ function updateContent(content) {
 * Delete a cell in the data table
 * invoked from showData
 ***********************************/
-function deleteCell() {
-    $('#table-container').on('click', '.cell-crossout', function() {
-        var $cell = $(this).parent();
-        var rowIndex = parseInt($cell.attr('row'), 10);
-        var colIndex = parseInt($cell.attr('col'), 10);
-        var message;
-        
-        // update parsed data 
-        jvData.jv[rowIndex].splice(colIndex, 1);
-        
-        // remove the cell
-        $cell.remove();
-        
-        // display message
-        message = getDataInfo();
-        message = 'Table cell at row# ' + (rowIndex + 1) + 
-            ' and column# ' + (colIndex + 1) +
-            ' has been deleted! ' + message;
-        alertTable(message, 'warning');
-    });
+function deleteCell($this) {
+    var $cell = $this.parent();
+    var rowIndex = parseInt($cell.attr('row'), 10);
+    var colIndex = parseInt($cell.attr('col'), 10);
+    var message;
+    
+    // update parsed data 
+    jvData.jv[rowIndex].splice(colIndex, 1);
+    
+    // remove the cell
+    $cell.remove();
+    
+    // display message
+    message = getDataInfo();
+    message = 'Table cell at row# ' + (rowIndex + 1) + 
+        ' and column# ' + (colIndex + 1) +
+        ' has been deleted! ' + message;
+    alertTable(message, 'warning');
 }
 
 /**********************************
 * Delete a row in the data table
 * invoked from showData
 ***********************************/
-function deleteRow() {
-    var $tableContainer = $('#table-container');
-    $tableContainer.on('click', '.row-crossout', function() {
-        var message;
-        var $row = $(this).parents(':eq(1)');
-        var rowIndex = parseInt($row.attr('row'), 10);
-        
-        // update parsed data
-        jvData.jv.splice(rowIndex, 1);
-        
-        // remove the row
-        $row.remove();
-        
-        // show data in a table
-        var alertType = jvData.jv.length ? 'success' : 'fail';
-        
-        if (alertType == 'success') {
-            // show ajax loader
-            $tableContainer.html(getAjaxLoader());
-            showData(jvData.jv); 
-            message = getDataInfo();
-            message = 'Table row at ' + (rowIndex + 1) + 
-                ' has been deleted! ' + message;
-            alertType = 'warning';
-        }
-        else if (alertType == 'fail') {
-            $('#table-container').html(null);
-            message = 'There is no data in the table!';
-        }
-        
-        alertTable(message, alertType);
-        return false;
-    });
+function deleteRow($this) {
+    var message;
+    var $row = $this.parents(':eq(1)');
+    var rowIndex = parseInt($row.attr('row'), 10);
+    
+    // update parsed data
+    jvData.jv.splice(rowIndex, 1);
+    
+    // remove the row
+    $row.remove();
+    
+    // show data in a table
+    var alertType = jvData.jv.length ? 'success' : 'fail';
+    
+    if (alertType == 'success') {
+        // show ajax loader
+        $('#table-container').html(getAjaxLoader());
+        showData(jvData.jv); 
+        message = getDataInfo();
+        message = 'Table row at ' + (rowIndex + 1) + 
+            ' has been deleted! ' + message;
+        alertType = 'warning';
+    }
+    else if (alertType == 'fail') {
+        $('#table-container').html(null);
+        message = 'There is no data in the table!';
+    }
+    
+    alertTable(message, alertType);
+    return false;
 }
 
 /**********************************
@@ -1042,30 +1043,46 @@ $(function(){
         $('#lead-button').addClass('show');
     });
     
+    // modal for deleting table row and cell
+    // $('#table-container').on('click', '.row-crossout, .cell-crossout', function() {
+    //     $('#modal-yesno').modal('toggle', $(this));
+    // });
+    
     // modal for deleting data
     $('#modal-yesno').on('show.bs.modal', function (e) {
+        modalData = {};
         var $this = $(e.target);
         var $that = $(e.relatedTarget);
         var $td = $that.parent();
         var action = $that.attr('data-action');
-        var data_id = $td.attr('id');
         
         console.log(action);
-        modalData.row = $td.parent();
-        modalData.row.addClass('table-warning');
+        
+        if (action == 'delete-data') {
+            modalData.row = $td.parent();
+            modalData.row.addClass('table-warning');
+            modalData.action = action;
+        }
         
         $('.btn-yes').click(e, function(evt) {
             if (action == 'delete-data') {
-                deleteSavedData(data_id);
+                deleteSavedData($td.attr('id'));
             }
-            
+            else if (action == 'delete-cell') {
+                deleteCell($that);
+            }
+            else if (action == 'delete-row') {
+                deleteRow($that);
+            }
             $this.modal('hide');
         });
     });
     
     $('#modal-yesno').on('hidden.bs.modal', function (e) {
         $('.btn-yes').off('click');
-        modalData.row.removeClass('table-warning');
+        if (modalData.action == 'delete-data') {
+            modalData.row.removeClass('table-warning');
+        }
         modalData = {};
     });
 });
