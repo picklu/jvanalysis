@@ -1043,11 +1043,6 @@ $(function(){
         $('#lead-button').addClass('show');
     });
     
-    // modal for deleting table row and cell
-    // $('#table-container').on('click', '.row-crossout, .cell-crossout', function() {
-    //     $('#modal-yesno').modal('toggle', $(this));
-    // });
-    
     // modal for deleting data
     $('#modal-yesno').on('show.bs.modal', function (e) {
         modalData = {};
