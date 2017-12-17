@@ -1051,12 +1051,21 @@ $(function(){
         var $td = $that.parent();
         var action = $that.attr('data-action');
         
-        console.log(action);
-        
-        if (action == 'delete-data') {
+        modalData.action = action;
+        if (action == 'delete-cell') {
+            $('.modal-title').text('Delete cell');
+            $('.modal-body').text('The selected cell will be deleted. Do you want to proceed?');
+            modalData.td = $td;
+            modalData.td.addClass('table-warning');
+        }
+        else {
+            if (action == 'delete-row') {
+                $('.modal-title').text('Delete row');
+                $('.modal-body').text('The selected row will be deleted. Do you want to proceed?');
+            }
             modalData.row = $td.parent();
             modalData.row.addClass('table-warning');
-            modalData.action = action;
+            
         }
         
         $('.btn-yes').click(e, function(evt) {
@@ -1075,7 +1084,10 @@ $(function(){
     
     $('#modal-yesno').on('hidden.bs.modal', function (e) {
         $('.btn-yes').off('click');
-        if (modalData.action == 'delete-data') {
+        if (modalData.action == 'delete-cell') {
+            modalData.td.removeClass('table-warning');
+        }
+        else {
             modalData.row.removeClass('table-warning');
         }
         modalData = {};
