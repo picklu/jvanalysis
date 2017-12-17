@@ -39,7 +39,7 @@ else:
 
 from jvanalysis.passwordhelper import PasswordHelper
 
-DB = DBHelper(app.config["DATABASE"])
+DB = DBHelper(app.config["MONGODB_URI"], app.config["DATABASE"])
 PH = PasswordHelper()
 FILES = listdir(app.config["DATA_PATH"])
 
@@ -167,7 +167,7 @@ def analyze():
                 return json.dumps(params)
             else:
                 params["warning"] = """Data were uploaded and analyzed successfully;
-                                    however, you can't save the data to your account since you have already saved five data."
+                                    however, you can't save the data to your account since you have already saved five data.
                                     You may navigate to your account to see your saved data."""
                 return json.dumps(params)
         return json.dumps({

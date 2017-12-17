@@ -2,16 +2,22 @@
 # Book: Flask: Building Python Web Services
 # By Gareth Dwyer, Shalabh Aggarwal, Jack Stouffer
 # *************************************************
+from jvanalysis import app
 from datetime import datetime
 from flask_pymongo import MongoClient
 
+def get_mongo_client():
+    db_host = app.config["MONGODB_URI"]
+    return MongoClient(app.config["MONGODB_URI"])
+
 class DBHelper(object):
-    def __init__(self, db):
-        client = MongoClient()
+    
+    def __init__(self, host, db_name):
+        client = MongoClient(host)
         self.client = client
-        self.users = client[db]['users']
-        self.data = client[db]['data']
-        self.tempdata = client[db]['tempdata']
+        self.users = client[db_name]['users']
+        self.data = client[db_name]['data']
+        self.tempdata = client[db_name]['tempdata']
 
     def add_user(self, email, salt=None, hashed=None,
                  signedup_on=datetime.utcnow(),

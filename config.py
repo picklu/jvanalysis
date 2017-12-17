@@ -2,9 +2,11 @@ from os import environ, path
 
 class Config(object):
     """Base config class"""
-    DATA_PATH = path.join(path.dirname(__file__), "jvanalysis/static/data")
+    DATA_PATH = path.join(path.dirname(path.abspath(__file__)), "jvanalysis/static/data")
     DATABASE = "jvanalysis"
     DEBUG = True
+    SESSION_PERMANENT = True
+    SESSION_USE_SIGNER = False
     TESTING = False
     GUEST_USER_EMAIL = environ.get('GUEST_ID')
     GUEST_USER_PASSWORD = environ.get('GUEST_PASSWORD')
@@ -15,17 +17,17 @@ class Config(object):
     SESSION_MONGODB_DB = 'jvanalysis_session'
     SESSION_MONGODB_COLLECT = 'session'
     SESSION_KEY_PREFIX = 'jV'
-    SESSION_PERMANENT = True
-    SESSION_USE_SIGNER = False
+
 
 class ProductionConfig(Config):
     """Production specific config"""
     DEBUG = False
+    MONGODB_URI = environ.get('MONGODB_URI')
     SECRET_KEY = open('secret.key').read()
 
 class DevelopmentConfig(Config):
     """Development environment specific config"""
-    # DATABASE = None
     DEBUG = True
     TESTING = True
+    MONGODB_URI = 'localhost:27017'
     SECRET_KEY = 'd908eb90af7ac0e79c2c61b8fe60c33e'
