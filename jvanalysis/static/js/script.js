@@ -60,6 +60,8 @@ function uploadFromFile() {
                     $('#analyze').show();
                     // show ajax loader in the table container
                     $tableContainer.html(getAjaxLoader());
+                    // hide file uploader
+                    $('#file-uploader').hide();
                     // show table
                     $tableContainer.show();
                     isTableVisible = true;
@@ -141,10 +143,10 @@ function uploadFromURL() {
                 alertType = 'success';
                 message = getDataInfo();
                 $('#analyze').show();
-                
                 // show ajax loader in the table container
                 $tableContainer.html(getAjaxLoader());
-                
+                // hide file uploader
+                $('#file-uploader').hide();
                 // show table
                 $tableContainer.show();
                 isTableVisible = true;
@@ -825,6 +827,8 @@ function analyzeData() {
                     showPVParams(data);
                     showModelParams(data);
                     loadPlot('temporary', data_id);
+                    // show file uploader
+                    $('#file-uploader').show();
                     // show results
                     $('.sample-name').text(data.sample_name);
                     $('.area').text(data.area);
