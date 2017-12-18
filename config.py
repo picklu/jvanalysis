@@ -6,7 +6,7 @@ SECRET_PATH = path.join(CURRENT_PATH, "secret.key")
 
 class Config(object):
     """Base config class"""
-    DATA_FILES = listdir(DATA_PATH)
+    DATA_FILES = sorted(listdir(DATA_PATH))
     DATABASE = "jvanalysis"
     DEBUG = True
     SESSION_PERMANENT = True
