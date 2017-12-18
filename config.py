@@ -21,12 +21,12 @@ class Config(object):
     SESSION_MONGODB_DB = 'jvanalysis_session'
     SESSION_MONGODB_COLLECT = 'session'
     SESSION_KEY_PREFIX = 'jV'
+    URI_MONGODB = environ.get('MONGODB_URI')
 
 
 class ProductionConfig(Config):
     """Production specific config"""
     DEBUG = False
-    MONGODB_URI = environ.get('MONGODB_URI')
     SECRET_KEY = open(SECRET_PATH).read()
 
 class DevelopmentConfig(Config):

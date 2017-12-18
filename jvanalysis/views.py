@@ -38,7 +38,7 @@ else:
 
 from jvanalysis.passwordhelper import PasswordHelper
 
-DB = DBHelper(app.config["MONGODB_URI"], app.config["DATABASE"])
+DB = DBHelper(app.config["URI_MONGODB"], app.config["DATABASE"])
 PH = PasswordHelper()
 FILES = app.config["DATA_FILES"]
 

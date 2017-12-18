@@ -55,7 +55,7 @@
 <div class="row">
     <div class="col-md-12">
         {% if regular %}
-        <div class="form-row">
+        <div id="file-uploader" class="form-row">
             <div class="form-group col-md-8">
                 <label class="custom-file">
                   <input type="file" id="data-file" accept=".txt,.csv" class="custom-file-input">
@@ -73,7 +73,7 @@
             </div>
         </div>
         {% else %}
-            <div class="form-row">
+            <div id="file-uploader" class="form-row">
                 <div class="form-group col-md-8">
                     <div class="input-group">
                         <span class="input-group-addon" id="basic-addon3">url: ../jvanalysis/data/</span>
