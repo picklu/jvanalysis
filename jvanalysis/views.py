@@ -346,3 +346,9 @@ def validator():
     resp = make_response(message, status)
     resp.headers["X-data-name-validator"] = message
     return resp
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    form = SigninForm()
+    return render_template('404.html', signin_form=form, title="Page Not Found"), 404

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block jumbotron %}
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">Page not found!</h1>
+        <p class="lead">You may navigate to the <a href="{{ url_for('index') }}">home</a> page</p>
+        <p class="lead">or the <a href="{{ url_for('about') }}">about</a> page</p>
+        <p class="lead">if you want.</p>
+    </div>
+</div>
+{% endblock %}
