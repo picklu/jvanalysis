@@ -1,4 +1,3 @@
-from os import listdir
 from dateutil.parser import parse
 
 from flask import make_response
@@ -41,7 +40,7 @@ from jvanalysis.passwordhelper import PasswordHelper
 
 DB = DBHelper(app.config["MONGODB_URI"], app.config["DATABASE"])
 PH = PasswordHelper()
-FILES = listdir(app.config["DATA_PATH"])
+FILES = app.config["DATA_FILES"]
 
 
 # ensure responses aren't cached

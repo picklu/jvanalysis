@@ -1,8 +1,12 @@
-from os import environ, path
+from os import environ, listdir, path
+
+CURRENT_PATH = path.dirname(path.abspath(__file__))
+DATA_PATH = path.join(CURRENT_PATH, "jvanalysis/static/data")
+SECRET_PATH = path.join(CURRENT_PATH, "secret.key")
 
 class Config(object):
     """Base config class"""
-    DATA_PATH = path.join(path.dirname(path.abspath(__file__)), "jvanalysis/static/data")
+    DATA_FILES = listdir(DATA_PATH)
     DATABASE = "jvanalysis"
     DEBUG = True
     SESSION_PERMANENT = True
@@ -23,7 +27,7 @@ class ProductionConfig(Config):
     """Production specific config"""
     DEBUG = False
     MONGODB_URI = environ.get('MONGODB_URI')
-    SECRET_KEY = open('secret.key').read()
+    SECRET_KEY = open(SECRET_PATH).read()
 
 class DevelopmentConfig(Config):
     """Development environment specific config"""
