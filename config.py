@@ -3,6 +3,7 @@ from os import environ, listdir, path
 CURRENT_PATH = path.dirname(path.abspath(__file__))
 DATA_PATH = path.join(CURRENT_PATH, "jvanalysis/static/data")
 SECRET_PATH = path.join(CURRENT_PATH, "secret.key")
+SAMPLE_DATA_PATH = path.join(DATA_PATH, "sample_data.txt")
 
 class Config(object):
     """Base config class"""
@@ -14,7 +15,7 @@ class Config(object):
     TESTING = False
     GUEST_USER_EMAIL = environ.get('GUEST_ID')
     GUEST_USER_PASSWORD = environ.get('GUEST_PASSWORD')
-    SAMPLE_DATA = "sample_data.txt"
+    SAMPLE_DATA = SAMPLE_DATA_PATH
     SECRET_KEY = 'A really secret string generated randomly'
     SESSION_TYPE = 'mongodb'
     SESSION_MONGODB = None
