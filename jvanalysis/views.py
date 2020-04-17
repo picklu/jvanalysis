@@ -8,10 +8,12 @@ from flask import redirect
 from flask import session
 from flask import url_for
 
+
 from flask_login import current_user
 from flask_login import login_required
 from flask_login import login_user
 from flask_login import logout_user
+from flask_pymongo import PyMongo
 
 from jvanalysis import app
 from jvanalysis import login_manager
@@ -31,14 +33,11 @@ from jvanalysis.jvplot import get_resources
 
 from jvanalysis.user import User
 
-if app.config.get("DATABASE"):
-    from jvanalysis.dbhelper import DBHelper
-else:
-    from jvanalysis.mockdbhelper import MockDBHelper as DBHelper
-
+from jvanalysis.dbhelper import DBHelper
 from jvanalysis.passwordhelper import PasswordHelper
 
-DB = DBHelper(app.config["URI_MONGODB"], app.config["DATABASE"])
+db_client = PyMongo(app)
+DB = DBHelper(db_client)
 PH = PasswordHelper()
 FILES = app.config["DATA_FILES"]
 
