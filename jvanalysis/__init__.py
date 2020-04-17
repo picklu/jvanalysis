@@ -12,7 +12,7 @@ from jvanalysis.jvhelper import nicefy
 
 app = Flask(__name__)
 app.url_map.converters['objectid'] = ObjectIDConverter
-app.config.from_object('config.DevelopmentConfig')
+app.config.from_object('config.ProductionConfig')
 app.config["SESSION_MONGODB"] = MongoClient(app.config["MONGO_SESSION_URI"])
 app.jinja_env.filters['nicefy'] = nicefy
 app.jinja_env.filters['nicedate'] = nice_date
