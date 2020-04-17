@@ -1,38 +1,14 @@
 from dateutil.parser import parse
-
-from flask import make_response
-from flask import render_template
-from flask import json
-from flask import request
-from flask import redirect
-from flask import session
-from flask import url_for
-
-
-from flask_login import current_user
-from flask_login import login_required
-from flask_login import login_user
-from flask_login import logout_user
+from flask import (make_response, render_template, json, request, redirect,
+                   session, url_for)
+from flask_login import (current_user, login_required, login_user, logout_user)
 from flask_pymongo import PyMongo
-
-from jvanalysis import app
-from jvanalysis import login_manager
-
-from jvanalysis.forms import SigninForm
-from jvanalysis.forms import SignupForm
-
-from jvanalysis.jvhelper import get_redirect_target
-from jvanalysis.jvhelper import mongo_id
-from jvanalysis.jvhelper import nicefy
-from jvanalysis.jvhelper import redirect_back
-from jvanalysis.jvhelper import is_safe_url
-from jvanalysis.jvhelper import uglyfy
-
-from jvanalysis.jvplot import get_analyzed_params
-from jvanalysis.jvplot import get_resources
-
+from jvanalysis import app, login_manager
+from jvanalysis.forms import SigninForm, SignupForm
+from jvanalysis.jvhelper import (get_redirect_target, mongo_id, nicefy,
+                                 redirect_back, is_safe_url, uglyfy)
+from jvanalysis.jvplot import get_analyzed_params, get_resources
 from jvanalysis.user import User
-
 from jvanalysis.dbhelper import DBHelper
 from jvanalysis.passwordhelper import PasswordHelper
 
@@ -41,16 +17,18 @@ DB = DBHelper(db_client)
 PH = PasswordHelper()
 FILES = app.config["DATA_FILES"]
 
-
 # ensure responses aren't cached
 # from cs50x finance
 if app.config["DEBUG"]:
+
     @app.after_request
     def after_request(response):
-        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers[
+            "Cache-Control"] = "no-cache, no-store, must-revalidate"
         response.headers["Expires"] = 0
         response.headers["Pragma"] = "no-cache"
         return response
+
 
 @login_manager.user_loader
 def load_user(email):
@@ -93,8 +71,10 @@ def about():
         form = None
     else:
         form = SigninForm()
-    return render_template("about.html", next=next, 
-                            signin_form=form, title="About")
+    return render_template("about.html",
+                           next=next,
+                           signin_form=form,
+                           title="About")
 
 
 @app.route("/how")
@@ -103,6 +83,7 @@ def how():
     regular = current_user.regular
     return render_template("how.html", next=next, regular=regular, title="How")
 
+
 @app.route("/account")
 @login_required
 def account():
@@ -110,9 +91,11 @@ def account():
     regular = current_user.regular
     user_id = mongo_id(current_user.id)
     saved_data = DB.get_all_data(user_id)
-    return render_template("account.html", next=next, 
-                            saved_data=saved_data, regular=regular, 
-                            title="Account")
+    return render_template("account.html",
+                           next=next,
+                           saved_data=saved_data,
+                           regular=regular,
+                           title="Account")
 
 
 @app.route("/plot/<string:data_type>/<objectid:data_id>")
@@ -127,11 +110,11 @@ def plot(data_type, data_id):
 
     if data:
         bkdiv, bkscript = get_resources(data["data"])
-        return render_template(
-            "plot.html",
-            bkdiv=bkdiv,
-            bkscript=bkscript,
-            title="plot|" + nicefy(data_id) if data_id else "plot")
+        return render_template("plot.html",
+                               bkdiv=bkdiv,
+                               bkscript=bkscript,
+                               title="plot|" +
+                               nicefy(data_id) if data_id else "plot")
     else:
         return json.dumps({"error": "Data not found!"})
 
@@ -161,18 +144,20 @@ def analyze():
         if data_id:
             params["data_id"] = nicefy(data_id)
             if data_count < 5:
-                params["success"] = "Data were uploaded and analyzed successfully! You may save the data to your account."
+                params[
+                    "success"] = "Data were uploaded and analyzed successfully! You may save the data to your account."
                 return json.dumps(params)
             else:
-                params["warning"] = """Data were uploaded and analyzed successfully;
+                params[
+                    "warning"] = """Data were uploaded and analyzed successfully;
                                     however, you can't save the data to your account since you have already saved five data.
                                     You may navigate to your account to see your saved data."""
                 return json.dumps(params)
-        return json.dumps({
-            "fail": "Failed to save data to the temporary database."
-        })
+        return json.dumps(
+            {"fail": "Failed to save data to the temporary database."})
     return json.dumps({
-        "fail": "Failed to analyze data. Please check if the data headers have been identified correctly."
+        "fail":
+        "Failed to analyze data. Please check if the data headers have been identified correctly."
     })
 
 
@@ -182,31 +167,27 @@ def result():
     user_id = mongo_id(current_user.id)
     data_id = request.form.get("data_id")
     action = request.form.get("action")
-    
+
     if data_id:
         data_id = mongo_id(data_id)
     else:
         return json.dumps({"fail": "Invalid request."})
-    
+
     if action == "view":
-            data = DB.get_data(user_id, data_id)
-            if data:
-                params = data["data"]
-                params["success"] = "Successfully retrieved the data."
-                return json.dumps(params)
-            return json.dumps({
-                "fail": "Failed to retrieve data from the database."
-            })
-        
+        data = DB.get_data(user_id, data_id)
+        if data:
+            params = data["data"]
+            params["success"] = "Successfully retrieved the data."
+            return json.dumps(params)
+        return json.dumps(
+            {"fail": "Failed to retrieve data from the database."})
+
     elif action == "delete":
         deleted = DB.delete_data(user_id, data_id)
         if deleted:
-            return json.dumps({
-                "success": "Successfully deleted the data."
-            })
-        return json.dumps({
-            "fail": "Failed to delete the data from the database."
-        })
+            return json.dumps({"success": "Successfully deleted the data."})
+        return json.dumps(
+            {"fail": "Failed to delete the data from the database."})
 
 
 @app.route("/save", methods=["POST"])
@@ -216,14 +197,16 @@ def save():
     data_count = DB.get_data_count(user_id)
     result = {}
     if data_count >= 5:
-        result["fail"] = "Sorry! You can't save more than five analyzed data at the moment."
+        result[
+            "fail"] = "Sorry! You can't save more than five analyzed data at the moment."
         return json.dumps(result)
     else:
         data_id = mongo_id(request.form.get("data_id"))
         session_id = mongo_id(session["sid"])
         new_id = DB.save_data(user_id, session_id, data_id)
         if new_id:
-            result["success"] = "The analyzed data were saved successfully! You may see the saved data by navigating to your account."
+            result[
+                "success"] = "The analyzed data were saved successfully! You may see the saved data by navigating to your account."
             return json.dumps(result)
         result["fail"] = "Failed to save the analyzed data."
         return json.dumps(result)
@@ -234,14 +217,19 @@ def save():
 def analysis():
     next = get_redirect_target()
     regular = current_user.regular
-    return render_template("analysis.html", next=next, regular=regular, files=FILES, title="Analysis")
+    return render_template("analysis.html",
+                           next=next,
+                           regular=regular,
+                           files=FILES,
+                           title="Analysis")
 
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "GET":
-        return render_template(
-            "signup.html", signup_form=SignupForm(), title="Sign Up")
+        return render_template("signup.html",
+                               signup_form=SignupForm(),
+                               title="Sign Up")
     form = SignupForm(request.form)
     if form.validate():
         email = form.email.data
@@ -270,8 +258,10 @@ def signin():
             messages = json.loads(uglyfy(success))
             form.message = messages["message"]
             form.email.data = messages["id"]
-        return render_template("signin.html", next=next, 
-                                signin_form=form, title="Sign In")
+        return render_template("signin.html",
+                               next=next,
+                               signin_form=form,
+                               title="Sign In")
     # else the method must be post
     form = SigninForm(request.form)
     if form.validate():
@@ -325,8 +315,9 @@ def data(path):
     if path in file_name:
         with open(file_name, "r") as f:
             sample_data = f.read()
-    return render_template("data.html", sample_data=sample_data, 
-                            title="Sample Data")
+    return render_template("data.html",
+                           sample_data=sample_data,
+                           title="Sample Data")
 
 
 @app.route("/validator")
@@ -349,10 +340,14 @@ def validator():
 @app.errorhandler(404)
 def page_not_found(e):
     form = SigninForm()
-    return render_template('404.html', signin_form=form, title="Page Not Found"), 404
+    return render_template('404.html',
+                           signin_form=form,
+                           title="Page Not Found"), 404
 
 
 @app.errorhandler(500)
 def internal_error(e):
     form = SigninForm()
-    return render_template('500.html', signin_form=form, title="Internal Server Error"), 500
+    return render_template('500.html',
+                           signin_form=form,
+                           title="Internal Server Error"), 500

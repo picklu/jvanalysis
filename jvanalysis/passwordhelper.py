@@ -7,8 +7,8 @@ import os
 from base64 import b64encode
 from hashlib import sha512
 
-class PasswordHelper(object):
 
+class PasswordHelper(object):
     def get_hash(self, plain):
         return sha512(plain.encode('utf-8')).hexdigest()
 

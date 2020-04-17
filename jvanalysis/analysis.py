@@ -14,22 +14,22 @@ from scipy.optimize import leastsq, fmin_slsqp
 from scipy.special import lambertw
 from tabulate import tabulate
 
-
 # constants
 CHARGE_ELEM = 1.60217646e-19
 BOLTZMANN_CONST = 1.3806503e-23
+
 
 def model_params(*params):
     """ Returns a dictionary of model parameters
     """
     jph, jnot, ideality, rseries, rshunt = params
     return ({
-            "jph": jph * 1000, 
-            "jnot": jnot * 1000, 
-            "ideality": ideality, 
-            "rseries": rseries, 
-            "rshunt": rshunt
-            })
+        "jph": jph * 1000,
+        "jnot": jnot * 1000,
+        "ideality": ideality,
+        "rseries": rseries,
+        "rshunt": rshunt
+    })
 
 
 class AnalysisError(Exception):
@@ -39,16 +39,14 @@ class AnalysisError(Exception):
         expression  -- input expression in which the error occurred
         message     -- explanation of the error
     """
-
     def __init__(self, expression, message):
         self.expression = expression
         self.message = message
-        self.error = "%s: %s" %(expression, message)
+        self.error = "%s: %s" % (expression, message)
 
 
 class Analysis(object):
     """ Object for current density-voltage of dye-sensitized solar cells."""
-
     def __init__(self, data, area=0.25, temperature=25):
         """
         Takes file name of a current density-voltage (jV) data. 
@@ -158,9 +156,9 @@ class Analysis(object):
     def get_pv_params(self):
         """ returns photovoltaic parameters """
         return ({
-            "voc": self.voc, 
-            "jsc": self.jsc * 1000, 
-            "ff": self.ff, 
+            "voc": self.voc,
+            "jsc": self.jsc * 1000,
+            "ff": self.ff,
             "pec": self.eff
         })
 
@@ -258,14 +256,15 @@ class Analysis(object):
     def _get_model_params(self):
         """ returns major parameters involved in the doide model of DSSCs"""
         return (self.jph, self.jnot, self.ideality, self.rSeries, self.rShunt)
-    
+
     def get_model_params(self):
         """ returns major parameters involved in the doide model of DSSCs
         
         N.B.: The return value of jsc and jnot are in mA/cm2
         """
-        return model_params(self.jph, self.jnot, self.ideality, self.rSeries, self.rShunt)
-    
+        return model_params(self.jph, self.jnot, self.ideality, self.rSeries,
+                            self.rShunt)
+
     def get_data_points(self):
         """returns number of data points
         """
@@ -333,7 +332,7 @@ class Analysis(object):
         p0 = self._get_model_params()
         params = leastsq(self._residuals, p0, args=(self.x, self.y))
         return params
-    
+
     def fit_free(self, constraintXy=([], [])):
         """ least square fit of the experimental data to the diode model equation
 
@@ -341,7 +340,6 @@ class Analysis(object):
         """
         params = self._fit_free(constraintXy=([], []))
         return model_params(*params[0])
-    
 
     def _fit_bounded(self, bound_limit=0.10, constraintXy=([], [])):
         """ least square fit of the experimental data to the diode model equation
@@ -358,15 +356,17 @@ class Analysis(object):
         self.constraintX = np.array(constraintXy[0])
         self.constraintY = np.array(constraintXy[1])
         bounds = [(jph * (1 - bound_limit / 2), jph * (1 + bound_limit / 2)),
-                  (jnot * (1 - bound_limit / 2), jnot *
-                   (1 + bound_limit / 2)), (ideality * (1 - bound_limit / 2),
-                                            ideality * (1 + bound_limit / 2)),
-                  (Rs * (1 - bound_limit / 2),
-                   Rs * (1 + bound_limit / 2)), (Rsh * (1 - bound_limit / 2),
-                                                 Rsh * (1 + bound_limit / 2))]
-        params = fmin_slsqp(self._sum_residuals, p0, f_ieqcons=self._constraints, bounds=bounds)
+                  (jnot * (1 - bound_limit / 2), jnot * (1 + bound_limit / 2)),
+                  (ideality * (1 - bound_limit / 2),
+                   ideality * (1 + bound_limit / 2)),
+                  (Rs * (1 - bound_limit / 2), Rs * (1 + bound_limit / 2)),
+                  (Rsh * (1 - bound_limit / 2), Rsh * (1 + bound_limit / 2))]
+        params = fmin_slsqp(self._sum_residuals,
+                            p0,
+                            f_ieqcons=self._constraints,
+                            bounds=bounds)
         return params
-    
+
     def fit_bounded(self, bound_limit=0.10, constraintXy=([], [])):
         params = self._fit_bounded(bound_limit=0.10, constraintXy=([], []))
         return model_params(*params)
@@ -377,14 +377,17 @@ class Analysis(object):
         paramsF = self.fit_free()
         paramsFW = self.fit_bounded(bound_limit)
 
-        messageA = "Analyzed {jph:.2f} {jnot:.2e} {ideality:.2f} {rseries:.2f} {rshunt:.2f}".format(**paramsA)
-        messageF = "Fit_without_bounds {jph:.2f} {jnot:.2e} {ideality:.2f} {rseries:.2f} {rshunt:.2f}".format(**paramsF)
-        messageFW = "Fit_with_bounds {jph:.2f} {jnot:.2e} {ideality:.2f} {rseries:.2f} {rshunt:.2f}".format(**paramsFW)
-    
+        messageA = "Analyzed {jph:.2f} {jnot:.2e} {ideality:.2f} {rseries:.2f} {rshunt:.2f}".format(
+            **paramsA)
+        messageF = "Fit_without_bounds {jph:.2f} {jnot:.2e} {ideality:.2f} {rseries:.2f} {rshunt:.2f}".format(
+            **paramsF)
+        messageFW = "Fit_with_bounds {jph:.2f} {jnot:.2e} {ideality:.2f} {rseries:.2f} {rshunt:.2f}".format(
+            **paramsFW)
+
         table = [["Parameters", "jsc", "jnot", "ideality", "Rs", "Rsh"]]
         table.append(
             ["Unit", "mA/cm^2", "mA/cm^2", "N/A", "Ohm.cm^2", "Ohm.cm^2"])
-        
+
         table.append(messageA.split())
         table.append(messageF.split())
         table.append(messageFW.split())
